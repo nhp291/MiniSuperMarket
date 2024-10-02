@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Bootstrap Admin Template">
+    <meta name="keywords"
+          content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <!--  title thay đổi theo nội dung  -->
+    <title th:text="${pageTitle}">Default Title</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="/admin/img/logo.jpg">
+    <link rel="stylesheet" href="/admin/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/admin/css/animate.css">
+    <link rel="stylesheet" href="/admin/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/admin/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/admin/css/style.css">
+    <link rel="stylesheet" href="/admin/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/admin/plugins/fontawesome/css/all.min.css">
+
+    <!--  Product List  -->
+    <link rel="stylesheet" href="/admin/plugins/select2/css/select2.min.css">
+
+</head>
+<body>
+<!--loading-->
+<div id="global-loader">
+    <div class="whirly-loader"></div>
+</div>
+
+<div class="main-wrapper">
+    <!--  Start header  -->
+    <div th:replace="~{/admin/header}"></div>
+    <!--  End header  -->
+    <!--  Start slidebar  -->
+    <div th:replace="~{/admin/slidebar}"></div>
+    <!--  End SlideBar  -->
+
+    <!--  Start main  -->
+    <!-- Nội dung chính sẽ được thay đổi tùy theo trang -->
+    <div th:replace="~{${viewName}}"></div>
+    <!--  End main  -->
+
+</div>
+
+
+<script src="/admin/js/jquery-3.6.0.min.js"></script>
+
+<script src="/admin/js/feather.min.js"></script>
+
+<script src="/admin/js/jquery.slimscroll.min.js"></script>
+
+<script src="/admin/js/jquery.dataTables.min.js"></script>
+<script src="/admin/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="/admin/js/bootstrap.bundle.min.js"></script>
+
+<script src="/admin/plugins/apexchart/apexcharts.min.js"></script>
+<script src="/admin/plugins/apexchart/chart-data.js"></script>
+
+<script src="/admin/js/script.js"></script>
+</body>
+</html>
