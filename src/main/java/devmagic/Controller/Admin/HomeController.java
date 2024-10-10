@@ -180,7 +180,7 @@ public class HomeController {
     @GetMapping("/Profile")
     public String Profile(Model model) {
         model.addAttribute("pageTitle", "Profile Page");
-        model.addAttribute("viewName", "admin/menu/profile");
+        model.addAttribute("viewName", "admin/menu/MyProfile");
         return "admin/layout";
     }
 

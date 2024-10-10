@@ -1,9 +1,7 @@
 package devmagic.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
@@ -13,12 +11,12 @@ import lombok.NoArgsConstructor;
 public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int warehouseId; // Khóa chính với tự động tăng
+    private int warehouseId; // Khóa chính
 
     @Column(name = "warehouse_name", nullable = false)
     private String warehouseName; // Tên kho
 
     @Column(name = "location", nullable = false)
-    private String location; // Vị trí kho
+    private String location; // Địa điểm kho
 
 }

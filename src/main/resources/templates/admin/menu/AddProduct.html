@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <title></title>
 </head>
 <body>
 <div class="main-wrapper">
     <div class="page-wrapper">
-        <div class="content">
+        <div class="content" action="/addProduct" method="post" enctype="multipart/form-data">
             <div class="page-header">
                 <div class="page-title">
                     <h4>Product Add</h4>
@@ -26,7 +27,7 @@
                             <div class="form-group">
                                 <label>Product Name</label>
                                 <label class="w-100">
-                                    <input type="text">
+                                    <input type="text" id="name" name="name" required>
                                 </label>
                             </div>
                         </div>

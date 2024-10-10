@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int accountId; // Khóa chính với tự động tăng
+    private int accountId; // Khóa chính
 
     @Column(name = "username", nullable = false)
     private String username; // Tên người dùng
@@ -22,7 +22,7 @@ public class Account {
     private String password; // Mật khẩu
 
     @Column(name = "email", nullable = false, unique = true)
-    private String email; // Địa chỉ email
+    private String email; // Email
 
     @Column(name = "phone_number")
     private String phoneNumber; // Số điện thoại
@@ -35,7 +35,7 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
-    private Role role; // Khóa ngoại tham chiếu đến bảng Role
+    private Role role; // Vai trò người dùng
 
 }
 

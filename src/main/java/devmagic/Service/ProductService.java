@@ -4,7 +4,7 @@ import devmagic.Model.Brand;
 import devmagic.Model.Category;
 import devmagic.Model.Product;
 import devmagic.Model.Warehouse;
-import devmagic.Reponsitory.ProductRepository;
+import devmagic.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
