@@ -2,7 +2,6 @@ package devmagic.Controller;
 
 import devmagic.Model.Product;
 import devmagic.Reponsitory.ProductRepository;
-import devmagic.Service.FirebaseService;
 import devmagic.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +18,8 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository; // Repository để truy cập và thao tác với bảng Product
 
-    @Autowired
-    private FirebaseService firebaseService; // Dịch vụ để tải hình ảnh lên Firebase
+//    @Autowired
+//    private FirebaseService firebaseService; // Dịch vụ để tải hình ảnh lên Firebase
 
     @Autowired
     private ProductService productService; // Dịch vụ để xử lý các nghiệp vụ liên quan đến sản phẩm
@@ -51,7 +50,7 @@ public class ProductController {
             @RequestParam("image") MultipartFile image) throws Exception { // Hình ảnh sản phẩm
 
         // Tải hình ảnh lên Firebase và nhận URL
-        String imageUrl = firebaseService.uploadFile(image);
+//        String imageUrl = firebaseService.uploadFile(image);
 
         // Tạo đối tượng sản phẩm mới
         Product product = new Product();
@@ -64,7 +63,7 @@ public class ProductController {
         product.setBrand(productService.getBrandById(brandId));
         product.setCategory(productService.getCategoryById(categoryId));
         product.setWarehouse(productService.getWarehouseById(warehouseId));
-        product.setImageUrl(imageUrl); // Thiết lập URL hình ảnh
+//        product.setImageUrl(imageUrl); // Thiết lập URL hình ảnh
 
         // Lưu sản phẩm vào cơ sở dữ liệu
         Product savedProduct = productService.addProduct(product);
@@ -109,8 +108,8 @@ public class ProductController {
 
         // Nếu có hình ảnh mới, tải lên Firebase và cập nhật URL
         if (image != null) {
-            String imageUrl = firebaseService.uploadFile(image);
-            product.setImageUrl(imageUrl); // Cập nhật URL hình ảnh
+//            String imageUrl = firebaseService.uploadFile(image);
+//            product.setImageUrl(imageUrl); // Cập nhật URL hình ảnh
         }
 
         // Lưu sản phẩm đã cập nhật vào cơ sở dữ liệu

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/index :: dynamic(~{::main})}">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <main>
+    <style>
+      .fixed-sidebar {
+        position: sticky;
+        top: 20px;
+        height: 100vh;
+        overflow: auto;
+      }
+    </style>
+    <div class="container-fluit">
+      <div class="row me-1">
+        <div class="col-lg-2 fixed-sidebar">
+          <div class="row mt-3">
+            <div class="col-2 ms-5"><img src="https://kingfoodmart.com/assets/images/kfm/iconDanhMuc.svg" class="img-fluid"  alt="..."> </div>
+            <div class="col-6 my-auto"> Danh Mục Sản Phẩm</div>
+          </div>
+          <div class="row mt-5">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444280-Type02_RauTraiCay.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto"> Rau củ quả</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/469187-4.Sua.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto"> Sữa , Phô mai</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444256-Type03_DongMat.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Thực Phẩm đông - mát</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444257-Type09_BanhKeo.png" class="img-fluid" alt="..."> </div>
+            <div class="col-7 my-auto"> Bánh Kẹo - Đồ ngọt</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468884-12.BuaAnTienLoi.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Thực Phẩm chế biến</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444260-Type05_GaoBot.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Gạo Đậu - Đồ khô</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444280-Type02_RauTraiCay.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Chăm sóc cá nhân</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/469191-10.Mi.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Mì , Phở - Thức ăn nhanh</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444259-Type06_DauAn.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Dầu ăn - Gia vị </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468883-11.Bia.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Bia - rượu</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/469191-10.Mi.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Mì - miếng , bún</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468890-15.TrangMieng.png" class="img-fluid"  alt="..."> </div>
+            <div class="col-7 my-auto">Tráng miêng , ăn xế</div>
+          </div>
+        </div>
+        <div class="col-lg-9">
+          <div class="container mx-5">
+<!--            <h3 class="mt-3">Trang Chủ / San Pham</h3>-->
+            <h2>Tất cả sản phẩm</h2>
+            <h5 class="mt-5">Có tất cả 1040 sản phẩm</h5>
+            <div class="container-fluit mt-3">
+              <div class="row">
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/pEXPj8ff1RtXJoqofCDuau_KiZt-QZBXwkawMPrHqyw/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/712-91071.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/rW2wuF_fJG5EInghONuaGaYo5FO7QyjwH3zMGQT4A4o/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/10/26/15439-376749.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 1.000 đ</a>
+                      </p>
+                      <p class="card-text">Khoai tây Đà Lạt túi 500g (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/tuzO4m-3UQMOmdIiKDyK9HICUFGq9yOgNKSWxsYFaog/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/4154-96660.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nước tăng lực Redbull 250ml (1 Lon)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nho xanh Mỹ hàng air túi 1kg (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/ps21hX7VfZnN9ajDxB8aORM1jSvov559xKjyntB80s8/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/93-99996.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>25.500đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.500đ</a>
+                      </p>
+                      <p class="card-text">Bông cải xanh Đà Lạt bông 350g (1 Bông)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/zI9T6rmu8LMgXdWW3k4UW-QogAEYCTR9N9Zp2Wsdxtg/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/3/6/20604-031146150601_.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#">Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 mt-3">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/tuzO4m-3UQMOmdIiKDyK9HICUFGq9yOgNKSWxsYFaog/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/4154-96660.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nước tăng lực Redbull 250ml (1 Lon)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 mt-3">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nho xanh Mỹ hàng air túi 1kg (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 mt-3">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/ps21hX7VfZnN9ajDxB8aORM1jSvov559xKjyntB80s8/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/93-99996.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>25.500đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.500đ</a>
+                      </p>
+                      <p class="card-text">Bông cải xanh Đà Lạt bông 350g (1 Bông)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 mt-3">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/zI9T6rmu8LMgXdWW3k4UW-QogAEYCTR9N9Zp2Wsdxtg/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/3/6/20604-031146150601_.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 mt-3">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/ps21hX7VfZnN9ajDxB8aORM1jSvov559xKjyntB80s8/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/93-99996.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>25.500đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.500đ</a>
+                      </p>
+                      <p class="card-text">Bông cải xanh Đà Lạt bông 350g (1 Bông)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 mt-3">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/zI9T6rmu8LMgXdWW3k4UW-QogAEYCTR9N9Zp2Wsdxtg/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/3/6/20604-031146150601_.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 d-md-flex justify-content-md-center">
+                <ul class="pagination">
+                  <li>
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">.</a></li>
+                  <li class="page-item"><a class="page-link" href="#">.</a></li>
+                  <li class="page-item"><a class="page-link" href="#">5</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <h5 class="mt-5">Rau củ quả</h5>
+            <h6>Có 320 sản phẩm rau củ quả</h6>
+            <div class="container-fluit mt-3">
+              <div class="row">
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/pEXPj8ff1RtXJoqofCDuau_KiZt-QZBXwkawMPrHqyw/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/712-91071.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/rW2wuF_fJG5EInghONuaGaYo5FO7QyjwH3zMGQT4A4o/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/10/26/15439-376749.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 1.000 đ</a>
+                      </p>
+                      <p class="card-text">Khoai tây Đà Lạt túi 500g (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/tuzO4m-3UQMOmdIiKDyK9HICUFGq9yOgNKSWxsYFaog/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/4154-96660.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nước tăng lực Redbull 250ml (1 Lon)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nho xanh Mỹ hàng air túi 1kg (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/ps21hX7VfZnN9ajDxB8aORM1jSvov559xKjyntB80s8/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/93-99996.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>25.500đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.500đ</a>
+                      </p>
+                      <p class="card-text">Bông cải xanh Đà Lạt bông 350g (1 Bông)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/zI9T6rmu8LMgXdWW3k4UW-QogAEYCTR9N9Zp2Wsdxtg/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/3/6/20604-031146150601_.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#">Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 d-md-flex justify-content-md-center">
+                <ul class="pagination">
+                  <li>
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">.</a></li>
+                  <li class="page-item"><a class="page-link" href="#">.</a></li>
+                  <li class="page-item"><a class="page-link" href="#">5</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <h5 class="mt-5">Trái Cây</h5>
+            <h6>Có 120 sản phẩm rau củ quả</h6>
+            <div class="container-fluit mt-3">
+              <div class="row">
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/pEXPj8ff1RtXJoqofCDuau_KiZt-QZBXwkawMPrHqyw/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/712-91071.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/rW2wuF_fJG5EInghONuaGaYo5FO7QyjwH3zMGQT4A4o/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/10/26/15439-376749.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 1.000 đ</a>
+                      </p>
+                      <p class="card-text">Khoai tây Đà Lạt túi 500g (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/tuzO4m-3UQMOmdIiKDyK9HICUFGq9yOgNKSWxsYFaog/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/4154-96660.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nước tăng lực Redbull 250ml (1 Lon)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nho xanh Mỹ hàng air túi 1kg (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/ps21hX7VfZnN9ajDxB8aORM1jSvov559xKjyntB80s8/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/93-99996.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>25.500đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.500đ</a>
+                      </p>
+                      <p class="card-text">Bông cải xanh Đà Lạt bông 350g (1 Bông)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/zI9T6rmu8LMgXdWW3k4UW-QogAEYCTR9N9Zp2Wsdxtg/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/3/6/20604-031146150601_.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#">Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 mt-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/ps21hX7VfZnN9ajDxB8aORM1jSvov559xKjyntB80s8/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/93-99996.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>25.500đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.500đ</a>
+                      </p>
+                      <p class="card-text">Bông cải xanh Đà Lạt bông 350g (1 Bông)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 mt-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/zI9T6rmu8LMgXdWW3k4UW-QogAEYCTR9N9Zp2Wsdxtg/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/3/6/20604-031146150601_.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#">Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 d-md-flex justify-content-md-center">
+                <ul class="pagination">
+                  <li>
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">.</a></li>
+                  <li class="page-item"><a class="page-link" href="#">.</a></li>
+                  <li class="page-item"><a class="page-link" href="#">5</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <h5 class="mt-5">Các khuyến mãi khác</h5>
+            <div class="row">
+              <div class="col-4">
+                <img src="https://kingfoodmart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fonelife-public%2Fmedia%2Fimages%2F2024%2F10%2FvCfFfwblob&w=640&q=75" class="img-fluid" alt="...">
+              </div>
+              <div class="col-4">
+                <img src="https://kingfoodmart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fonelife-public%2Fmedia%2Fimages%2F2024%2F09%2F6ReuBAblob&w=640&q=75" class="img-fluid" alt="...">
+              </div>
+              <div class="col-4">
+                <img src="https://kingfoodmart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fonelife-public%2Fmedia%2Fimages%2F2024%2F10%2FvtuvdAblob&w=640&q=75" class="img-fluid" alt="...">
+              </div>
+            </div>
+            <h5 class="mt-5">Sản Phẩm giảm giá trong ngày</h5>
+            <div class="container-fluit mt-3">
+              <div class="row">
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/pEXPj8ff1RtXJoqofCDuau_KiZt-QZBXwkawMPrHqyw/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/712-91071.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/rW2wuF_fJG5EInghONuaGaYo5FO7QyjwH3zMGQT4A4o/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/10/26/15439-376749.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 1.000 đ</a>
+                      </p>
+                      <p class="card-text">Khoai tây Đà Lạt túi 500g (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/tuzO4m-3UQMOmdIiKDyK9HICUFGq9yOgNKSWxsYFaog/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/4154-96660.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nước tăng lực Redbull 250ml (1 Lon)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">Nho xanh Mỹ hàng air túi 1kg (1 Túi)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/ps21hX7VfZnN9ajDxB8aORM1jSvov559xKjyntB80s8/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/93-99996.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>25.500đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.500đ</a>
+                      </p>
+                      <p class="card-text">Bông cải xanh Đà Lạt bông 350g (1 Bông)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2">
+                  <div style="width: 11rem;">
+                    <img src="https://img.onelife.vn/zI9T6rmu8LMgXdWW3k4UW-QogAEYCTR9N9Zp2Wsdxtg/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/3/6/20604-031146150601_.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <h5 class="card-title">15.000 đ</h5>
+                      <p class="text-body-secondary mb-4">
+                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#">Tiết kiệm 8.000 đ</a>
+                      </p>
+                      <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
+                      <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 d-md-flex justify-content-md-center">
+                <ul class="pagination">
+                  <li>
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">.</a></li>
+                  <li class="page-item"><a class="page-link" href="#">.</a></li>
+                  <li class="page-item"><a class="page-link" href="#">5</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
