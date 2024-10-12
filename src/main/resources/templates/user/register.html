@@ -13,9 +13,8 @@
 <main>
     <style>
         .registration-container {
-            max-width: 1100px;
-            margin: 50px auto;
-            background-color: #ffffff;
+            max-width:500px;
+            margin: 25px auto;
             border-radius: 25px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); /* Bóng đổ cho giao diện đẹp */
             overflow: hidden;
@@ -28,7 +27,7 @@
         .left-section {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
-            padding: 60px;
+            padding: 40px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -38,13 +37,14 @@
         }
 
         .left-section::before {
+            padding: 30px;
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://source.unsplash.com/800x600/?tech') no-repeat center center/cover;
+            width: 60%;
+            height: 60%;
+            background: url('https://source.unsplash.com/500x300/?tech') no-repeat center center/cover;
             opacity: 0.1;
             z-index: 0; /* Tầng hiệu ứng với nội dung */
         }
@@ -66,7 +66,7 @@
         }
 
         .left-section .logo {
-            font-size: 34px;
+            font-size: 30px;
             font-weight: bold;
             margin-bottom: 40px;
             letter-spacing: 1.5px;
@@ -76,14 +76,14 @@
 
         /* Phần bên phải - Thiết kế form */
         .right-section {
-            padding: 50px 60px;
+            padding: 30px;
             flex: 1;
             background-color: #ffffff;
             position: relative;
         }
 
         .form-floating input {
-            border-radius: 30px;
+            border-radius: 20px;
             background-color: #f0f4f8;
             border: 1px solid #cfd8e3;
             height: 55px;
@@ -122,18 +122,18 @@
         }
 
         /* Các nút đăng nhập bằng mạng xã hội */
-        .social-login-buttons a {
-            margin-right: 10px;
-            border-radius: 30px;
-            padding: 12px 25px;
-            font-size: 17px;
-            color: white; /* Màu chữ trắng */
-            border: none;
-            transition: all 0.4s ease;
-            display: inline-block;
-            width: 100%; /* Nút rộng */
-            margin-bottom: 10px; /* Khoảng cách giữa các nút */
-        }
+        /*.social-login-buttons a {*/
+        /*    margin-right: 10px;*/
+        /*    border-radius: 30px;*/
+        /*    padding: 12px 25px;*/
+        /*    font-size: 17px;*/
+        /*    color: white; !* Màu chữ trắng *!*/
+        /*    border: none;*/
+        /*    transition: all 0.4s ease;*/
+        /*    display: inline-block;*/
+        /*    width: 50%; !* Nút rộng *!*/
+        /*    margin-bottom: 10px; !* Khoảng cách giữa các nút *!*/
+        /*}*/
 
         .social-login-buttons a.google {
             background-color: #db4437; /* Màu đỏ Google */
@@ -213,27 +213,27 @@
 
         <!-- Phần phải (Form đăng ký) -->
         <div class="right-section">
-            <h3 class="mb-4">Tham gia cùng chúng tôi</h3>
-            <p class="mb-4">Đăng ký để truy cập nội dung cao cấp của chúng tôi</p>
+            <h3 class="mb-1">Tham gia cùng chúng tôi</h3>
+            <p class="mb-2">Đăng ký để truy cập nội dung cao cấp của chúng tôi</p>
 
             <form>
-                <div class="form-floating mb-4">
-                    <input type="text" class="form-control" id="firstName" placeholder="Tên">
+                <div class="form-floating mb-2">
+                    <input type="text" class="form-control" id="firstName" style="height: 10px" placeholder="Tên">
                     <label for="firstName">Tên *</label>
                 </div>
-                <div class="form-floating mb-4">
+                <div class="form-floating mb-2">
                     <input type="text" class="form-control" id="lastName" placeholder="Họ">
                     <label for="lastName">Họ *</label>
                 </div>
-                <div class="form-floating mb-4">
+                <div class="form-floating mb-2">
                     <input type="email" class="form-control" id="email" placeholder="Email">
                     <label for="email">Email *</label>
                 </div>
-                <div class="form-floating mb-4">
+                <div class="form-floating mb-2">
                     <input type="password" class="form-control" id="password" placeholder="Mật khẩu">
                     <label for="password">Mật khẩu *</label>
                 </div>
-                <div class="form-check mb-4">
+                <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" value="" id="termsCheck">
                     <label class="form-check-label" for="termsCheck">
                         Tôi đồng ý với <a href="#" class="terms">điều khoản và điều kiện</a>
@@ -242,11 +242,11 @@
                 <button type="submit" class="btn btn-signup">Đăng Ký</button>
             </form>
 
-            <div class="mt-4 text-center">
+            <div class="mt-3 text-center">
                 Bạn đã có tài khoản? <a href="#">Đăng nhập</a>
             </div>
 
-            <hr class="my-4">
+            <hr class="my-2">
 
             <div class="text-center">
                 <p>Hoặc đăng nhập với</p>
