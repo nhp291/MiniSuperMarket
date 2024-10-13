@@ -1,7 +1,8 @@
 package devmagic.Controller.Admin;
 
+
 import devmagic.Model.Account;
-import devmagic.Reponsitory.AccountRepository;
+import devmagic.Service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,55 +14,30 @@ import java.util.List;
 public class AccountController {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
-    // Lấy tất cả tài khoản
     @GetMapping
     public List<Account> getAllAccounts() {
-        return accountRepository.findAll();
+        return accountService.getAllAccounts();
     }
 
-    // Lấy thông tin tài khoản theo ID
     @GetMapping("/{id}")
     public ResponseEntity<Account> getAccountById(@PathVariable int id) {
-        Account account = accountRepository.findById(id).orElse(null);
-        if (account != null) {
-            return ResponseEntity.ok(account);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return accountService.getAccountById(id);
     }
 
-    // Thêm tài khoản mới
     @PostMapping
     public Account createAccount(@RequestBody Account account) {
-        return accountRepository.save(account);
+        return accountService.createAccount(account);
     }
 
-    // Cập nhật tài khoản
     @PutMapping("/{id}")
     public ResponseEntity<Account> updateAccount(@PathVariable int id, @RequestBody Account accountDetails) {
-        Account account = accountRepository.findById(id).orElse(null);
-        if (account != null) {
-            account.setUsername(accountDetails.getUsername());
-            account.setPassword(accountDetails.getPassword());
-            account.setEmail(accountDetails.getEmail());
-            account.setPhoneNumber(accountDetails.getPhoneNumber());
-            account.setAddress(accountDetails.getAddress());
-            account.setImageUrl(accountDetails.getImageUrl());
-            account.setRole(accountDetails.getRole());
-
-            Account updatedAccount = accountRepository.save(account);
-            return ResponseEntity.ok(updatedAccount);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return accountService.updateAccount(id, accountDetails);
     }
 
-    // Xóa tài khoản
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable int id) {
-        accountRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return accountService.deleteAccount(id);
     }
 }
