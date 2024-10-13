@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/index :: dynamic(~{::main})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Đăng Ký</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<main>
+    <style>
+        .registration-container {
+            max-width: 1100px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); /* Bóng đổ cho giao diện đẹp */
+            overflow: hidden;
+            display: flex;
+            transition: all 0.4s ease-in-out;
+            position: relative;
+        }
+
+        /* Phần bên trái - Nền gradient kèm hình ảnh */
+        .left-section {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 60px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            text-align: left;
+        }
+
+        .left-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://source.unsplash.com/800x600/?tech') no-repeat center center/cover;
+            opacity: 0.1;
+            z-index: 0; /* Tầng hiệu ứng với nội dung */
+        }
+
+        .left-section h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            z-index: 1;
+            line-height: 1.2;
+            letter-spacing: 2px;
+        }
+
+        .left-section p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 50px;
+            z-index: 1;
+        }
+
+        .left-section .logo {
+            font-size: 34px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            letter-spacing: 1.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Phần bên phải - Thiết kế form */
+        .right-section {
+            padding: 50px 60px;
+            flex: 1;
+            background-color: #ffffff;
+            position: relative;
+        }
+
+        .form-floating input {
+            border-radius: 30px;
+            background-color: #f0f4f8;
+            border: 1px solid #cfd8e3;
+            height: 55px;
+            padding-left: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .form-floating input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); /* Hiệu ứng sáng khi focus */
+        }
+
+        .form-floating label {
+            padding-left: 30px;
+            font-size: 15px;
+            color: #888;
+        }
+
+        .btn-signup {
+            background: linear-gradient(to right, #1e3a8a, #3b82f6);
+            color: white;
+            border: none;
+            padding: 15px 0;
+            border-radius: 30px;
+            width: 100%;
+            font-size: 18px;
+            margin-top: 20px;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .btn-signup:hover {
+            background: linear-gradient(to right, #19317b, #347ade);
+            transform: scale(1.08);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.7);
+        }
+
+        /* Các nút đăng nhập bằng mạng xã hội */
+        .social-login-buttons a {
+            margin-right: 10px;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-size: 17px;
+            color: white; /* Màu chữ trắng */
+            border: none;
+            transition: all 0.4s ease;
+            display: inline-block;
+            width: 100%; /* Nút rộng */
+            margin-bottom: 10px; /* Khoảng cách giữa các nút */
+        }
+
+        .social-login-buttons a.google {
+            background-color: #db4437; /* Màu đỏ Google */
+        }
+
+        .social-login-buttons a.facebook {
+            background-color: #4267B2; /* Màu xanh Facebook */
+        }
+
+        .social-login-buttons a.twitter {
+            background-color: #1DA1F2; /* Màu xanh Twitter */
+        }
+
+        .social-login-buttons a:hover {
+            opacity: 0.9; /* Hiệu ứng hover giảm độ sáng */
+        }
+
+        .terms a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms a:hover {
+            text-decoration: underline;
+        }
+
+        .form-check-label {
+            color: #555;
+            font-size: 14px;
+        }
+
+        /* Biểu tượng trôi nổi cho trang trí */
+        .floating-icons {
+            position: absolute;
+            top: -30px;
+            right: -40px;
+            opacity: 0.08;
+        }
+
+        .floating-icons img {
+            width: 300px;
+        }
+
+        /* Media Queries tùy chỉnh cho tính đáp ứng */
+        @media (max-width: 992px) {
+            .registration-container {
+                flex-direction: column;
+                margin: 20px auto;
+            }
+
+            .left-section {
+                padding: 40px 30px;
+                text-align: center;
+            }
+
+            .right-section {
+                padding: 40px 20px;
+            }
+
+            .floating-icons {
+                display: none;
+            }
+        }
+    </style>
+    <div class="container registration-container">
+        <!-- Phần trái (Giới thiệu) -->
+        <div class="left-section">
+            <div class="logo">DEV MAGIC</div>
+            <h1>Siêu Thị Mini</h1>
+            <p>Siêu thị Devmagic là một trong những chuỗi siêu thị lớn nhất và phát triển nhanh chóng tại Việt Nam. Với tiêu chí "Mọi thứ bạn cần, trong tầm tay bạn", Devmagic không chỉ cung cấp đa dạng sản phẩm mà còn mang đến cho khách hàng những trải nghiệm mua sắm tuyệt vời nhất.</p>
+            <!-- Biểu tượng trôi nổi để trang trí -->
+            <div class="floating-icons">
+                <img src="https://image.flaticon.com/icons/svg/2910/2910715.svg" alt="icon1">
+            </div>
+        </div>
+
+        <!-- Phần phải (Form đăng ký) -->
+        <div class="right-section">
+            <h3 class="mb-4">Tham gia cùng chúng tôi</h3>
+            <p class="mb-4">Đăng ký để truy cập nội dung cao cấp của chúng tôi</p>
+
+            <form>
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="firstName" placeholder="Tên">
+                    <label for="firstName">Tên *</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="lastName" placeholder="Họ">
+                    <label for="lastName">Họ *</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="email" class="form-control" id="email" placeholder="Email">
+                    <label for="email">Email *</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="password" placeholder="Mật khẩu">
+                    <label for="password">Mật khẩu *</label>
+                </div>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" value="" id="termsCheck">
+                    <label class="form-check-label" for="termsCheck">
+                        Tôi đồng ý với <a href="#" class="terms">điều khoản và điều kiện</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-signup">Đăng Ký</button>
+            </form>
+
+            <div class="mt-4 text-center">
+                Bạn đã có tài khoản? <a href="#">Đăng nhập</a>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+                <p>Hoặc đăng nhập với</p>
+                <div class="social-login-buttons">
+                    <a href="#" class="btn google">Google</a>
+                    <a href="#" class="btn facebook">Facebook</a>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
+</main>
+
+
+
+</body>
+</html>

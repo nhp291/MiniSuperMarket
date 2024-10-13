@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/index :: dynamic(~{::main})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<main>
+    <style>
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+        .invoice-title {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .note {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+    <div class="invoice-box mt-5">
+        <div class="invoice-title">
+            Hóa đơn thanh toán
+        </div>
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="./logo.jpg" style="width:100%; max-width:300px;">
+                            </td>
+                            <td>
+                                Invoice #: 123<br>
+                                Created: January 1, 2024<br>
+                                Due: February 1, 2024
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                H3P<br>
+                                12345 Trường chinh<br>
+                                Tân bình, HCM
+                            </td>
+                            <td>
+                                Nguyễn Hồng Phúc<br>
+                                11/2 vườn lài<br>
+                                Hòa thanh, Tân phú, HCM
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="heading">
+                <td>Payment Method</td>
+                <td>QR Code</td>
+            </tr>
+            <tr class="details">
+                <td>Scan to Pay</td>
+                <td><img src="URL_CUA_MA_QR" alt="QR Code" style="width:100px; height:100px;"></td>
+            </tr>
+            <tr class="heading">
+                <td>Item</td>
+                <td>Price</td>
+            </tr>
+            <tr class="item">
+                <td>Trứng gà size M Ba Huân hộp 10 quả (1 Hộp)</td>
+                <td>$2.00</td>
+            </tr>
+            <tr class="item">
+                <td>Quýt Úc (1kg)</td>
+                <td>$12.00</td>
+            </tr>
+            <tr class="item last">
+                <td>Cà chua trứng vỉ 400g (1 VỈ)</td>
+                <td>$4.00</td>
+            </tr>
+            <tr class="total">
+                <td></td>
+                <td>Total: $18.00</td>
+            </tr>
+        </table>
+        <div class="note">
+            Lưu ý: HĐ VAT chỉ xuất trong ngày. SĐT Góp Ý: 0363824426<br>
+            Cảm ơn Quý Khách hàng đã đồng ý với chính sách xử lí dữ liệu cá nhân của<br>
+            Chúng tôi tại: <a href="https://devmagic.datn.h3p">https://devmagic.datn.h3p</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
