@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
 </head>
@@ -19,6 +19,7 @@
                 </div>
             </div>
 
+            <form th:action="@{/Admin/AddAccount}" method="post" enctype="multipart/form-data">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -26,7 +27,7 @@
                             <div class="form-group">
                                 <label>User Name</label>
                                 <label>
-                                    <input type="text">
+<!--                                    <input type="text" th:field="*{username}" required>-->
                                 </label>
                             </div>
                         </div>
@@ -34,7 +35,7 @@
                             <div class="form-group">
                                 <label>Email</label>
                                 <label>
-                                    <input type="text">
+<!--                                    <input type="email" th:field="*{email}" required>-->
                                 </label>
                             </div>
                         </div>
@@ -43,7 +44,7 @@
                                 <label> Password</label>
                                 <div class="pass-group">
                                     <label>
-                                        <input type="password" class=" pass-input">
+<!--                                        <input type="password" th:field="*{password}" required>-->
                                     </label>
                                     <span class="fas toggle-password fa-eye-slash"></span>
                                 </div>
@@ -54,17 +55,23 @@
                                 <label>Confirm Password</label>
                                 <div class="pass-group">
                                     <label>
-                                        <input type="password" class=" pass-input">
+<!--                                        <input type="password" th:field="*{confirmPassword}" class="pass-input" required>-->
                                     </label>
                                     <span class="fas toggle-password fa-eye-slash"></span>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Thêm thông báo lỗi nếu có -->
+<!--                        <div th:if="${passwordMismatch}" class="alert alert-danger">-->
+                            Mật khẩu không khớp. Vui lòng kiểm tra lại.
+                        </div>
+
                         <div class="col-lg-3 col-sm-6 col-12">
                             <div class="form-group">
                                 <label>Phone</label>
                                 <label>
-                                    <input type="text">
+<!--                                    <input type="text" th:field="*{phoneNumber}">-->
                                 </label>
                             </div>
                         </div>
@@ -72,7 +79,7 @@
                             <div class="form-group">
                                 <label>Address</label>
                                 <label>
-                                    <input type="text">
+<!--                                    <input type="text" th:field="*{address}">-->
                                 </label>
                             </div>
                         </div>
@@ -80,11 +87,11 @@
                             <div class="form-group">
                                 <label>Role</label>
                                 <label>
-                                    <select class="form-select">
-                                        <option>Admin</option>
-                                        <option>User</option>
-                                        <option>Staff</option>
-                                    </select>
+<!--                                    <select th:field="*{role.roleId}" class="form-select">-->
+<!--                                        <option value="1">Admin</option>-->
+<!--                                        <option value="2">User</option>-->
+<!--                                        <option value="3">Staff</option>-->
+<!--                                    </select>-->
                                 </label>
                             </div>
                         </div>
@@ -92,7 +99,7 @@
                             <div class="form-group">
                                 <label> User Image</label>
                                 <div class="image-upload">
-                                    <input type="file">
+                                    <input type="file" name="imageUrl">
                                     <div class="image-uploads">
                                         <img src="/admin/img/icons/upload.svg" alt="img">
                                         <h4>Drag and drop a file to upload</h4>
@@ -101,12 +108,13 @@
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
-                            <a href="userlist.html" class="btn btn-cancel">Cancel</a>
+                            <a href="javascript:void(0);" type="submit" class="btn btn-submit me-2">Submit</a>
+                            <a th:href="@{/Admin/AccountList}" class="btn btn-cancel">Cancel</a>
                         </div>
                     </div>
                 </div>
             </div>
+            </form>
 
         </div>
     </div>

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title></title>
@@ -79,7 +79,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table ">
                             <thead>
                             <tr>
                                 <th>UserName</th>
@@ -88,40 +88,39 @@
                                 <th>Phone</th>
                                 <th>Address</th>
                                 <th>Role</th>
-                                <th>Created By</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <!--                            <tr>-->
-                            <!--                                <td>-->
-                            <!--                                    <label class="checkboxs">-->
-                            <!--                                        <input type="checkbox">-->
-                            <!--                                        <span class="checkmarks"></span>-->
-                            <!--                                    </label>-->
-                            <!--                                </td>-->
-                            <!--                                <td class="productimgname">-->
-                            <!--                                    <a href="javascript:void(0);" class="product-img">-->
-                            <!--                                        <img src="/admin/img/product/noimage.png" alt="product">-->
-                            <!--                                    </a>-->
-                            <!--                                    <a href="javascript:void(0);">Computers</a>-->
-                            <!--                                </td>-->
-                            <!--                                <td>CT001</td>-->
-                            <!--                                <td>Computers Description</td>-->
-                            <!--                                <td>Admin</td>-->
-                            <!--                                <td>-->
-                            <!--                                    <a class="me-3" href="editcategory.html">-->
-                            <!--                                        <img src="/admin/img/icons/edit.svg" alt="img">-->
-                            <!--                                    </a>-->
-                            <!--                                    <a class="me-3 confirm-text" href="javascript:void(0);">-->
-                            <!--                                        <img src="/admin/img/icons/delete.svg" alt="img">-->
-                            <!--                                    </a>-->
-                            <!--                                </td>-->
-                            <!--                            </tr>-->
-
+                                <tr>dadas</tr>
+<!--                                <tr th:each="account : ${accounts}">-->
+<!--                                    <td th:text="${account.username}"></td>-->
+<!--                                    <td th:text="${account.email}"></td>-->
+<!--                                    <td th:text="${account.phoneNumber}"></td>-->
+<!--                                    <td th:text="${account.address}"></td>-->
+<!--                                    <td th:text="${account.role.name}"></td>-->
+<!--                                    <td>-->
+<!--                                        <a th:href="@{/api/accounts/{id}(id=${account.accountId})}">Edit</a>-->
+<!--                                        <form th:action="@{/api/accounts/{id}(id=${account.accountId})}" method="post" style="display:inline;">-->
+<!--                                            <input type="hidden" name="_method" value="DELETE"/>-->
+<!--                                            <button type="submit">Delete</button>-->
+<!--                                        </form>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
                             </tbody>
                         </table>
                     </div>
+                    <!-- Phân trang -->
+<!--                    <div>-->
+<!--                        <span>Trang hiện tại: <span th:text="${currentPage + 1}"></span></span>-->
+<!--                        <span>/</span>-->
+<!--                        <span th:text="${totalPages}"></span>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                        <a th:if="${currentPage > 0}" th:href="@{/Admin/AccountList(page=${currentPage - 1}, size=${size})}">Trước</a>-->
+<!--                        <a th:if="${currentPage < totalPages - 1}" th:href="@{/Admin/AccountList(page=${currentPage + 1}, size=${size})}">Tiếp theo</a>-->
+<!--                    </div>-->
+<!--                    <a th:href="@{/AddAccount}">Thêm Tài Khoản</a>-->
                 </div>
             </div>
 

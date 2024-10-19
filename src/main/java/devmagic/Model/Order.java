@@ -28,7 +28,5 @@ public class Order {
     @Column(name = "payment_method", nullable = false)
     private String paymentMethod; // Phương thức thanh toán
 
-    // Getters and Setters
-    // ...
 }
 

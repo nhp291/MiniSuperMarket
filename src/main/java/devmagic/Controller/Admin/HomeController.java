@@ -1,18 +1,42 @@
 package devmagic.Controller.Admin;
 
+import devmagic.Model.Account;
+import devmagic.Service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/Admin")
 public class HomeController {
+
+    @Autowired
+    private AccountService accountService;
 
     @GetMapping("/Home")
     public String Home(Model model) {
         model.addAttribute("pageTitle", "Home Page");
         model.addAttribute("viewName", "admin/index");
+        return "admin/layout";
+    }
+
+    @GetMapping("/AccountList")
+    public String AccountList(Model model) {
+//        List<Account> accounts = accountService.getAllAccounts();
+//        model.addAttribute("accounts", accounts);
+        model.addAttribute("pageTitle", "Account List Page");
+        model.addAttribute("viewName", "admin/menu/AccountList");
+        return "admin/layout";
+    }
+
+    @GetMapping("/AddAccount")
+    public String AddAccount(Model model) {
+        model.addAttribute("pageTitle", "Add Account Page");
+        model.addAttribute("viewName", "admin/menu/AddAccount");
         return "admin/layout";
     }
 
@@ -93,19 +117,7 @@ public class HomeController {
         return "admin/layout";
     }
 
-    @GetMapping("/AccountList")
-    public String AccountList(Model model) {
-        model.addAttribute("pageTitle", "Account List Page");
-        model.addAttribute("viewName", "admin/menu/AccountList");
-        return "admin/layout";
-    }
 
-    @GetMapping("/AddAccount")
-    public String AddAccount(Model model) {
-        model.addAttribute("pageTitle", "Add Account Page");
-        model.addAttribute("viewName", "admin/menu/AddAccount");
-        return "admin/layout";
-    }
 
     @GetMapping("/PromotionList")
     public String PromotionList(Model model) {
