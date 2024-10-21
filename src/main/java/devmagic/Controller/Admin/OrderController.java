@@ -4,6 +4,7 @@ import devmagic.Model.Order;
 import devmagic.Service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,13 @@ import java.util.List;
 public class OrderController {
     @Autowired
     private OrderService ordersService;
+
+    @GetMapping("/OrderList")
+    public String OrderList(Model model) {
+        model.addAttribute("pageTitle", "Order List Page");
+        model.addAttribute("viewName", "admin/menu/OrderList");
+        return "admin/layout";
+    }
 
     @GetMapping
     public List<Order> getAllOrders() {

@@ -10,12 +10,11 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4> Account list</h4>
-                    <h6>View/Search  Account</h6>
+                    <h2> <strong>Account list</strong></h2>
                 </div>
                 <div class="page-btn">
-                    <a th:href="@{/Admin/AddAccount}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" class="me-1" alt="img">Add Account
+                    <a th:href="@{/Accounts/AddAccount}" class="btn btn-added">
+                        <img src="/admin/img/icons/plus.svg" class="me-1 " alt="img">Add Account
                     </a>
                 </div>
             </div>
@@ -67,13 +66,6 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                    <div class="form-group">
-                                        <a class="btn btn-filters ms-auto">
-                                            <img src="/admin/img/icons/search-whites.svg" alt="img">
-                                        </a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -91,39 +83,27 @@
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody>
-                                <tr>dadas</tr>
-<!--                                <tr th:each="account : ${accounts}">-->
-<!--                                    <td th:text="${account.username}"></td>-->
-<!--                                    <td th:text="${account.email}"></td>-->
-<!--                                    <td th:text="${account.phoneNumber}"></td>-->
-<!--                                    <td th:text="${account.address}"></td>-->
-<!--                                    <td th:text="${account.role.name}"></td>-->
-<!--                                    <td>-->
-<!--                                        <a th:href="@{/api/accounts/{id}(id=${account.accountId})}">Edit</a>-->
-<!--                                        <form th:action="@{/api/accounts/{id}(id=${account.accountId})}" method="post" style="display:inline;">-->
-<!--                                            <input type="hidden" name="_method" value="DELETE"/>-->
-<!--                                            <button type="submit">Delete</button>-->
-<!--                                        </form>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                            <tbody th:each="account : ${accounts}">
+                                <tr>
+                                    <td th:text="${account.username}"></td>
+                                    <td th:text="${account.password}"></td>
+                                    <td th:text="${account.email}"></td>
+                                    <td th:text="${account.phoneNumber}"></td>
+                                    <td th:text="${account.address}"></td>
+                                    <td th:text="${account.role.roleName}"></td>
+                                    <td>
+                                        <a class="bg-info" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Edit</a>
+                                        <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
+                                            <input type="hidden" name="_method" value="DELETE"/>
+                                            <button type="submit" class="bg-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                    <!-- Phân trang -->
-<!--                    <div>-->
-<!--                        <span>Trang hiện tại: <span th:text="${currentPage + 1}"></span></span>-->
-<!--                        <span>/</span>-->
-<!--                        <span th:text="${totalPages}"></span>-->
-<!--                    </div>-->
-<!--                    <div>-->
-<!--                        <a th:if="${currentPage > 0}" th:href="@{/Admin/AccountList(page=${currentPage - 1}, size=${size})}">Trước</a>-->
-<!--                        <a th:if="${currentPage < totalPages - 1}" th:href="@{/Admin/AccountList(page=${currentPage + 1}, size=${size})}">Tiếp theo</a>-->
-<!--                    </div>-->
-<!--                    <a th:href="@{/AddAccount}">Thêm Tài Khoản</a>-->
                 </div>
             </div>
-
         </div>
     </div>
 </div>

@@ -3,6 +3,8 @@ package devmagic.Service;
 import devmagic.Model.Account;
 import devmagic.Reponsitory.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,16 +18,16 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
-    public Account createAccount(Account account) {
-        return accountRepository.save(account);
+    public void saveAccount(Account account) {
+        accountRepository.save(account);
     }
 
-    public Account updateAccount(Integer id, Account account) {
-        account.setAccountId(id);
-        return accountRepository.save(account);
+    public Account getAccountById(Integer id) {
+        return accountRepository.findById(id).orElse(null);
     }
 
     public void deleteAccount(Integer id) {
         accountRepository.deleteById(id);
     }
+
 }

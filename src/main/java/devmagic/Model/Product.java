@@ -41,7 +41,7 @@ public class Product {
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouse warehouse; // Khóa ngoại tham chiếu đến bảng Warehouse
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductImage> images;  // URL của hình ảnh sản phẩm
+//    @OneToMany(mappedBy = "product")
+//    private List<ProductImage> images;  // URL của hình ảnh sản phẩm
 
 }
