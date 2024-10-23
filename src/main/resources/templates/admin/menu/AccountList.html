@@ -71,9 +71,10 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table ">
+                        <table class="table text-center">
                             <thead>
                             <tr>
+                                <th>User Images</th>
                                 <th>UserName</th>
                                 <th>Password</th>
                                 <th>Email</th>
@@ -85,17 +86,21 @@
                             </thead>
                             <tbody th:each="account : ${accounts}">
                                 <tr>
+                                    <td>
+                                        <!-- Hiển thị ảnh người dùng -->
+                                        <img th:src="${account.imageUrl != null ? account.imageUrl : '/Image/User.png'}" style="width: 50px" alt="User Image">
+
+                                    </td>
                                     <td th:text="${account.username}"></td>
-                                    <td th:text="${account.password}"></td>
+                                    <td>*****</td>
                                     <td th:text="${account.email}"></td>
                                     <td th:text="${account.phoneNumber}"></td>
                                     <td th:text="${account.address}"></td>
                                     <td th:text="${account.role.roleName}"></td>
                                     <td>
-                                        <a class="bg-info" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Edit</a>
+                                        <a class="bg-info btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Edit</a>
                                         <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
-                                            <input type="hidden" name="_method" value="DELETE"/>
-                                            <button type="submit" class="bg-danger">Delete</button>
+                                            <button class="bg-danger btn" type="submit">Delete</button>
                                         </form>
                                     </td>
                                 </tr>

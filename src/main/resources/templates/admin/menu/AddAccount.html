@@ -13,14 +13,16 @@
                     <h6></h6>
                 </div>
                 <div class="page-btn">
-                    <a th:href="@{/Accounts/list}" class="btn btn-added">
+                    <a th:href="@{/Accounts/AccountList}" class="btn btn-added">
                         <img src="/admin/img/icons/plus.svg" class="me-1" alt="img"> Account List
                     </a>
                 </div>
             </div>
 
-            <form th:action="@{/Accounts/add}" th:object="${account}" method="post" enctype="multipart/form-data">
-                <div class="card">
+            <form th:action="${#strings.isEmpty(account.accountId) ? '/Accounts/AddAccount' : '/Accounts/update'}"
+                  th:object="${account}" method="post" enctype="multipart/form-data">
+
+            <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
@@ -35,17 +37,17 @@
                                 <div class="form-group">
                                     <label>Email</label>
                                     <label>
-                                        <input type="email" id="email" th:field="*{email}" required>
+                                        <input style="padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;" type="email" id="email" th:field="*{email}" required>
                                     </label>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label> Password</label>
+                                    <label>Password</label>
                                     <div class="pass-group">
-                                        <label>
-                                            <input type="password" id="password" th:field="*{password}" required>
-                                        </label>
+                                        <input type="password" id="password" th:field="*{password}"
+                                               th:placeholder="${#strings.isEmpty(account.accountId) ? 'Enter password' : '*****'}"
+                                               class="form-control">
                                         <span class="fas toggle-password fa-eye-slash"></span>
                                     </div>
                                 </div>
@@ -54,18 +56,14 @@
                                 <div class="form-group">
                                     <label>Confirm Password</label>
                                     <div class="pass-group">
-                                        <label>
-                                            <input type="password" th:field="*{confirmPassword}" class="pass-input" required>
-                                        </label>
+                                        <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
+                                               th:placeholder="${#strings.isEmpty(account.accountId) ? 'Enter password' : '*****'}"
+                                               class="form-control">
                                         <span class="fas toggle-password fa-eye-slash"></span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Thêm thông báo lỗi nếu có -->
-    <!--                        <div th:if="${passwordMismatch}" class="alert alert-danger">-->
-    <!--                            Mật khẩu không khớp. Vui lòng kiểm tra lại.-->
-    <!--                        </div>-->
 
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
@@ -87,16 +85,33 @@
                                 <div class="form-group">
                                     <label for="role">Role</label>
                                     <label>
-                                        <select id="role" th:field="*{role}" th:object="${account.role}" required>
+                                        <select id="role" th:field="*{role}" class="form-select selectpicker" data-live-search="true" required>
+<!--                                            <option value="" disabled selected>Select Role</option>-->
                                             <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"></option>
                                         </select>
                                     </label>
                                 </div>
                             </div>
+
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <!-- Hiển thị hình ảnh hiện tại nếu có -->
+                                <div th:if="${account.imageUrl != null}">
+                                    <h5>Current Image:</h5>
+                                    <img th:src="@{${account.imageUrl}}" alt="User Image" style="max-width: 50px;">
+                                </div>
+                                <!-- Nếu chưa có ảnh, hiển thị ảnh mặc định -->
+                                <div th:if="${account.imageUrl == null}">
+                                    <img th:src="@{'/Image/User.png'}" alt="Default User Image" style="max-width: 60px; margin-left: 40%; margin-top: 8%">
+                                </div>
+                            </div>
+
                             <div class="col-lg-12">
                                 <div class="form-group">
-                                    <label> User Image</label>
+                                    <label>User Image</label>
                                     <div class="image-upload">
+
+
+                                        <!-- Input để tải ảnh lên -->
                                         <input type="file" name="imageUrl">
                                         <div class="image-uploads">
                                             <img src="/admin/img/icons/upload.svg" alt="img">
@@ -105,8 +120,12 @@
                                     </div>
                                 </div>
                             </div>
+
+
                             <div class="col-lg-12">
-                                <a href="javascript:void(0);" type="submit" class="btn btn-submit me-2">Submit</a>
+                                <button type="submit" class="btn btn-submit me-2">
+                                    <span th:text="${#strings.isEmpty(account.accountId) ? 'Add Account' : 'Update Account'}"></span>
+                                </button>
                                 <a th:href="@{/Admin/AccountList}" class="btn btn-cancel">Cancel</a>
                             </div>
                         </div>
