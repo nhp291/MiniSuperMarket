@@ -117,12 +117,10 @@ blockquote, q {
 }
 
 blockquote:before, blockquote:after {
-    content: "";
     content: none
 }
 
 q:before, q:after {
-    content: "";
     content: none
 }
 
@@ -239,7 +237,7 @@ button:focus {
 }
 
 a {
-    color: #ff9f43;
+    color: #3890E0;
     cursor: pointer;
     text-decoration: none;
     -webkit-transition: all .2s ease;
@@ -248,7 +246,7 @@ a {
 }
 
 a:hover {
-    color: #fe820e;
+    color: #3890E0;
     -webkit-transition: all .2s ease;
     -ms-transition: all .2s ease;
     transition: all .2s ease
@@ -566,7 +564,7 @@ strong {
 
 .btn-submit {
     min-width: 120px;
-    background: #ff9f43;
+    background: #3890E0;
     color: #fff;
     font-size: 14px;
     font-weight: 700;
@@ -577,7 +575,7 @@ strong {
 }
 
 .btn-submit:hover {
-    background: #fe820e;
+    background: #3890E0;
     color: #fff
 }
 
@@ -614,8 +612,8 @@ strong {
 
 .btn-primary {
     color: #fff;
-    background-color: #ff9f43 !important;
-    border-color: #ff9f43 !important
+    background-color: #3890E0 !important;
+    border-color: #3890E0 !important
 }
 
 .avatar {
@@ -689,7 +687,7 @@ strong {
     position: absolute;
     right: 0;
     bottom: 0;
-    background-color: #f90
+    background-color: #3890E0
 }
 
 .avatar .border {
@@ -870,12 +868,12 @@ strong {
 }
 
 .bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
-    background-color: #fc8543;
+    background-color: #3890E0;
     text-shadow: unset
 }
 
 .bootstrap-datetimepicker-widget table td.today:before {
-    border-bottom-color: #fc8543
+    border-bottom-color: #3890E0
 }
 
 .bootstrap-datetimepicker-widget table thead tr:first-child th:hover {
@@ -976,7 +974,7 @@ strong {
 }
 
 .fc-state-down, .fc-state-active, .fc-state-disabled {
-    background-color: #ff9f43 !important;
+    background-color: #3890E0 !important;
     color: #fff !important;
     text-shadow: none !important
 }
@@ -1189,7 +1187,7 @@ strong {
     left: 6px;
     width: 5px;
     height: 10px;
-    border: solid #ff9f43;
+    border: solid #3890E0;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
@@ -1197,7 +1195,7 @@ strong {
 }
 
 .inputcheck input:checked ~ .checkmark {
-    border: 1px solid #ff9f43
+    border: 1px solid #3890E0
 }
 
 .animation-tada {
@@ -1215,7 +1213,7 @@ strong {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #ff9f43
+    background: #3890E0
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -1245,11 +1243,11 @@ a:focus, a:hover {
 
 .form-control:focus {
     box-shadow: none;
-    border-color: #ff9f43
+    border-color: #3890E0
 }
 
 .form-group input[type=text]:focus {
-    border-color: #ff9f43;
+    border-color: #3890E0;
     background: #fff
 }
 
@@ -1265,7 +1263,7 @@ a:focus, a:hover {
 }
 
 .input-group .scanner-set {
-    background: #ff9f43;
+    background: #3890E0;
     border-radius: 5px !important;
     width: 40px;
     color: #fff;
@@ -1336,7 +1334,7 @@ a:focus, a:hover {
 }
 
 .form-group .btn-filters {
-    background: #ff9f43;
+    background: #3890E0;
     color: #fff;
     width: 40px;
     height: 40px;
@@ -1361,7 +1359,7 @@ a:focus, a:hover {
 .dropdown-item.active, .dropdown-item:active {
     color: #fff;
     text-decoration: none;
-    background-color: #ff9f43
+    background-color: #3890E0
 }
 
 .section-header {
@@ -1374,7 +1372,7 @@ a:focus, a:hover {
 }
 
 .section-header .line {
-    background-color: #ff9f43;
+    background-color: #3890E0;
     height: 2px;
     margin: 0;
     width: 60px
@@ -1468,8 +1466,8 @@ a:focus, a:hover {
 }
 
 .comp-section .nav-tabs.nav-tabs-solid a.active {
-    background-color: #ff9f43;
-    border-color: #ff9f43;
+    background-color: #3890E0;
+    border-color: #3890E0;
     color: #fff
 }
 
@@ -1484,7 +1482,7 @@ a:focus, a:hover {
 .comp-section .nav-tabs .nav-tabs-bottom li a.active {
     border-bottom-width: 2px;
     border-color: transparent;
-    border-bottom-color: #ff9f43;
+    border-bottom-color: #3890E0;
     background-color: transparent;
     transition: none 0s ease 0s
 }
@@ -1591,13 +1589,13 @@ body[data-theme=dark] .table tbody tr td a {
 }
 
 .btn-outline-primary {
-    color: #ff9f43;
-    border-color: #ff9f43
+    color: #3890E0;
+    border-color: #3890E0
 }
 
 .btn-outline-primary:hover {
-    border-color: #ff9f43;
-    background: #ff9f43;
+    border-color: #3890E0;
+    background: #3890E0;
     color: #fff
 }
 
@@ -1636,7 +1634,7 @@ body[data-theme=dark] .table tbody tr td a {
 }
 
 .ribbon.ribbon-primary {
-    background: #ff9f43
+    background: #3890E0
 }
 
 .ribbon.ribbon-secondary {
@@ -1701,7 +1699,7 @@ body[data-theme=dark] .table tbody tr td a {
 }
 
 .irs--flat .irs-from, .irs--flat .irs-to, .irs--flat .irs-single, .irs--flat .irs-bar, .irs--flat .irs-handle > i:first-child, .irs--flat .irs-handle.state_hover > i:first-child, .irs--flat .irs-handle:hover > i:first-child {
-    background-color: #ff9f43
+    background-color: #3890E0
 }
 
 .alertify .ajs-commands {
@@ -1719,7 +1717,7 @@ body[data-theme=dark] .table tbody tr td a {
 }
 
 .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-ok {
-    color: #ff9f43
+    color: #3890E0
 }
 
 .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-primary {
@@ -1735,8 +1733,8 @@ body[data-theme=dark] .table tbody tr td a {
 }
 
 .alertify-notifier .ajs-message {
-    background-color: #ff9f43;
-    border-color: #ff9f43;
+    background-color: #3890E0;
+    border-color: #3890E0;
     color: #fff;
     text-shadow: none !important
 }
@@ -1752,8 +1750,8 @@ body[data-theme=dark] .table tbody tr td a {
 }
 
 .alertify-notifier .ajs-message.ajs-warning {
-    background-color: #ff9f43;
-    border-color: #ff9f43
+    background-color: #3890E0;
+    border-color: #3890E0
 }
 
 .alertify-notifier.ajs-right {
@@ -1801,7 +1799,7 @@ body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button {
 }
 
 body[data-layout-mode=dark] .alertify .ajs-footer .ajs-buttons .ajs-button.ajs-ok {
-    color: #ff9f43
+    color: #3890E0
 }
 
 body[data-layout-mode=dark] .alertify .ajs-header {
@@ -1913,7 +1911,7 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
 }
 
 .timeline li .timeline-badge.warning {
-    background-color: #f90
+    background-color: #3890E0
 }
 
 .timeline li .timeline-badge.danger {
@@ -2060,7 +2058,7 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
 }
 
 .timeline-badge.primary {
-    background-color: #ff9f43
+    background-color: #3890E0
 }
 
 .timeline-badge.success {
@@ -2068,7 +2066,7 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
 }
 
 .timeline-badge.warning {
-    background-color: #f90
+    background-color: #3890E0
 }
 
 .timeline-badge.danger {
@@ -2095,15 +2093,15 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
 
 .cd-horizontal-timeline .events a {
     padding-bottom: 6px;
-    color: #ff9f43
+    color: #3890E0
 }
 
 .cd-horizontal-timeline .filling-line, .cd-horizontal-timeline .events a.selected::after {
-    background: #ff9f43
+    background: #3890E0
 }
 
 .cd-horizontal-timeline .events a.selected::after {
-    border-color: #ff9f43
+    border-color: #3890E0
 }
 
 .cd-horizontal-timeline .m-t-40 {
@@ -2115,11 +2113,11 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
 }
 
 .cd-timeline-navigation a:hover, .cd-timeline-navigation a:focus {
-    border-color: #ff9f43
+    border-color: #3890E0
 }
 
 .cd-horizontal-timeline a, .cd-horizontal-timeline a:hover, .cd-horizontal-timeline a:focus {
-    color: #ff9f43
+    color: #3890E0
 }
 
 .cd-horizontal-timeline blockquote, .cd-horizontal-timeline q {
@@ -2201,7 +2199,7 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
     z-index: 1;
     height: 100%;
     width: 100%;
-    background-color: #ff9f43;
+    background-color: #3890E0;
     transform: scaleX(0);
     -webkit-transform: scaleX(0);
     -ms-transform: scaleX(0);
@@ -2246,8 +2244,8 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
 }
 
 .no-touch .cd-horizontal-timeline .events a:hover::after {
-    background-color: #ff9f43;
-    border-color: #ff9f43
+    background-color: #3890E0;
+    border-color: #3890E0
 }
 
 .cd-horizontal-timeline .events a.selected {
@@ -2255,12 +2253,12 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
 }
 
 .cd-horizontal-timeline .events a.selected::after {
-    background-color: #ff9f43;
-    border-color: #ff9f43
+    background-color: #3890E0;
+    border-color: #3890E0
 }
 
 .cd-horizontal-timeline .events a.older-event::after {
-    border-color: #ff9f43
+    border-color: #3890E0
 }
 
 .cd-timeline-navigation a {
@@ -2425,7 +2423,7 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
     font-size: 18px;
     border-radius: 50px;
     border: 1px solid #e6ebf1;
-    color: #ff9f43;
+    color: #3890E0;
     margin: 5px;
     -webkit-box-shadow: 0 2px 3px #d7c5ff;
     -moz-box-shadow: 0 2px 3px #d7c5ff;
@@ -2455,7 +2453,7 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
     font-size: 18px;
     border-radius: 50px;
     border: 1px solid #e6ebf1;
-    color: #ff9f43;
+    color: #3890E0;
     margin: 5px;
     -webkit-box-shadow: 0 2px 3px #d7c5ff;
     -moz-box-shadow: 0 2px 3px #d7c5ff;
@@ -2569,7 +2567,7 @@ body[data-layout-mode=dark] .alertify .ajs-content .ajs-input {
 }
 
 .error-page .main-wrapper .error-box h1 {
-    color: #ff9f43;
+    color: #3890E0;
     font-size: 10em
 }
 
@@ -2642,13 +2640,13 @@ table.dataTable > thead .sorting:before, table.dataTable > thead .sorting_asc:be
 }
 
 .pagination li a:hover {
-    background: #ff9f43;
+    background: #3890E0;
     color: #fff
 }
 
 .pagination li.active a.page-link {
-    background: #ff9f43;
-    border-color: #ff9f43;
+    background: #3890E0;
+    border-color: #3890E0;
     border-radius: 5px
 }
 
@@ -2661,7 +2659,7 @@ div.dataTables_wrapper div.dataTables_info {
 }
 
 .header {
-    background: #ff9f43;
+    /*background: #3890E0;*/
     background: #fff;
     border-bottom: 1px solid transparent;
     height: 60px;
@@ -2809,17 +2807,17 @@ div.dataTables_wrapper div.dataTables_info {
 }
 
 .header .page-title-box a {
-    color: #ff9f43;
+    color: #3890E0;
     font-size: 11px;
     font-weight: 700;
-    border: 1px solid #ff9f43;
+    border: 1px solid #3890E0;
     margin: 0;
     padding: 5px;
     border-radius: 5px
 }
 
 .header .page-title-box a:hover {
-    background: #ff9f43;
+    background: #3890E0;
     color: #fff
 }
 
@@ -2830,7 +2828,7 @@ div.dataTables_wrapper div.dataTables_info {
 
 @media (max-width: 991px) {
     .header .mobile_btn {
-        color: #ff9f43;
+        color: #3890E0;
         font-size: 24px;
         height: 60px;
         line-height: 60px;
@@ -3002,7 +3000,7 @@ div.dataTables_wrapper div.dataTables_info {
 }
 
 .header .mobile-user-menu a {
-    color: #ff9f43;
+    color: #3890E0;
     padding: 0
 }
 
@@ -3154,7 +3152,7 @@ div.dataTables_wrapper div.dataTables_info {
     position: absolute;
     top: 5px;
     right: 10px;
-    background: #ff9f43;
+    background: #3890E0;
     border-radius: 50px;
     color: #fff
 }
@@ -3208,7 +3206,7 @@ div.dataTables_wrapper div.dataTables_info {
 
 @media (max-width: 991px) {
     .header-pos #mobile_btn {
-        color: #ff9f43;
+        color: #3890E0;
         font-size: 24px;
         height: 60px;
         line-height: 60px;
@@ -3326,7 +3324,7 @@ div.dataTables_wrapper div.dataTables_info {
 }
 
 .header-split .header-menu ul li a:hover {
-    background: #ff9f43;
+    background: #3890E0;
     color: #fff
 }
 
@@ -3373,7 +3371,7 @@ div.dataTables_wrapper div.dataTables_info {
 }
 
 .bar-icon span {
-    background-color: #ff9f43;
+    background-color: #3890E0;
     display: block;
     float: left;
     height: 3px;
@@ -3483,7 +3481,7 @@ hr {
     position: absolute;
     top: 6px;
     right: 3px;
-    background: #ff9f43;
+    background: #3890E0;
     width: 20px;
     height: 20px
 }
@@ -3540,7 +3538,7 @@ hr {
 }
 
 .searchinputs .search-addon span {
-    background: #ff9f43;
+    background: #3890E0;
     width: 27px;
     height: 27px;
     z-index: 9;
@@ -3654,13 +3652,13 @@ div#global-loader .whirly-loader:not(:required) {
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background: #ff9f43;
+    background: #3890E0;
     color: #fff
 }
 
 .select2-container--focus .select2-selection--single {
     background: #fff !important;
-    border-color: #ff9f43
+    border-color: #3890E0
 }
 
 span.select2-container.select2-container--default.select2-container--open {
@@ -3853,12 +3851,12 @@ span.select2-container.select2-container--default.select2-container--open {
 }
 
 .sidebar .sidebar-menu > ul > li.submenu ul li a:hover {
-    color: #ff9f43
+    color: #3890E0
 }
 
 .sidebar .sidebar-menu > ul > li.submenu ul li a:hover:after {
-    background: #ff9f43;
-    border: 1px solid #ff9f43
+    background: #3890E0;
+    border: 1px solid #3890E0
 }
 
 .sidebar .nav-link {
@@ -3868,7 +3866,7 @@ span.select2-container.select2-container--default.select2-container--open {
 }
 
 .sidebar .nav-link.active {
-    color: #ff9f43;
+    color: #3890E0;
     background: 0 0;
     position: relative
 }
@@ -3876,7 +3874,7 @@ span.select2-container.select2-container--default.select2-container--open {
 .sidebar .nav-link.active:after {
     content: "";
     border-width: 10px;
-    border-color: transparent #ff9f43 transparent transparent;
+    border-color: transparent #3890E0 transparent transparent;
     border-style: solid;
     position: absolute;
     top: 36px;
@@ -5227,7 +5225,7 @@ span.select2-container.select2-container--default.select2-container--open {
 }
 
 .page-header .btn-added {
-    background: #ff9f43;
+    background: #3890E0;
     padding: 7px 15px;
     color: #fff;
     font-weight: 700;
@@ -5357,7 +5355,7 @@ span.select2-container.select2-container--default.select2-container--open {
 }
 
 .checkboxs input:checked ~ .checkmarks {
-    background-color: #ff9f43
+    background-color: #3890E0
 }
 
 .checkboxs input:checked ~ .checkmarks:after {
@@ -5539,7 +5537,7 @@ span.select2-container.select2-container--default.select2-container--open {
 }
 
 .dash-count {
-    background: #ff9f43;
+    background: #3890E0;
     color: #fff;
     min-height: 98px;
     width: 100%;

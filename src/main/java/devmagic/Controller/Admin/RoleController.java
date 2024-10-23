@@ -4,6 +4,7 @@ import devmagic.Model.Role;
 import devmagic.Service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,13 @@ import java.util.List;
 public class RoleController {
     @Autowired
     private RoleService roleService;
+
+    @GetMapping("/EditRole")
+    public String EditRole(Model model) {
+        model.addAttribute("pageTitle", "Home Page");
+        model.addAttribute("viewName", "admin/menu/EditRole");
+        return "admin/layout";
+    }
 
     @GetMapping
     public List<Role> getAllRoles() {
