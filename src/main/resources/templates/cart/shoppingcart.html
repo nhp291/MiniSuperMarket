@@ -151,6 +151,14 @@
             display: none;
         }
 
+        /* New styles for close button */
+        .close {
+            margin-left: 10px;
+            color: red; /* Change color to red */
+            margin-left: 15px; /* Add space from the scrollbar */
+            margin-right: 15px; /* Add right margin to space it from the scroll bar */
+        }
+
         @media (max-width: 576px) {
             .quantity-controls {
                 flex-direction: row;
@@ -184,18 +192,30 @@
                 text-align: right;
             }
         }
+        .cart-items::-webkit-scrollbar {
+            width: 5px; /* Width of the scrollbar */
+        }
 
-        .close {
-            margin-left: 10px;
+        .cart-items::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Background of the scrollbar track */
+        }
+
+        .cart-items::-webkit-scrollbar-thumb {
+            background: #888; /* Color of the scrollbar thumb */
+            border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+        }
+
+        .cart-items::-webkit-scrollbar-thumb:hover {
+            background: #555; /* Color of the scrollbar thumb on hover */
         }
 
         header,
-        /*footer {*/
-        /*    background-color: #343a40;*/
-        /*    color: white;*/
-        /*    padding: 10px 0;*/
-        /*    text-align: center;*/
-        /*}*/
+            /*footer {*/
+            /*    background-color: #343a40;*/
+            /*    color: white;*/
+            /*    padding: 10px 0;*/
+            /*    text-align: center;*/
+            /*}*/
 
         header a,
         footer a {
@@ -295,8 +315,6 @@
                             </div>
                             <div class="col text-end">&dollar; 20.00 <span class="close text-muted">&#10005;</span></div>
                         </div>
-
-
                     </div>
                     <div class="back-to-shop">
                         <a href="#" class="btn btn-warning"><b>Back to shop</b></a>
@@ -334,9 +352,6 @@
         </div>
     </div>
 </main>
-
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
