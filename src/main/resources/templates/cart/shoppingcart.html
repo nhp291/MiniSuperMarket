@@ -18,11 +18,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 20px 60px; /* Thay đổi padding thành 20px ở trên và dưới, 40px ở hai bên */
             font-family: sans-serif;
             font-size: 1rem;
             font-weight: bold;
+            margin-top: 20px; /* Khoảng cách phía trên header */
+            margin-bottom: 20px; /* Khoảng cách phía dưới footer */
         }
+
 
         .card {
             width: 100%;
@@ -47,7 +50,7 @@
         }
 
         .summary {
-            background-color: #ddd;
+            background-color: #7c7c7c;
             border-top-right-radius: 1rem;
             border-bottom-right-radius: 1rem;
             padding: 6vh;
@@ -315,20 +318,21 @@
                             </div>
                             <div class="col text-end">&dollar; 20.00 <span class="close text-muted">&#10005;</span></div>
                         </div>
+
                     </div>
                     <div class="back-to-shop">
                         <a href="#" class="btn btn-warning"><b>Back to shop</b></a>
                     </div>
                 </div>
-                <div class="col-md-4 summary">
+                <div class="col-md-4 summary" style="color: white;">
                     <h5><b>Order Summary</b></h5>
                     <div class="row">
-                        <div class="col text-muted">Total</div>
-                        <div class="col text-end">&dollar; 126.00</div>
+                        <div class="col" style="color: white;">Total</div>
+                        <div class="col text-end" style="color: white;">&dollar; 86.00</div>
                     </div>
                     <div class="row">
-                        <div class="col text-muted">Total (incl. tax)</div>
-                        <div class="col text-end">&dollar; 126.00</div>
+                        <div class="col" style="color: white;">Total (incl. tax)</div>
+                        <div class="col text-end" style="color: white;">&dollar; 86.00</div>
                     </div>
                     <div class="row radio-input mt-4">
                         <label>
