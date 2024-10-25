@@ -23,8 +23,5 @@ public class Brand {
 
     @Column(name = "description")
     private String description; // Mô tả thương hiệu
-
-    // Getters and Setters
-    // ...
 }
 

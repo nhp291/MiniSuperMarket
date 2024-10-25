@@ -22,6 +22,4 @@ public class ProductImage {
     @Column(name = "image_url", nullable = false)
     private String imageUrl; // Đường dẫn đến hình ảnh sản phẩm
 
-    // Getters and Setters
-    // ...
 }

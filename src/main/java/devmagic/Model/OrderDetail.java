@@ -29,7 +29,5 @@ public class OrderDetail {
     @Column(name = "price", nullable = false)
     private double price; // Giá của sản phẩm tại thời điểm đặt hàng
 
-    // Getters and Setters
-    // ...
 }
 

@@ -1,6 +1,7 @@
 package devmagic.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,29 +14,39 @@ import lombok.NoArgsConstructor;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int accountId; // Khóa chính với tự động tăng
+    private int accountId;
 
     @Column(name = "username", nullable = false)
-    private String username; // Tên người dùng
+    @NotEmpty(message = "Tên người dùng không được để trống")
+    @Size(min = 3, max = 50, message = "Tên người dùng phải có từ 3 đến 50 ký tự")
+    private String username;
 
     @Column(name = "password", nullable = false)
-    private String password; // Mật khẩu
+    @NotEmpty(message = "Mật khẩu không được để trống")
+    @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
+    private String password;
 
     @Column(name = "email", nullable = false, unique = true)
-    private String email; // Địa chỉ email
+    @NotNull(message = "Email cannot be null")
+    @Email(message = "Invalid email format")
+    private String email;
 
     @Column(name = "phone_number")
-    private String phoneNumber; // Số điện thoại
+    @Pattern(regexp = "^(0|\\+84)(\\d{9})$", message = "Số điện thoại không hợp lệ")
+    private String phoneNumber;
 
     @Column(name = "address")
-    private String address; // Địa chỉ
+    @NotEmpty(message = "Địa chỉ không được để trống")
+    private String address;
 
     @Column(name = "image_url")
-    private String imageUrl; // Đường dẫn hình ảnh
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
-    private Role role; // Khóa ngoại tham chiếu đến bảng Role
+    private Role role;
 
+    @Transient // Chỉ để kiểm tra, không lưu vào cơ sở dữ liệu
+    private String confirmPassword;
 }
 

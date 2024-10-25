@@ -9,13 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Role")
-public class Role {
+public class AccountAuthProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int roleId;
+    private Integer id;
 
-    @Column(name = "role_name", nullable = false)
-    private String roleName;
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 
+    @ManyToOne
+    @JoinColumn(name = "provider_id")
+    private AuthProviders provider;
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,8 +41,7 @@ public class Product {
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouse warehouse; // Khóa ngoại tham chiếu đến bảng Warehouse
 
-    @Column(name = "image_url")
-    private String imageUrl; // URL của hình ảnh sản phẩm
+//    @OneToMany(mappedBy = "product")
+//    private List<ProductImage> images;  // URL của hình ảnh sản phẩm
 
-    // Các phương thức getter và setter tự động được tạo ra bởi Lombok thông qua @Data
 }
