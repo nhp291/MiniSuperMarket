@@ -1,5 +1,9 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
+<html lang="en">
+=======
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+>>>>>>> 915aca2d0bbb3869207c267de364cef932aae362
 <head>
     <meta charset="utf-8">
 </head>
@@ -13,12 +17,106 @@
                     <h6></h6>
                 </div>
                 <div class="page-btn">
+<<<<<<< HEAD
+                    <a th:href="@{/Admin/AccountList}" class="btn btn-added">
+=======
                     <a th:href="@{/Accounts/AccountList}" class="btn btn-added">
+>>>>>>> 915aca2d0bbb3869207c267de364cef932aae362
                         <img src="/admin/img/icons/plus.svg" class="me-1" alt="img"> Account List
                     </a>
                 </div>
             </div>
 
+<<<<<<< HEAD
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>User Name</label>
+                                <label>
+                                    <input type="text">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <label>
+                                    <input type="text">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label> Password</label>
+                                <div class="pass-group">
+                                    <label>
+                                        <input type="password" class=" pass-input">
+                                    </label>
+                                    <span class="fas toggle-password fa-eye-slash"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <div class="pass-group">
+                                    <label>
+                                        <input type="password" class=" pass-input">
+                                    </label>
+                                    <span class="fas toggle-password fa-eye-slash"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <label>
+                                    <input type="text">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Address</label>
+                                <label>
+                                    <input type="text">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Role</label>
+                                <label>
+                                    <select class="form-select">
+                                        <option>Admin</option>
+                                        <option>User</option>
+                                        <option>Staff</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label> User Image</label>
+                                <div class="image-upload">
+                                    <input type="file">
+                                    <div class="image-uploads">
+                                        <img src="/admin/img/icons/upload.svg" alt="img">
+                                        <h4>Drag and drop a file to upload</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
+                            <a href="userlist.html" class="btn btn-cancel">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+=======
             <form th:action="${#strings.isEmpty(account.accountId) ? '/Accounts/AddAccount' : '/Accounts/update'}"
                   th:object="${account}" method="post" enctype="multipart/form-data">
 
@@ -132,6 +230,7 @@
                     </div>
                 </div>
             </form>
+>>>>>>> 915aca2d0bbb3869207c267de364cef932aae362
 
         </div>
     </div>
