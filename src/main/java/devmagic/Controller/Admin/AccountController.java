@@ -20,7 +20,7 @@ import java.util.List;
 import org.springframework.util.StringUtils;
 
 @Controller
-@RequestMapping("/Accounts")
+    @RequestMapping("/Accounts")
 public class AccountController {
 
     @Autowired
@@ -54,7 +54,6 @@ public class AccountController {
     public String addAccount(@Valid @ModelAttribute("account") Account account, BindingResult result,
                              @RequestParam("imageUrl") MultipartFile imageFile, Model model) throws IOException {
         if (result.hasErrors()) {
-            // Nếu có lỗi validation, hiển thị lại form cùng với danh sách vai trò
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("pageTitle", "Add Account");
             return "admin/layout";
@@ -109,12 +108,9 @@ public class AccountController {
     }
 
     @PostMapping("/update")
-    public String updateAccount(@Valid @ModelAttribute("account") Account account,
-                                BindingResult result,
-                                @RequestParam("imageUrl") MultipartFile imageFile,  // Nhận file hình ảnh tải lên
-                                @RequestParam("password") String password,
-                                @RequestParam("confirmPassword") String confirmPassword,
-                                Model model) throws IOException {
+    public String updateAccount(@Valid @ModelAttribute("account") Account account, BindingResult result,
+                                @RequestParam("imageUrl") MultipartFile imageFile, @RequestParam("password") String password,
+                                @RequestParam("confirmPassword") String confirmPassword, Model model) throws IOException {
 
         if (result.hasErrors()) {
             model.addAttribute("roles", roleRepository.findAll());
@@ -122,16 +118,16 @@ public class AccountController {
             return "admin/layout";
         }
 
-        // Nếu password được người dùng nhập vào, chỉ cập nhật password mới
+        // Kiểm tra mật khẩu
         if (!password.equals("*****") && !password.isEmpty() && password.equals(confirmPassword)) {
             account.setPassword(password);
         } else {
-            // Nếu mật khẩu không được thay đổi, giữ nguyên mật khẩu cũ
+            // Giữ mật khẩu cũ
             Account existingAccount = accountService.getAccountById(account.getAccountId());
             account.setPassword(existingAccount.getPassword());
         }
 
-        // Phần lưu hình ảnh (nếu có) hoặc giữ nguyên hình ảnh cũ
+        // Xử lý hình ảnh
         if (!imageFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
             String uploadDir = "Image/";
@@ -148,17 +144,21 @@ public class AccountController {
                 throw new IOException("Could not save image file: " + fileName, e);
             }
             account.setImageUrl("/Image/" + fileName);
-        } else if (account.getImageUrl() == null || account.getImageUrl().isEmpty()) {
-            account.setImageUrl("/Image/User.png");
+        } else {
+            // Giữ nguyên hình ảnh cũ
+            Account existingAccount = accountService.getAccountById(account.getAccountId());
+            if (existingAccount.getImageUrl() == null || existingAccount.getImageUrl().isEmpty()) {
+                account.setImageUrl("/Image/User.png"); // Đặt hình ảnh mặc định
+            } else {
+                account.setImageUrl(existingAccount.getImageUrl()); // Giữ nguyên hình ảnh cũ
+            }
         }
 
-        // Lưu thông tin tài khoản đã được cập nhật
+        // Lưu thông tin tài khoản đã cập nhật
         accountService.saveAccount(account);
 
-        // Chuyển hướng đến danh sách tài khoản sau khi cập nhật thành công
         return "redirect:/Accounts/AccountList";
     }
-
 
 
     @PostMapping("/delete/{id}")

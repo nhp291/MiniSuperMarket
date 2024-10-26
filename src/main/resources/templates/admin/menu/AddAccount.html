@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html lang="en">
-=======
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
->>>>>>> 915aca2d0bbb3869207c267de364cef932aae362
 <head>
     <meta charset="utf-8">
 </head>
@@ -17,110 +13,16 @@
                     <h6></h6>
                 </div>
                 <div class="page-btn">
-<<<<<<< HEAD
-                    <a th:href="@{/Admin/AccountList}" class="btn btn-added">
-=======
                     <a th:href="@{/Accounts/AccountList}" class="btn btn-added">
->>>>>>> 915aca2d0bbb3869207c267de364cef932aae362
                         <img src="/admin/img/icons/plus.svg" class="me-1" alt="img"> Account List
                     </a>
                 </div>
             </div>
 
-<<<<<<< HEAD
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>User Name</label>
-                                <label>
-                                    <input type="text">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <label>
-                                    <input type="text">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label> Password</label>
-                                <div class="pass-group">
-                                    <label>
-                                        <input type="password" class=" pass-input">
-                                    </label>
-                                    <span class="fas toggle-password fa-eye-slash"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Confirm Password</label>
-                                <div class="pass-group">
-                                    <label>
-                                        <input type="password" class=" pass-input">
-                                    </label>
-                                    <span class="fas toggle-password fa-eye-slash"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <label>
-                                    <input type="text">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Address</label>
-                                <label>
-                                    <input type="text">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Role</label>
-                                <label>
-                                    <select class="form-select">
-                                        <option>Admin</option>
-                                        <option>User</option>
-                                        <option>Staff</option>
-                                    </select>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label> User Image</label>
-                                <div class="image-upload">
-                                    <input type="file">
-                                    <div class="image-uploads">
-                                        <img src="/admin/img/icons/upload.svg" alt="img">
-                                        <h4>Drag and drop a file to upload</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
-                            <a href="userlist.html" class="btn btn-cancel">Cancel</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-=======
             <form th:action="${#strings.isEmpty(account.accountId) ? '/Accounts/AddAccount' : '/Accounts/update'}"
                   th:object="${account}" method="post" enctype="multipart/form-data">
 
-            <div class="card">
+                <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
@@ -135,7 +37,8 @@
                                 <div class="form-group">
                                     <label>Email</label>
                                     <label>
-                                        <input style="padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;" type="email" id="email" th:field="*{email}" required>
+                                        <input style="padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;"
+                                               type="email" id="email" th:field="*{email}" required>
                                     </label>
                                 </div>
                             </div>
@@ -146,7 +49,7 @@
                                         <input type="password" id="password" th:field="*{password}"
                                                th:placeholder="${#strings.isEmpty(account.accountId) ? 'Enter password' : '*****'}"
                                                class="form-control">
-                                        <span class="fas toggle-password fa-eye-slash"></span>
+                                        <span class="fas toggle-password fa-eye-slash" onclick="togglePasswordVisibility('password', this)"></span>
                                     </div>
                                 </div>
                             </div>
@@ -157,10 +60,11 @@
                                         <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
                                                th:placeholder="${#strings.isEmpty(account.accountId) ? 'Enter password' : '*****'}"
                                                class="form-control">
-                                        <span class="fas toggle-password fa-eye-slash"></span>
+                                        <span class="fas toggle-password fa-eye-slash" onclick="togglePasswordVisibility('confirmPassword', this)"></span>
                                     </div>
                                 </div>
                             </div>
+
 
 
                             <div class="col-lg-3 col-sm-6 col-12">
@@ -183,9 +87,11 @@
                                 <div class="form-group">
                                     <label for="role">Role</label>
                                     <label>
-                                        <select id="role" th:field="*{role}" class="form-select selectpicker" data-live-search="true" required>
-<!--                                            <option value="" disabled selected>Select Role</option>-->
-                                            <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"></option>
+                                        <select id="role" th:field="*{role}" class="form-select selectpicker"
+                                                data-live-search="true" required>
+                                            <!--                                            <option value="" disabled selected>Select Role</option>-->
+                                            <option th:each="role : ${roles}" th:value="${role.roleId}"
+                                                    th:text="${role.roleName}"></option>
                                         </select>
                                     </label>
                                 </div>
@@ -199,7 +105,8 @@
                                 </div>
                                 <!-- Nếu chưa có ảnh, hiển thị ảnh mặc định -->
                                 <div th:if="${account.imageUrl == null}">
-                                    <img th:src="@{'/Image/User.png'}" alt="Default User Image" style="max-width: 60px; margin-left: 40%; margin-top: 8%">
+                                    <img th:src="@{'/Image/User.png'}" alt="Default User Image"
+                                         style="max-width: 60px; margin-left: 40%; margin-top: 8%">
                                 </div>
                             </div>
 
@@ -221,25 +128,41 @@
 
 
                             <div class="col-lg-12">
-                                <button type="submit" class="btn btn-submit me-2">
-                                    <span>Create</span><!-- th:text="${#strings.isEmpty(account.accountId) ? 'Add Account' : 'Update Account'}"-->
+                                <button type="submit" formaction="/Accounts/AddAccount" class="btn btn-submit me-2">
+                                    <span>Create</span>
                                 </button>
-                                <button type="submit" class="btn btn-submit me-2">
-                                    <span>Update</span><!-- th:text="${#strings.isEmpty(account.accountId) ? 'Add Account' : 'Update Account'}"-->
+                                <button type="submit" formaction="/Accounts/update" class="btn btn-submit me-2">
+                                    <span>Update</span>
                                 </button>
-                                <button type="submit" class="btn btn-submit me-2">
-                                    <span>Delete</span><!-- th:text="${#strings.isEmpty(account.accountId) ? 'Add Account' : 'Update Account'}"-->
+                                <button type="submit" class="btn btn-danger me-2" th:formaction="@{/Accounts/delete/{id}(id=${account.accountId})}">
+                                    Delete
                                 </button>
-                                <a th:href="@{/Admin/AccountList}" class="btn btn-cancel">Cancel</a>
+                                <button type="reset" class="btn btn-cancel">Reset</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
->>>>>>> 915aca2d0bbb3869207c267de364cef932aae362
 
         </div>
     </div>
 </div>
 </body>
+<script>
+    function togglePasswordVisibility(inputId, icon) {
+        const inputField = document.getElementById(inputId);
+
+        // Thay đổi loại của trường mật khẩu
+        if (inputField.type === "password") {
+            inputField.type = "text"; // Hiện mật khẩu
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        } else {
+            inputField.type = "password"; // Ẩn mật khẩu
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        }
+    }
+</script>
+
 </html>
