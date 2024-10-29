@@ -20,7 +20,7 @@ import java.util.List;
 import org.springframework.util.StringUtils;
 
 @Controller
-    @RequestMapping("/Accounts")
+@RequestMapping("/Accounts")
 public class AccountController {
 
     @Autowired

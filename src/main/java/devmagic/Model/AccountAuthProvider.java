@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "Account_AuthProvider")
 public class AccountAuthProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +22,8 @@ public class AccountAuthProvider {
     @ManyToOne
     @JoinColumn(name = "provider_id")
     private AuthProviders provider;
+
+    @ManyToOne
+    @JoinColumn(name = "provider_user_id")
+    private AuthProviders provider_user;
 }
