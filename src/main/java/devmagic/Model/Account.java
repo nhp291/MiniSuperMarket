@@ -48,5 +48,7 @@ public class Account {
 
     @Transient // Chỉ để kiểm tra, không lưu vào cơ sở dữ liệu
     private String confirmPassword;
+
+
 }
 
