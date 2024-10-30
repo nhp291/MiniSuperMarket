@@ -42,13 +42,14 @@
                                     </label>
                                 </div>
                             </div>
+
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Password</label>
                                     <div class="pass-group">
                                         <input type="password" id="password" th:field="*{password}"
-                                               th:placeholder="${#strings.isEmpty(account.accountId) ? 'Enter password' : '*****'}"
-                                               class="form-control">
+                                               th:attr="readonly=${!#strings.isEmpty(account.accountId) ? 'readonly' : null}"
+                                               class="form-control" placeholder="Enter password">
                                         <span class="fas toggle-password fa-eye-slash" onclick="togglePasswordVisibility('password', this)"></span>
                                     </div>
                                 </div>
@@ -58,13 +59,12 @@
                                     <label>Confirm Password</label>
                                     <div class="pass-group">
                                         <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
-                                               th:placeholder="${#strings.isEmpty(account.accountId) ? 'Enter password' : '*****'}"
-                                               class="form-control">
+                                               th:attr="readonly=${!#strings.isEmpty(account.accountId) ? 'readonly' : null}"
+                                               class="form-control" placeholder="Confirm password">
                                         <span class="fas toggle-password fa-eye-slash" onclick="togglePasswordVisibility('confirmPassword', this)"></span>
                                     </div>
                                 </div>
                             </div>
-
 
 
                             <div class="col-lg-3 col-sm-6 col-12">
@@ -134,7 +134,8 @@
                                 <button type="submit" formaction="/Accounts/update" class="btn btn-submit me-2">
                                     <span>Update</span>
                                 </button>
-                                <button type="submit" class="btn btn-danger me-2" th:formaction="@{/Accounts/delete/{id}(id=${account.accountId})}">
+                                <button type="submit" class="btn btn-danger me-2"
+                                        th:formaction="@{/Accounts/delete/{id}(id=${account.accountId})}">
                                     Delete
                                 </button>
                                 <button type="reset" class="btn btn-cancel">Reset</button>
@@ -149,20 +150,15 @@
 </div>
 </body>
 <script>
-    function togglePasswordVisibility(inputId, icon) {
-        const inputField = document.getElementById(inputId);
+    document.querySelector("form").addEventListener("submit", function(event) {
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
 
-        // Thay đổi loại của trường mật khẩu
-        if (inputField.type === "password") {
-            inputField.type = "text"; // Hiện mật khẩu
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
-        } else {
-            inputField.type = "password"; // Ẩn mật khẩu
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
+        if (password !== confirmPassword) {
+            event.preventDefault();
+            alert("Password and Confirm Password do not match!");
         }
-    }
+    });
 </script>
 
 </html>
