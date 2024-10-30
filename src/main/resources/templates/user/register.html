@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html lang="vi">
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=0.8" name="viewport"> <!-- Giảm kích thước tổng thể -->
     <title>Trang Đăng Ký</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-</head>
-<body>
-<main>
     <style>
         .registration-container {
+<<<<<<< HEAD
+            max-width: 900px;
+            /* Đặt chiều rộng tối đa cho container
+                       margin-top:-20px;
+
+                       margin: 50px auto; /* Giữa màn hình */
+            background-color: #ffffff;
+=======
             max-width:500px;
             margin: 25px auto;
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
             border-radius: 25px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); /* Bóng đổ cho giao diện đẹp */
-            overflow: hidden;
-            display: flex;
-            transition: all 0.4s ease-in-out;
-            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            display: flex; /* Sử dụng flex để sắp xếp */
         }
 
         /* Phần bên trái - Nền gradient kèm hình ảnh */
         .left-section {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
+<<<<<<< HEAD
+            padding: 30px; /* Giảm padding cho phần trái */
+            flex: 1; /* Phần bên trái chiếm không gian */
+=======
             padding: 40px;
             flex: 1;
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -50,8 +55,8 @@
         }
 
         .left-section h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
+            font-size: 36px; /* Giảm kích thước tiêu đề */
+            margin-bottom: 15px; /* Giảm khoảng cách dưới cùng */
             font-weight: 700;
             z-index: 1;
             line-height: 1.2;
@@ -59,16 +64,20 @@
         }
 
         .left-section p {
-            font-size: 18px;
-            line-height: 1.8;
-            margin-bottom: 50px;
+            font-size: 16px; /* Giảm kích thước đoạn văn */
+            line-height: 1.5;
+            margin-bottom: 30px; /* Giảm khoảng cách dưới cùng */
             z-index: 1;
         }
 
         .left-section .logo {
+<<<<<<< HEAD
+            font-size: 30px; /* Giảm kích thước logo */
+=======
             font-size: 30px;
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
             font-weight: bold;
-            margin-bottom: 40px;
+            margin-bottom: 30px; /* Giảm khoảng cách dưới cùng */
             letter-spacing: 1.5px;
             position: relative;
             z-index: 1;
@@ -76,29 +85,38 @@
 
         /* Phần bên phải - Thiết kế form */
         .right-section {
+<<<<<<< HEAD
+            padding: 30px 40px; /* Giảm padding cho phần phải */
+            flex: 1; /* Phần bên phải chiếm không gian */
+=======
             padding: 30px;
             flex: 1;
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
             background-color: #ffffff;
             position: relative;
         }
 
         .form-floating input {
+<<<<<<< HEAD
+            border-radius: 30px; /* Bo tròn góc cho ô nhập liệu */
+=======
             border-radius: 20px;
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
             background-color: #f0f4f8;
             border: 1px solid #cfd8e3;
-            height: 55px;
-            padding-left: 25px;
+            height: 50px; /* Giảm chiều cao ô nhập liệu */
+            padding-left: 20px; /* Giảm padding bên trái */
             transition: all 0.3s ease;
         }
 
         .form-floating input:focus {
             border-color: #3b82f6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); /* Hiệu ứng sáng khi focus */
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
         }
 
         .form-floating label {
-            padding-left: 30px;
-            font-size: 15px;
+            padding-left: 25px; /* Giảm padding */
+            font-size: 14px; /* Giảm kích thước nhãn */
             color: #888;
         }
 
@@ -106,22 +124,36 @@
             background: linear-gradient(to right, #1e3a8a, #3b82f6);
             color: white;
             border: none;
-            padding: 15px 0;
-            border-radius: 30px;
-            width: 100%;
-            font-size: 18px;
-            margin-top: 20px;
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
+            padding: 10px 0; /* Giảm padding cho nút */
+            border-radius: 30px; /* Bo tròn góc cho nút */
+            width: 100%; /* Nút rộng 100% */
+            font-size: 16px; /* Giảm kích thước nút */
+            margin-top: 15px; /* Giảm khoảng cách trên cùng */
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5);
             transition: all 0.4s ease;
         }
 
         .btn-signup:hover {
             background: linear-gradient(to right, #19317b, #347ade);
-            transform: scale(1.08);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.7);
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.7);
         }
 
         /* Các nút đăng nhập bằng mạng xã hội */
+<<<<<<< HEAD
+        .social-login-buttons a {
+            margin-right: 10px; /* Khoảng cách giữa các nút */
+            border-radius: 30px;
+            padding: 10px 20px; /* Giảm padding cho nút */
+            font-size: 16px; /* Giảm kích thước nút */
+            color: white; /* Màu chữ trắng */
+            border: none;
+            transition: all 0.4s ease;
+            display: inline-block;
+            width: 100%; /* Nút rộng 100% */
+            margin-bottom: 10px; /* Giữ nguyên khoảng cách giữa các nút */
+        }
+=======
         /*.social-login-buttons a {*/
         /*    margin-right: 10px;*/
         /*    border-radius: 30px;*/
@@ -134,6 +166,7 @@
         /*    width: 50%; !* Nút rộng *!*/
         /*    margin-bottom: 10px; !* Khoảng cách giữa các nút *!*/
         /*}*/
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
 
         .social-login-buttons a.google {
             background-color: #db4437; /* Màu đỏ Google */
@@ -141,10 +174,6 @@
 
         .social-login-buttons a.facebook {
             background-color: #4267B2; /* Màu xanh Facebook */
-        }
-
-        .social-login-buttons a.twitter {
-            background-color: #1DA1F2; /* Màu xanh Twitter */
         }
 
         .social-login-buttons a:hover {
@@ -163,52 +192,31 @@
 
         .form-check-label {
             color: #555;
-            font-size: 14px;
-        }
-
-        /* Biểu tượng trôi nổi cho trang trí */
-        .floating-icons {
-            position: absolute;
-            top: -30px;
-            right: -40px;
-            opacity: 0.08;
-        }
-
-        .floating-icons img {
-            width: 300px;
+            font-size: 12px; /* Giảm kích thước nhãn checkbox */
         }
 
         /* Media Queries tùy chỉnh cho tính đáp ứng */
-        @media (max-width: 992px) {
+        @media (max-width: 576px) {
             .registration-container {
-                flex-direction: column;
-                margin: 20px auto;
+                flex-direction: column; /* Chuyển sang kiểu cột trên màn hình nhỏ */
+                max-width: 100%; /* Đảm bảo chiều rộng tối đa là 100% */
+                margin: 20px; /* Thay đổi margin để form không bị chật chội */
             }
 
-            .left-section {
-                padding: 40px 30px;
-                text-align: center;
-            }
-
-            .right-section {
-                padding: 40px 20px;
-            }
-
-            .floating-icons {
-                display: none;
+            .left-section, .right-section {
+                padding: 20px; /* Giảm padding cho phần trên nhỏ */
             }
         }
     </style>
+</head>
+<body>
+<main>
     <div class="container registration-container">
         <!-- Phần trái (Giới thiệu) -->
         <div class="left-section">
             <div class="logo">DEV MAGIC</div>
             <h1>Siêu Thị Mini</h1>
             <p>Siêu thị Devmagic là một trong những chuỗi siêu thị lớn nhất và phát triển nhanh chóng tại Việt Nam. Với tiêu chí "Mọi thứ bạn cần, trong tầm tay bạn", Devmagic không chỉ cung cấp đa dạng sản phẩm mà còn mang đến cho khách hàng những trải nghiệm mua sắm tuyệt vời nhất.</p>
-            <!-- Biểu tượng trôi nổi để trang trí -->
-            <div class="floating-icons">
-                <img src="https://image.flaticon.com/icons/svg/2910/2910715.svg" alt="icon1">
-            </div>
         </div>
 
         <!-- Phần phải (Form đăng ký) -->
@@ -216,6 +224,37 @@
             <h3 class="mb-1">Tham gia cùng chúng tôi</h3>
             <p class="mb-2">Đăng ký để truy cập nội dung cao cấp của chúng tôi</p>
 
+<<<<<<< HEAD
+            <form action="/register" method="POST">
+                <div class="form-floating mb-4">
+                    <input class="form-control" id="username" name="username" placeholder="Tên đăng nhập" type="text">
+                    <label for="username">Tên đăng nhập *</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input class="form-control" id="email" name="email" placeholder="Email" type="email">
+                    <label for="email">Email *</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Số điện thoại"
+                           type="text">
+                    <label for="phoneNumber">Số điện thoại *</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input class="form-control" id="address" name="address" placeholder="Địa chỉ" type="text">
+                    <label for="address">Địa chỉ *</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input class="form-control" id="password" name="password" placeholder="Mật khẩu" type="password">
+                    <label for="password">Mật khẩu *</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu"
+                           type="password">
+                    <label for="confirmPassword">Xác nhận mật khẩu *</label>
+                </div>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" id="termsCheck" required type="checkbox" value="">
+=======
             <form>
                 <div class="form-floating mb-2">
                     <input type="text" class="form-control" id="firstName" style="height: 10px" placeholder="Tên">
@@ -235,6 +274,7 @@
                 </div>
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" value="" id="termsCheck">
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
                     <label class="form-check-label" for="termsCheck">
                         Tôi đồng ý với <a href="#" class="terms">điều khoản và điều kiện</a>
                     </label>
@@ -242,7 +282,12 @@
                 <button type="submit" class="btn btn-signup">Đăng Ký</button>
             </form>
 
+<<<<<<< HEAD
+
+            <div class="mt-4 text-center">
+=======
             <div class="mt-3 text-center">
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
                 Bạn đã có tài khoản? <a href="#">Đăng nhập</a>
             </div>
 
@@ -257,10 +302,6 @@
             </div>
         </div>
     </div>
-<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
 </main>
-
-
-
 </body>
 </html>

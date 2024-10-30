@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 
 @Controller
 @RequestMapping("/Accounts")
-public class AccountController {
+public class  AccountController {
 
     private final AccountService accountService;
     private final RoleRepository roleRepository;

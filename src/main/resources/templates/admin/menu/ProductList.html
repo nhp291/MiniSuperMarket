@@ -11,10 +11,9 @@
             <div class="page-header">
                 <div class="page-title">
                     <h4>Product List</h4>
-                    <h6>Manage your products</h6>
                 </div>
                 <div class="page-btn">
-                    <a th:href="@{/Admin/AddProduct}" class="btn btn-added">
+                    <a th:href="@{/Products/AddProduct}" class="btn btn-added">
                         <img src="/admin/img/icons/plus.svg" alt="img" class="me-1">Add New Product
                     </a>
                 </div>
@@ -99,42 +98,35 @@
                         <table class="table datanew">
                             <thead>
                             <tr>
+                                <th>Images</th>
                                 <th>Product Name</th>
                                 <th>Category</th>
                                 <th>Brand</th>
                                 <th>Price</th>
                                 <th>Sale</th>
                                 <th>Qty</th>
-                                <th>Created By</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody>
-<!--                            <tr>-->
-<!--                                <td class="">-->
-<!--                                    <a  class=" ">-->
-<!--                                        <img src="" alt="product">-->
-<!--                                    </a>-->
-<!--                                    <a href="">Macbook pro</a>-->
-<!--                                </td>-->
-<!--                                <td>PT001</td>-->
-<!--                                <td>Computers</td>-->
-<!--                                <td>1500.00</td>-->
-<!--                                <td>pc</td>-->
-<!--                                <td>100.00</td>-->
-<!--                                <td>Admin</td>-->
-<!--                                <td>-->
-<!--                                    <a class="me-3" th:href="@{/Admin/ProductDetail}">-->
-<!--                                        <img src="/admin/img/icons/eye.svg" alt="img">-->
-<!--                                    </a>-->
-<!--                                    <a class="me-3" th:href="@{/Admin/EditProduct}">-->
-<!--                                        <img src="/admin/img/icons/edit.svg" alt="img">-->
-<!--                                    </a>-->
-<!--                                    <a class="confirm-text" href="">-->
-<!--                                        <img src="/admin/img/icons/delete.svg" alt="img">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                            </tr>-->
+
+                            <tbody  th:each="product : ${products}">
+                                <tr>
+                                    <td>
+                                        <div th:if="${product.images != null}" th:each="image : ${product.images}">
+                                            <img th:src="@{'/Image/imageUrl/' + ${image.imageUrl}}" alt="Image" style="width: 50px; height: auto;" />
+                                        </div>
+                                    </td>
+                                    <td th:text="${product.name}">Tên sản phẩm</td>
+                                    <td th:text="${product.category.categoryName}">Danh mục</td>
+                                    <td th:text="${product.brand.brandName}">Thương hiệu</td>
+                                    <td th:text="${product.price}">Giá</td>
+                                    <td th:text="${product.sale != null ? product.sale : 0}">Giảm giá</td>
+                                    <td th:text="${product.stockQuantity}">Số lượng</td>
+                                    <td>
+                                        <a th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">Chỉnh sửa</a>
+                                        <a th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">Xóa</a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
