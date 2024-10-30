@@ -4,6 +4,7 @@ import devmagic.Model.Category;
 import devmagic.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,20 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     private CategoryService categoriesService;
+
+    @GetMapping("/CategoryList")
+    public String CategoryList(Model model) {
+        model.addAttribute("pageTitle", "Category List Page");
+        model.addAttribute("viewName", "admin/menu/CategoryList");
+        return "admin/layout";
+    }
+
+    @GetMapping("/AddCategory")
+    public String AddCategory(Model model) {
+        model.addAttribute("pageTitle", "add Category Page");
+        model.addAttribute("viewName", "admin/menu/AddCategory");
+        return "admin/layout";
+    }
 
     @GetMapping
     public List<Category> getAllCategories() {

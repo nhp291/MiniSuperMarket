@@ -23,6 +23,7 @@
             position: relative;
         }
 
+<<<<<<< HEAD
         .left-section {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
@@ -45,6 +46,32 @@
             opacity: 0.1;
             z-index: 0;
         }
+=======
+         .login-container {
+             max-width: 800px;
+             margin: 40px auto;
+             background-color: #ffffff;
+             border-radius: 25px;
+             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); /* Bóng đổ cho giao diện đẹp */
+             overflow: hidden;
+             display: flex;
+             transition: all 0.4s ease-in-out;
+             position: relative;
+         }
+
+         /* Phần bên trái - Nền gradient kèm hình ảnh */
+         .left-section {
+             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+             color: white;
+             padding: 40px;
+             flex: 1;
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             position: relative;
+             text-align: left;
+         }
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
 
         .left-section h1 {
             font-size: 36px;
@@ -169,6 +196,7 @@
                 padding: 30px 20px;
             }
 
+<<<<<<< HEAD
             .btn-social {
                 width: 40px;
                 height: 40px;
@@ -180,6 +208,16 @@
                 max-width: 95%;
                 padding: 20px;
             }
+=======
+             .left-section {
+                 padding: 35px 20px;
+                 text-align: center;
+             }
+
+             .right-section {
+                 padding: 30px 15px;
+             }
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
 
             .btn-social {
                 width: 35px;
@@ -187,6 +225,7 @@
             }
         }
 
+<<<<<<< HEAD
         @media (max-width: 576px) {
             .login-container {
                 max-width: 100%;
@@ -212,6 +251,30 @@
             <h1>Đăng Nhập</h1>
             <p>Chào mừng bạn trở lại! Hãy đăng nhập để tiếp tục trải nghiệm tuyệt vời với chúng tôi.</p>
         </div>
+=======
+         <!-- Phần phải (Form đăng nhập) -->
+         <div class="right-section">
+             <h3 class="mb-2">Đăng Nhập Ngay</h3>
+             <p class="mb-2">Nhập thông tin tài khoản của bạn</p>
+
+             <form>
+                 <div class="form-floating mb-2">
+                     <input type="email" class="form-control" id="email" placeholder="Email">
+                     <label for="email">Email *</label>
+                 </div>
+                 <div class="form-floating mb-2">
+                     <input type="password" class="form-control" id="password" placeholder="Mật khẩu">
+                     <label for="password">Mật khẩu *</label>
+                 </div>
+                 <button type="submit" class="btn btn-login">Đăng Nhập</button>
+             </form>
+
+             <div class="mt-5 text-center">
+                 Bạn chưa có tài khoản? <a href="layout/register">Đăng ký</a>
+             </div>
+
+             <hr class="my-2">
+>>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
 
         <!-- Phần phải (Form đăng nhập) -->
         <div class="right-section">
