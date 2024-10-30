@@ -8,10 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <title>Liên Hệ Với Chúng Tôi</title>
-
-</head>
-<body>
-<main>
     <style>
         .contact-info {
             background-color: #007bff; /* Nền màu xanh */
@@ -24,46 +20,55 @@
             text-align: left;
             position: relative;
         }
+
         .contact-info h2 {
             font-size: 30px; /* Kích thước tiêu đề lớn hơn */
             margin-bottom: 15px;
             font-weight: 600; /* Chữ đậm hơn */
         }
+
         .contact-info p {
             margin-bottom: 10px;
             font-size: 18px; /* Kích thước chữ phù hợp */
         }
+
         .contact-info a {
             color: #ffffff; /* Màu chữ trắng */
             text-decoration: underline; /* Gạch chân cho liên kết */
             transition: color 0.3s; /* Hiệu ứng chuyển màu */
         }
+
         .contact-info a:hover {
             color: #e0e0e0; /* Màu khi hover */
         }
+
         .form-section {
-            padding: 40px;
+            padding: 20px; /* Giảm padding cho phần form */
             background-color: #ffffff; /* Nền trắng cho phần form */
             flex: 2; /* Cho phần form chiếm nhiều không gian hơn */
         }
+
         .form-section h2 {
             font-size: 28px; /* Kích thước tiêu đề */
             margin-bottom: 30px;
             font-weight: 600; /* Chữ đậm */
             color: #333; /* Màu tối cho tiêu đề */
         }
+
         .form-section .form-control {
             background-color: #f7f7f7; /* Nền xám nhạt cho trường nhập liệu */
             border: 1px solid #ddd; /* Đường viền xám cho các trường nhập liệu */
             border-radius: 5px; /* Bo tròn góc cho các trường nhập liệu */
-            padding: 15px;
+            padding: 10px; /* Giảm padding cho ô nhập liệu */
             transition: border-color 0.3s, background-color 0.3s; /* Hiệu ứng chuyển màu */
         }
+
         .form-section .form-control:focus {
             border-color: #007bff; /* Đổi màu đường viền khi nhập liệu */
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
             background-color: #ffffff; /* Nền trắng khi có focus */
         }
+
         .form-section .btn {
             background-color: #007bff; /* Màu nút xanh */
             color: white;
@@ -73,39 +78,59 @@
             transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng cho nút */
             font-weight: 600; /* Chữ đậm cho nút */
         }
+
         .form-section .btn:hover {
             background-color: #0056b3; /* Màu khi hover */
             transform: translateY(-2px); /* Hiệu ứng nâng lên khi hover */
         }
+
         .footer {
             padding: 20px 0;
             text-align: center;
             background-color: #f8f9fa; /* Nền chân trang màu sáng */
         }
+
         .footer a {
             color: #007bff; /* Màu chữ cho liên kết chân trang */
             text-decoration: none;
             transition: color 0.3s; /* Hiệu ứng cho liên kết chân trang */
         }
+
         .footer a:hover {
             color: #0056b3; /* Màu khi hover cho liên kết chân trang */
         }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column; /* Đặt chiều dọc cho các phần tử trên màn hình nhỏ */
             }
+
             .contact-info, .form-section {
                 padding: 30px; /* Giảm khoảng cách padding cho điện thoại */
             }
+
             .contact-info h2, .form-section h2 {
                 font-size: 24px; /* Giảm kích thước tiêu đề cho điện thoại */
             }
+
             .form-section .btn {
                 width: 100%; /* Nút chiếm toàn bộ chiều rộng */
             }
         }
+
+        /* Thay đổi kích thước cho phần bản đồ */
+        .map-section {
+            width: 100%; /* Đặt chiều rộng 100% */
+            height: 300px; /* Chiều cao cho bản đồ */
+            margin-top: 20px; /* Khoảng cách phía trên cho bản đồ */
+            border-radius: 5px; /* Bo tròn góc cho bản đồ */
+            overflow: hidden; /* Ẩn phần thừa */
+        }
     </style>
-    <div class="container mt-5">
+</head>
+<body>
+<main>
+    <div class="container mt-5 d-flex">
         <!-- Left Section with Contact Info -->
         <div class="contact-info">
             <h2>Liên Hệ Với Chúng Tôi</h2>
@@ -138,19 +163,30 @@
                 </div>
                 <div class="mb-3">
                     <label for="message" class="form-label">Phản hồi *</label>
-                    <textarea class="form-control" id="message" rows="5" placeholder="Viết tin nhắn cho chúng tôi" required></textarea>
+                    <textarea class="form-control" id="message" placeholder="Viết tin nhắn cho chúng tôi" required
+                              rows="4"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg">Gửi Phản Hồi</button>
             </form>
         </div>
     </div>
+
+    <!-- Bản đồ -->
+    <div class="map-section">
+        <iframe
+                allowfullscreen=""
+                height="300"
+                loading="lazy"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.984946144668!2d106.6551396140281!3d10.85581339225452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752d2cf8abbd0d%3A0xf2edcda12c1e7a4c!2zVHLhuq1jIFQg4buHcHkgOCwgUGjhu6MgQ8O0bmcgMTIsIFRQLkMuIEjhu6MgQ8O0bmcgMTIsIFRQLkMuIEjhu6cgUEkgbG9hbmcgY2hpbGVubywgVDIuNSBTb2M!5e0!3m2!1svi!2s!4v1692513742185!5m2!1svi!2s"
+                style="border:0;"
+                width="100%">
+        </iframe>
+    </div>
+
     <div class="footer">
         <p>Đã có tài khoản? <a href="login.html">Đăng Nhập</a></p>
     </div>
 </main>
-
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

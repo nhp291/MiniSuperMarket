@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeUserController {
 
     @GetMapping("/Home")
-    public String Home(Model model) {
-        return "layout/Home";
+    public String Home(Model model) {return "layout/Home";
     }
 
     @GetMapping("/Product")

@@ -27,8 +27,8 @@ public class Account {
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
-    @NotNull(message = "Email cannot be null")
-    @Email(message = "Invalid email format")
+    @NotNull(message = "Email không được để trống")
+    @Email(message = "Định dạng email không hợp lệ")
     private String email;
 
     @Column(name = "phone_number")
@@ -48,5 +48,10 @@ public class Account {
 
     @Transient // Chỉ để kiểm tra, không lưu vào cơ sở dữ liệu
     private String confirmPassword;
+
+
 }
+
+
+
 

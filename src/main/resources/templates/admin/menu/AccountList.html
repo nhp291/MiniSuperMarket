@@ -60,7 +60,6 @@
                                         <label>
                                             <select class="form-select">
                                                 <option>Admin</option>
-                                                <option>Staff</option>
                                                 <option>User</option>
                                             </select>
                                         </label>
@@ -85,25 +84,25 @@
                             </tr>
                             </thead>
                             <tbody th:each="account : ${accounts}">
-                                <tr>
-                                    <td>
-                                        <!-- Hiển thị ảnh người dùng -->
-                                        <img th:src="${account.imageUrl != null ? account.imageUrl : '/Image/User.png'}" style="width: 50px" alt="User Image">
+                            <tr>
+                                <td>
+                                    <!-- Hiển thị ảnh người dùng -->
+                                    <img th:src="${account.imageUrl != null ? account.imageUrl : '/Image/User.png'}" style="width: 50px" alt="User Image">
 
-                                    </td>
-                                    <td th:text="${account.username}"></td>
-                                    <td>*****</td>
-                                    <td th:text="${account.email}"></td>
-                                    <td th:text="${account.phoneNumber}"></td>
-                                    <td th:text="${account.address}"></td>
-                                    <td th:text="${account.role.roleName}"></td>
-                                    <td>
-                                        <a class="bg-info btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Edit</a>
-                                        <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
-                                            <button class="bg-danger btn" type="submit">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                </td>
+                                <td th:text="${account.username}"></td>
+                                <td>*****</td>
+                                <td th:text="${account.email}"></td>
+                                <td th:text="${account.phoneNumber}"></td>
+                                <td th:text="${account.address}"></td>
+                                <td th:text="${account.role.roleName}"></td>
+                                <td>
+                                    <a class="bg-info btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Edit</a>
+                                    <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
+                                        <button class="bg-danger btn" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

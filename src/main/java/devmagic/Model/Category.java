@@ -1,6 +1,7 @@
 package devmagic.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,15 +14,15 @@ import lombok.NoArgsConstructor;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int categoryId; // Khóa chính với tự động tăng
+    private int categoryId;
 
     @Column(name = "category_name", nullable = false)
-    private String categoryName; // Tên danh mục
+    @NotEmpty(message = "Tên danh mục không được để trống")
+    private String categoryName;
 
     @Column(name = "image_url")
-    private String imageUrl; // Đường dẫn hình ảnh
+    private String imageUrl;
 
     @Column(name = "description")
-    private String description; // Mô tả danh mục
-
+    private String description;
 }

@@ -1,6 +1,7 @@
 package devmagic.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,12 +14,13 @@ import lombok.NoArgsConstructor;
 public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int warehouseId; // Khóa chính với tự động tăng
+    private int warehouseId;
 
     @Column(name = "warehouse_name", nullable = false)
-    private String warehouseName; // Tên kho
+    @NotEmpty(message = "Tên kho không được để trống")
+    private String warehouseName;
 
     @Column(name = "location", nullable = false)
-    private String location; // Vị trí kho
-
+    @NotEmpty(message = "Địa điểm kho không được để trống")
+    private String location;
 }
