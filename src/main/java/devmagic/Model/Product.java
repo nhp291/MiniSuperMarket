@@ -51,5 +51,5 @@ public class Product {
     private Warehouse warehouse;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductImage> images;
+    private List<ProductImage> images; // Thêm danh sách hình ảnh
 }

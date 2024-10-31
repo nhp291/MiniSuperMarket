@@ -48,8 +48,8 @@
                                     <label>Password</label>
                                     <div class="pass-group">
                                         <input type="password" id="password" th:field="*{password}"
-                                               th:attr="readonly=${!#strings.isEmpty(account.accountId) ? 'readonly' : null}"
-                                               class="form-control" placeholder="Enter password">
+                                               th:placeholder="${#strings.isEmpty(account.accountId) ? 'Enter password' : '*****'}"
+                                               class="form-control" th:readonly="${!#strings.isEmpty(account.accountId) && !#strings.isEmpty(account.password)}">
                                         <span class="fas toggle-password fa-eye-slash" onclick="togglePasswordVisibility('password', this)"></span>
                                     </div>
                                 </div>
@@ -59,8 +59,8 @@
                                     <label>Confirm Password</label>
                                     <div class="pass-group">
                                         <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
-                                               th:attr="readonly=${!#strings.isEmpty(account.accountId) ? 'readonly' : null}"
-                                               class="form-control" placeholder="Confirm password">
+                                               th:placeholder="${#strings.isEmpty(account.accountId) ? 'Confirm password' : '*****'}"
+                                               class="form-control" th:readonly="${!#strings.isEmpty(account.accountId) && !#strings.isEmpty(account.password)}">
                                         <span class="fas toggle-password fa-eye-slash" onclick="togglePasswordVisibility('confirmPassword', this)"></span>
                                     </div>
                                 </div>
@@ -127,18 +127,22 @@
                             </div>
 
 
+                            <!-- Các nút ở dưới cùng -->
                             <div class="col-lg-12">
-                                <button type="submit" formaction="/Accounts/AddAccount" class="btn btn-submit me-2">
+                                <button type="submit" formaction="/Accounts/AddAccount" id="createButton" class="btn btn-submit me-2"
+                                        th:if="${!#strings.isEmpty(account.accountId)}"> <!-- Hiện Create khi đang tạo mới -->
                                     <span>Create</span>
                                 </button>
-                                <button type="submit" formaction="/Accounts/update" class="btn btn-submit me-2">
+                                <button type="submit" formaction="/Accounts/update" id="updateButton" class="btn btn-submit me-2"
+                                        th:if="${!#strings.isEmpty(account.accountId)}" th:disabled="${#strings.isEmpty(account.accountId)}"> <!-- Vô hiệu hóa nếu là thêm mới -->
                                     <span>Update</span>
                                 </button>
                                 <button type="submit" class="btn btn-danger me-2"
-                                        th:formaction="@{/Accounts/delete/{id}(id=${account.accountId})}">
+                                        th:formaction="@{/Accounts/delete/{id}(id=${account.accountId})}" id="deleteButton"
+                                        th:if="${!#strings.isEmpty(account.accountId)}" th:disabled="${#strings.isEmpty(account.accountId)}"> <!-- Vô hiệu hóa nếu là thêm mới -->
                                     Delete
                                 </button>
-                                <button type="reset" class="btn btn-cancel">Reset</button>
+                                <button type="reset" class="btn btn-cancel" onclick="resetForm()">Reset</button>
                             </div>
                         </div>
                     </div>
@@ -150,15 +154,50 @@
 </div>
 </body>
 <script>
-    document.querySelector("form").addEventListener("submit", function(event) {
-        const password = document.getElementById("password").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
+    function togglePasswordVisibility(fieldId, icon) {
+        const passwordField = document.getElementById(fieldId);
 
-        if (password !== confirmPassword) {
-            event.preventDefault();
-            alert("Password and Confirm Password do not match!");
+        // Kiểm tra loại trường mật khẩu
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove("fa-eye"); // Biểu tượng hiện
+            icon.classList.add("fa-eye-slash"); // Biểu tượng ẩn
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove("fa-eye-slash"); // Biểu tượng ẩn
+            icon.classList.add("fa-eye"); // Biểu tượng hiện
         }
-    });
+    }
+    function resetForm() {
+        // Reset password fields
+        document.getElementById("password").value = '';
+        document.getElementById("confirmPassword").value = '';
+
+        // Kích hoạt nút "Create" và vô hiệu hóa các nút "Update" và "Delete"
+        const createButton = document.getElementById("createButton");
+        const updateButton = document.getElementById("updateButton");
+        const deleteButton = document.getElementById("deleteButton");
+
+        createButton.disabled = false; // Kích hoạt nút Create
+        updateButton.disabled = true; // Vô hiệu hóa nút Update
+        deleteButton.disabled = true; // Vô hiệu hóa nút Delete
+    }
+    window.onload = function() {
+        resetForm(); // Thiết lập trạng thái ban đầu cho các nút
+    };
+    function editAccountForm(account) {
+        // Giả sử bạn đã có logic để tải thông tin tài khoản vào các trường
+        document.getElementById("accountId").value = account.accountId;
+        document.getElementById("accountName").value = account.accountName;
+        // Cập nhật thêm các trường thông tin khác...
+
+        // Vô hiệu hóa nút Create và kích hoạt nút Update và Delete
+        document.getElementById("createButton").disabled = true; // Vô hiệu hóa nút Create
+        document.getElementById("updateButton").disabled = false; // Kích hoạt nút Update
+        document.getElementById("deleteButton").disabled = false; // Kích hoạt nút Delete
+    }
+
 </script>
+
 
 </html>
