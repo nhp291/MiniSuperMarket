@@ -1,15 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" th:fragment="dynamic(main)">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<html lang="VI" xmlns:th="http://www.thymeleaf.org" th:fragment="dynamic(main)">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <link rel="stylesheet" href="../css/login.css">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<script>
+    const app = angular.module('shoppingCartApp',[])
+
+    app.controller('MainController',function ($scope,$http) {
+        // alert("a")
+        $scope.cart = {
+            items: [],
+            add(id){
+                alert(id)
+                var item = this.items.find(item => item.id == id);
+                if(item){
+                    item.qty++;
+                    this.saveToLocalStorage()
+                }else{
+                    $http.get('/product/detail/{id}').then(resp =>{
+                        resp.data().qty = 1;
+                        this.items.push(resp.data);
+                        this.saveToLocalStorage();
+                    })
+                }
+            },
+            saveToLocalStorage(){
+                var json = JSON.stringify(angular.copy(this.items));
+                localStorage.setItem("cart",json);
+
+            },
+        }
+
+    })
+</script>
 <style>
     .card_box{
         width: 200px;
@@ -36,7 +65,8 @@
     }
 
     .card_box span::after {
-        content: '49%';
+        font-size: 13px;
+        content: 'Giảm Giá';
         position: absolute;
         width: 150%;
         height: 40px;
@@ -85,17 +115,17 @@
         justify-content: space-between;
     }
 
-    .arrow {
-        position: relative;
-        right: 0px;
-        height: 10px;
-        transform: rotate(-90deg);
-        border-color: #92a8d1;
-        width: 25px;
-        fill: #706d6d;
-        z-index: 100000;
-        transition: 300ms;
-    }
+    /*.arrow {*/
+    /*    position: relative;*/
+    /*    right: 0px;*/
+    /*    height: 10px;*/
+    /*    transform: rotate(-90deg);*/
+    /*    border-color: #92a8d1;*/
+    /*    width: 25px;*/
+    /*    fill: #706d6d;*/
+    /*    z-index: 100000;*/
+    /*    transition: 300ms;*/
+    /*}*/
 
     .options {
         display: flex;
@@ -129,51 +159,19 @@
     .option:hover {
         background-color: #ffffff;
     }
-
-    /*.options input[type="radio"] {*/
-    /*    display: none;*/
-    /*}*/
-
-    /*.options label {*/
-    /*    display: inline-block;*/
-    /*}*/
-    /*.options label::before {*/
-    /*    content: attr(data-txt);*/
-    /*}*/
-
-    /*.options input[type="radio"]:checked + label {*/
-    /*    display: none;*/
-    /*}*/
-
-    /*.options input[type="radio"]#all:checked + label {*/
-    /*    display: none;*/
-    /*}*/
-
-    /*.select:has(.options input[type="radio"]#all:checked) .selected::before {*/
-    /*    content: attr(data-default);*/
-    /*}*/
-    /*.select:has(.options input[type="radio"]#option-1:checked) .selected::before {*/
-    /*    content: attr(data-one);*/
-    /*}*/
-    /*.select:has(.options input[type="radio"]#option-2:checked) .selected::before {*/
-    /*    content: attr(data-two);*/
-    /*}*/
-    /*.select:has(.options input[type="radio"]#option-3:checked) .selected::before {*/
-    /*    content: attr(data-three);*/
-    /*}*/
-
-                                                        /*login*/
+    /*login*/
 
 </style>
-<body>
-        <div th:replace="~{/layout/header.html}"></div>
-    <main>
-            <div th:replace="${main}"></div>
+<body ng-app="shoppingCartApp" ng-controller="MainController">
+    <header>
+    <div th:replace="~{/layout/header.html}"></div>
+    </header>
+    <main >
+        <div th:replace="${main}"></div>
     </main>
 
     <footer>
         <div th:replace="~{/layout/footer.html}"></div>
     </footer>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
