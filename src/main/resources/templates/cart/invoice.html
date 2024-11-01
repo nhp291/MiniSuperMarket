@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{/layout/index :: dynamic(~{::main})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
 <body>
 <main>
@@ -92,9 +89,9 @@
                                 <img src="./logo.jpg" style="width:100%; max-width:300px;">
                             </td>
                             <td>
-                                Invoice #: 123<br>
-                                Created: January 1, 2024<br>
-                                Due: February 1, 2024
+                                Invoice: <span th:text="${invoiceNumber}"></span><br>
+                                Created: <span th:text="${createdDate}"></span><br>
+                                Due: <span th:text="${dueDate}"></span>
                             </td>
                         </tr>
                     </table>
@@ -110,9 +107,8 @@
                                 Tân bình, Hồ Chí Minh
                             </td>
                             <td>
-                                Nguyễn Hồng Phúc<br>
-                                11/2 vườn lài<br>
-                                Hòa thanh, Tân phú, Hồ Chí Minh
+                                <span th:text="${customerName}"></span><br>
+                                <span th:text="${customerAddress}"></span>
                             </td>
                         </tr>
                     </table>
@@ -122,21 +118,15 @@
                 <td>Item</td>
                 <td>Price</td>
             </tr>
-            <tr class="item">
-                <td>Trứng gà size M Ba Huân hộp 10 quả (1 Hộp)</td>
-                <td>$2.00</td>
-            </tr>
-            <tr class="item">
-                <td>Quýt Úc (1kg)</td>
-                <td>$12.00</td>
-            </tr>
-            <tr class="item last">
-                <td>Cà chua trứng vỉ 400g (1 VỈ)</td>
-                <td>$4.00</td>
-            </tr>
+            <th:block th:each="item : ${cart.items}">
+                <tr class="item" th:classappend="${itemStat.last} ? 'last'">
+                    <td th:text="${item.productName}"></td>
+                    <td th:text="${item.price}"></td>
+                </tr>
+            </th:block>
             <tr class="total">
                 <td></td>
-                <td>Total: $18.00</td>
+                <td>Total: <span th:text="${totalPrice}"></span></td>
             </tr>
             <tr class="heading">
                 <td>Payment Method</td>

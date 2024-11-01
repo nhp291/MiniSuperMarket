@@ -1,99 +1,136 @@
+
+
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{/layout/index :: dynamic(~{::main})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function updateQuantity(element, change) {
+            const cartItem = element.closest('.cart-item');
+            const quantityElem = cartItem.querySelector('.quantity');
+            let quantity = parseInt(quantityElem.textContent) + change;
+            if (quantity < 1) quantity = 1; // Ngăn số lượng nhỏ hơn 1
+            quantityElem.textContent = quantity;
+
+            // Gửi yêu cầu cập nhật số lượng đến server
+            const userId = 1; // Thay thế bằng ID người dùng thực tế
+            const productId = cartItem.getAttribute('data-product-id');
+            fetch(`/api/cart/updateQuantity/${userId}/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantityChange: change })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Cập nhật giá sản phẩm và tổng
+                    document.querySelector(`#price-${productId}`).textContent = data.newPrice.toFixed(2);
+                    document.getElementById('total-price').textContent = data.totalPrice.toFixed(2);
+                })
+                .catch(error => {
+                    console.error('Error updating quantity:', error);
+                });
+        }
+
+        function updatePaymentMethod(userId, paymentMethod) {
+            fetch(`/api/cart/updatePaymentMethod/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ paymentMethod: paymentMethod })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Payment method updated:', data);
+                })
+                .catch(error => {
+                    console.error('Error updating payment method:', error);
+                });
+        }
+
+        function checkout(userId) {
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            if (selectedPaymentMethod === 'cash') {
+                window.location.href = `/cart/invoice/${userId}`;
+            }
+        }
+    </script>
 </head>
 
 <body>
 <main>
     <style>
         .shopping-body {
-            background: #ffffff;
+            background: #f8f9fa;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px 60px; /* Thay đổi padding thành 20px ở trên và dưới, 40px ở hai bên */
-            font-family: sans-serif;
+            padding: 20px 60px;
+            font-family: Arial, sans-serif;
             font-size: 1rem;
             font-weight: bold;
-            margin-top: 20px; /* Khoảng cách phía trên header */
-            margin-bottom: 20px; /* Khoảng cách phía dưới footer */
         }
-
 
         .card {
             width: 100%;
             max-width: 1200px;
-            box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
             border-radius: 1rem;
-            border: transparent;
-            background-color: white;
+            background-color: #ffffff;
+            border: none;
         }
 
         .cart {
-            background-color: #fff;
-            padding: 6vh 7vh;
+            background-color: #ffffff;
+            padding: 5vh 6vh;
             border-bottom-left-radius: 1rem;
             border-top-left-radius: 1rem;
         }
 
         .cart-items {
-            max-height: 500px;
+            max-height: 450px;
             overflow-y: auto;
             margin-top: 2vh;
         }
 
         .summary {
-            background-color: #7c7c7c;
+            background-color: #333333;
             border-top-right-radius: 1rem;
             border-bottom-right-radius: 1rem;
-            padding: 6vh;
-            color: rgb(65, 65, 65);
-        }
-
-        .row {
-            margin: 0;
+            padding: 5vh;
+            color: white;
         }
 
         .title b {
-            font-size: 2rem;
+            font-size: 1.8rem;
         }
 
         .back-to-shop {
-            margin-top: 5rem;
+            margin-top: 3rem;
         }
 
         .cart-item {
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
             padding: 15px 0;
+            border-top: 1px solid #ddd;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .cart-item:last-child {
-            border-bottom: none;
+        .quantity-controls a {
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: #007bff;
         }
 
-        .cart-item img {
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-        }
-
-        .quantity-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+        .quantity-controls a:hover {
+            color: #0056b3;
         }
 
         .radio-input {
@@ -102,130 +139,36 @@
             gap: 15px;
         }
 
-        .radio-input * {
-            box-sizing: border-box;
-            padding: 0;
-            margin: 0;
-        }
-
         .radio-input label {
             display: flex;
             align-items: center;
             gap: 20px;
-            padding: 0px 30px;
+            padding: 0px 20px;
             cursor: pointer;
             height: 50px;
-            position: relative;
             border-radius: 10px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
+            transition: background 0.3s;
+            background-color: #505050;
         }
 
-        .radio-input label:hover {
-            background-color: #2a2e3c;
-            border-color: #435dd8;
-        }
-
-        .radio-input label:has(input:checked) {
-            background-color: #2d3750;
-            border-color: #435dd8;
+        .radio-input label:hover, .radio-input label:has(input:checked) {
+            background-color: #3d3d3d;
         }
 
         .radio-input .text {
-            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        footer {
+            background-color: #343a40;
             color: white;
-        }
-
-        .radio-input label::before {
-            position: absolute;
-            content: "";
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 240px;
-            height: 55px;
-            z-index: -1;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border-radius: 10px;
-            border: 2px solid transparent;
-        }
-
-        input[type="radio"] {
-            display: none;
-        }
-
-        /* New styles for close button */
-        .close {
-            margin-left: 10px;
-            color: red; /* Change color to red */
-            margin-left: 16px; /* Add space from the scrollbar */
-            margin-right: 16px; /* Add right margin to space it from the scroll bar */
-        }
-
-        @media (max-width: 576px) {
-            .quantity-controls {
-                flex-direction: row;
-            }
-
-            .quantity-controls a,
-            .quantity-controls span {
-                padding: 5px 10px;
-            }
-
-            .cart-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .cart-item .col {
-                width: 100%;
-                text-align: left;
-            }
-
-            .back-to-shop {
-                text-align: center;
-            }
-
-            .cart-item .close {
-                margin-top: 10px;
-            }
-
-            .text-end {
-                margin-left: 0;
-                text-align: right;
-            }
-        }
-        .cart-items::-webkit-scrollbar {
-            width: 5px; /* Width of the scrollbar */
-        }
-
-        .cart-items::-webkit-scrollbar-track {
-            background: #f1f1f1; /* Background of the scrollbar track */
-        }
-
-        .cart-items::-webkit-scrollbar-thumb {
-            background: #888; /* Color of the scrollbar thumb */
-            border-radius: 10px; /* Rounded corners for the scrollbar thumb */
-        }
-
-        .cart-items::-webkit-scrollbar-thumb:hover {
-            background: #555; /* Color of the scrollbar thumb on hover */
-        }
-
-        header,
-            /*footer {*/
-            /*    background-color: #343a40;*/
-            /*    color: white;*/
-            /*    padding: 10px 0;*/
-            /*    text-align: center;*/
-            /*}*/
-
-        header a,
-        footer a {
-            color: white;
-            text-decoration: none;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
         }
     </style>
+
+
     <div class="shopping-body">
         <div class="card">
             <div class="row">
@@ -235,123 +178,58 @@
                             <div class="col">
                                 <h4><b>Shopping Cart</b></h4>
                             </div>
-                            <div class="col align-self-center text-end text-muted">7 items</div>
+                            <div class="col text-end text-muted" th:text="${cart.items.size()} + ' sản phẩm'"></div>
                         </div>
                     </div>
                     <div class="cart-items">
-                        <!-- Items in the cart -->
-                        <div class="cart-item">
-                            <div class="col-2"><img class="img-fluid"
-                                                    src="https://storage.googleapis.com/sc_pcm_product/prod/2023/9/19/14266-377685.jpg"
-                                                    alt="Trứng gà"></div>
-                            <div class="col">
-                                <div class="row text-muted">Trứng gà</div>
-                                <div class="row">Trứng gà size M Ba Huân hộp 10 quả (1 Hộp)</div>
+                        <!-- Cart items loop -->
+                        <th:block th:each="item : ${cart.items}">
+                            <div class="cart-item" th:attr="data-price=${item.price},data-product-id=${item.productId}">
+                                <div class="col-2">
+                                    <img class="img-fluid" th:src="@{'/Image/imageUrl/' + ${item.productImage}}" th:alt="${item.productName}">
+                                </div>
+                                <div class="col">
+                                    <div class="row text-muted" th:text="${item.productName}"></div>
+                                </div>
+                                <div class="col quantity-controls text-center">
+                                    <a href="javascript:void(0)" class="text-decoration-none decrease" onclick="updateQuantity(this, -1)">-</a>
+                                    <span class="border px-2 quantity" th:text="${item.quantity}"></span>
+                                    <a href="javascript:void(0)" class="text-decoration-none increase" onclick="updateQuantity(this, 1)">+</a>
+                                </div>
+                                <div class="col text-end">
+                                    $ <span class="item-total" th:text="${item.price * item.quantity}"></span>
+                                    <span class="close text-muted" onclick="removeItem(this)">✕</span>
+                                </div>
                             </div>
-                            <div class="col quantity-controls">
-                                <a href="#" class="text-decoration-none">-</a>
-                                <span class="border px-2">1</span>
-                                <a href="#" class="text-decoration-none">+</a>
-                            </div>
-                            <div class="col text-end">&dollar; 2.00 <span class="close text-muted">&#10005;</span></div>
-                        </div>
-
-                        <div class="cart-item">
-                            <div class="col-2"><img class="img-fluid"
-                                                    src="https://storage.googleapis.com/sc_pcm_product/prod/2024/7/5/471829-1100348.jpg"
-                                                    alt="Quýt"></div>
-                            <div class="col">
-                                <div class="row text-muted">Quýt</div>
-                                <div class="row">Quýt Úc (1kg)</div>
-                            </div>
-                            <div class="col quantity-controls">
-                                <a href="#" class="text-decoration-none">-</a>
-                                <span class="border px-2">1</span>
-                                <a href="#" class="text-decoration-none">+</a>
-                            </div>
-                            <div class="col text-end">&dollar; 12.00 <span class="close text-muted">&#10005;</span></div>
-                        </div>
-
-                        <div class="cart-item">
-                            <div class="col-2"><img class="img-fluid"
-                                                    src="https://storage.googleapis.com/sc_pcm_product/prod/2024/7/26/475836-10466.jpg"
-                                                    alt="Cà chua"></div>
-                            <div class="col">
-                                <div class="row text-muted">Cà chua</div>
-                                <div class="row" >Cà chua trứng vỉ 400g (1 VỈ)</div>
-                            </div>
-                            <div class="col quantity-controls">
-                                <a href="#" class="text-decoration-none">-</a>
-                                <span class="border px-2">1</span>
-                                <a href="#" class="text-decoration-none">+</a>
-                            </div>
-                            <div class="col text-end">&dollar; 4.00 <span class="close text-muted">&#10005;</span></div>
-                        </div>
-
-                        <div class="cart-item">
-                            <div class="col-2"><img class="img-fluid"
-                                                    src="https://storage.googleapis.com/sc_pcm_product/prod/2023/9/19/14266-377685.jpg"
-                                                    alt="Trứng gà"></div>
-                            <div class="col">
-                                <div class="row text-muted">Trứng gà</div>
-                                <div class="row">Trứng gà size M Ba Huân hộp 10 quả (1 Hộp)</div>
-                            </div>
-                            <div class="col quantity-controls">
-                                <a href="#" class="text-decoration-none">-</a>
-                                <span class="border px-2">1</span>
-                                <a href="#" class="text-decoration-none">+</a>
-                            </div>
-                            <div class="col text-end">&dollar; 2.00 <span class="close text-muted">&#10005;</span></div>
-                        </div>
-
-                        <div class="cart-item">
-                            <div class="col-2"><img class="img-fluid"
-                                                    src="https://storage.googleapis.com/sc_pcm_product/prod/2023/11/14/17783-100224.jpg"
-                                                    alt="Gà"></div>
-                            <div class="col">
-                                <div class="row text-muted">Gà</div>
-                                <div class="row">Gà công nghiệp (1 con)</div>
-                            </div>
-                            <div class="col quantity-controls">
-                                <a href="#" class="text-decoration-none">-</a>
-                                <span class="border px-2">1</span>
-                                <a href="#" class="text-decoration-none">+</a>
-                            </div>
-                            <div class="col text-end">&dollar; 20.00 <span class="close text-muted">&#10005;</span></div>
-                        </div>
-
+                        </th:block>
                     </div>
                     <div class="back-to-shop">
                         <a href="#" class="btn btn-warning"><b>Back to shop</b></a>
                     </div>
                 </div>
-                <div class="col-md-4 summary" style="color: white;">
+                <div class="col-md-4 summary">
                     <h5><b>Order Summary</b></h5>
                     <div class="row">
-                        <div class="col" style="color: white;">Total</div>
-                        <div class="col text-end" style="color: white;">&dollar; 86.00</div>
+                        <div class="col">Total</div>
+                        <div class="col text-end">
+                            $ <span id="total-price" th:text="${totalPrice}"></span>
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col" style="color: white;">Total (incl. tax)</div>
-                        <div class="col text-end" style="color: white;">&dollar; 86.00</div>
-                    </div>
-                    <div class="row radio-input mt-4">
+                    <div class="radio-input mt-4">
                         <label>
-                            <input type="radio" name="payment-method" checked>
-                            <span class="text">Credit Card</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="payment-method">
+                            <input type="radio" name="paymentMethod" value="cash" th:checked="${cart.paymentMethod == 'cash'}" onclick="updatePaymentMethod(1, 'cash')">
                             <span class="text">Cash</span>
                         </label>
                         <label>
-                            <input type="radio" name="payment-method">
-                            <span class="text">Paypal</span>
+                            <input type="radio" name="paymentMethod" value="bank_transfer" th:checked="${cart.paymentMethod == 'bank_transfer'}" onclick="updatePaymentMethod(1, 'bank_transfer')">
+                            <span class="text">Bank Transfer</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="paymentMethod" value="vn_pay" th:checked="${cart.paymentMethod == 'vn_pay'}" onclick="updatePaymentMethod(1, 'vn_pay')">
+                            <span class="text">VN Pay</span>
                         </label>
                     </div>
-                    <div class="row">
-                        <button class="btn btn-primary mt-3">Checkout</button>
-                    </div>
+                    <button class="btn btn-primary w-100 mt-4" onclick="checkout(1)">Checkout</button>
                 </div>
             </div>
         </div>
@@ -360,5 +238,4 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
