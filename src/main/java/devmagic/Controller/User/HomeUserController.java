@@ -3,7 +3,6 @@ package devmagic.Controller.User;
 
 
 import devmagic.Model.Product;
-import devmagic.Service.ProductImageSV;
 import devmagic.Service.ProductSV;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class HomeUserController {
     @Autowired
     ProductSV productSV;
-    ProductImageSV productImageSV;
 
     @RequestMapping("/layout/Home")
     public String Home(Model model, @Param("keyword") String keyword, @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo) {
