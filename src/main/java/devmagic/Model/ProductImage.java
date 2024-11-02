@@ -18,7 +18,7 @@ public class ProductImage {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product; // Thêm trường để liên kết với sản phẩm
+    private Product product;
 
     @Column(name = "image_url", nullable = false)
     @NotEmpty(message = "Đường dẫn hình ảnh không được để trống")
