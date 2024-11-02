@@ -1,7 +1,7 @@
 package devmagic.Controller.User;
 
 import devmagic.Service.CartService;
-import devmagic.Model.CartDto;
+import devmagic.Dto.CartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

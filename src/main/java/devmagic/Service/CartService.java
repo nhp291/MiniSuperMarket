@@ -1,7 +1,7 @@
 package devmagic.Service;
 
-import devmagic.Model.CartDto;
-import devmagic.Model.CartItemDto;
+import devmagic.Dto.CartDto;
+import devmagic.Dto.CartItemDto;
 import devmagic.Model.ResourceNotFoundException;
 import devmagic.Model.Order;
 import devmagic.Model.OrderDetail;

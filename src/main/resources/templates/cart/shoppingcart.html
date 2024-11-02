@@ -186,7 +186,7 @@
                         <th:block th:each="item : ${cart.items}">
                             <div class="cart-item" th:attr="data-price=${item.price},data-product-id=${item.productId}">
                                 <div class="col-2">
-                                    <img class="img-fluid" th:src="@{'/Image/imageUrl/' + ${item.productImage}}" th:alt="${item.productName}">
+                                    <img class="img-fluid" th:src="@{'/Image/imageUrl/' + ${item.productImage}}" th:alt="${item.productName}" style="width: 100px; height: 100px; object-fit: cover;">
                                 </div>
                                 <div class="col">
                                     <div class="row text-muted" th:text="${item.productName}"></div>
