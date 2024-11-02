@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
 </head>
@@ -13,7 +13,7 @@
                     <h6>View/Search  Category</h6>
                 </div>
                 <div class="page-btn">
-                    <a th:href="@{/Admin/AddCategory}" class="btn btn-added">
+                    <a th:href="@{/Categories/AddCategory}" class="btn btn-added">
                         <img src="/admin/img/icons/plus.svg" class="me-1" alt="img">Add Category
                     </a>
                 </div>
@@ -79,39 +79,25 @@
                         <table class="table  datanew">
                             <thead>
                             <tr>
+                                <th>Images</th>
                                 <th>Category name</th>
                                 <th>Description</th>
-                                <th>Created By</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody>
-<!--                            <tr>-->
-<!--                                <td>-->
-<!--                                    <label class="checkboxs">-->
-<!--                                        <input type="checkbox">-->
-<!--                                        <span class="checkmarks"></span>-->
-<!--                                    </label>-->
-<!--                                </td>-->
-<!--                                <td class="productimgname">-->
-<!--                                    <a href="javascript:void(0);" class="product-img">-->
-<!--                                        <img src="/admin/img/product/noimage.png" alt="product">-->
-<!--                                    </a>-->
-<!--                                    <a href="javascript:void(0);">Computers</a>-->
-<!--                                </td>-->
-<!--                                <td>CT001</td>-->
-<!--                                <td>Computers Description</td>-->
-<!--                                <td>Admin</td>-->
-<!--                                <td>-->
-<!--                                    <a class="me-3" href="editcategory.html">-->
-<!--                                        <img src="/admin/img/icons/edit.svg" alt="img">-->
-<!--                                    </a>-->
-<!--                                    <a class="me-3 confirm-text" href="javascript:void(0);">-->
-<!--                                        <img src="/admin/img/icons/delete.svg" alt="img">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-
+                            <tbody th:each="category : ${categories}">
+                                <tr>
+                                    <td>
+                                        <img th:src="@{/Image/imageUrl/{image}(image=${category.imageUrl})}"
+                                             th:alt="${category.categoryName}" style="width:70px; height:auto;" />
+                                    </td>
+                                    <td th:text="${category.categoryName}"></td>
+                                    <td th:text="${category.description}"></td>
+                                    <td>
+                                        <a th:href="@{/Categories/EditCategory/{id}(id=${category.categoryId})}">Edit</a>
+                                        <a th:href="@{/Categories/DeleteCategory/{id}(id=${category.categoryId})}">Delete</a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

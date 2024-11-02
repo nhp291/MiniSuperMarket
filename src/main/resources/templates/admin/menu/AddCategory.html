@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
+    <title>Create New Product Category</title>
+    <link rel="stylesheet" href="/path/to/your/styles.css"> <!-- Link đến file CSS của bạn -->
 </head>
 <body>
 <div class="main-wrapper">
@@ -12,9 +14,8 @@
                     <h4>Product Add Category</h4>
                     <h6>Create new product Category</h6>
                 </div>
-
                 <div class="page-btn">
-                    <a th:href="@{/Admin/CategoryList}" class="btn btn-added">
+                    <a th:href="@{/Categories/CategoryList}" class="btn btn-added">
                         <img src="/admin/img/icons/plus.svg" class="me-1" alt="img"> Category List
                     </a>
                 </div>
@@ -26,24 +27,22 @@
                         <div class="col-lg-12 col-sm-12 col-12">
                             <div class="form-group">
                                 <label>Category Name</label>
-                                <label>
-                                    <input type="text">
-                                </label>
+                                <input type="text" th:field="*{categoryName}" class="form-control" required />
+                                <div th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}" class="text-danger"></div>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label>Description</label>
-                                <label>
-                                    <textarea class="form-control"></textarea>
-                                </label>
+                                <textarea th:field="*{description}" class="form-control" required></textarea>
+                                <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="form-group">
-                                <label> Product Image</label>
+                                <label>Product Image</label>
                                 <div class="image-upload">
-                                    <input type="file">
+                                    <input type="file" th:field="*{imageUrl}" accept="image/*" class="form-control-file" required />
                                     <div class="image-uploads">
                                         <img src="/admin/img/icons/upload.svg" alt="img">
                                         <h4>Drag and drop a file to upload</h4>
@@ -52,13 +51,12 @@
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
-                            <a href="CategoryList.html" class="btn btn-cancel">Cancel</a>
+                            <button type="submit" class="btn btn-submit me-2">Submit</button>
+                            <a th:href="@{/Categories/CategoryList}" class="btn btn-cancel">Cancel</a>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

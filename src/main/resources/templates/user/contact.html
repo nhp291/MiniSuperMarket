@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{/layout/index :: dynamic(~{::main})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,185 +8,58 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <title>Liên Hệ Với Chúng Tôi</title>
     <style>
-        .contact-info {
-            background-color: #007bff; /* Nền màu xanh */
-            color: white;
-            padding: 40px;
-            flex: 1; /* Cho phần thông tin chiếm không gian */
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Căn giữa theo chiều dọc */
-            text-align: left;
-            position: relative;
-        }
 
-        .contact-info h2 {
-            font-size: 30px; /* Kích thước tiêu đề lớn hơn */
-            margin-bottom: 15px;
-            font-weight: 600; /* Chữ đậm hơn */
-        }
-
-        .contact-info p {
-            margin-bottom: 10px;
-            font-size: 18px; /* Kích thước chữ phù hợp */
-        }
-
-        .contact-info a {
-            color: #ffffff; /* Màu chữ trắng */
-            text-decoration: underline; /* Gạch chân cho liên kết */
-            transition: color 0.3s; /* Hiệu ứng chuyển màu */
-        }
-
-        .contact-info a:hover {
-            color: #e0e0e0; /* Màu khi hover */
-        }
-
-        .form-section {
-            padding: 20px; /* Giảm padding cho phần form */
-            background-color: #ffffff; /* Nền trắng cho phần form */
-            flex: 2; /* Cho phần form chiếm nhiều không gian hơn */
-        }
-
-        .form-section h2 {
-            font-size: 28px; /* Kích thước tiêu đề */
-            margin-bottom: 30px;
-            font-weight: 600; /* Chữ đậm */
-            color: #333; /* Màu tối cho tiêu đề */
-        }
-
-        .form-section .form-control {
-            background-color: #f7f7f7; /* Nền xám nhạt cho trường nhập liệu */
-            border: 1px solid #ddd; /* Đường viền xám cho các trường nhập liệu */
-            border-radius: 5px; /* Bo tròn góc cho các trường nhập liệu */
-            padding: 10px; /* Giảm padding cho ô nhập liệu */
-            transition: border-color 0.3s, background-color 0.3s; /* Hiệu ứng chuyển màu */
-        }
-
-        .form-section .form-control:focus {
-            border-color: #007bff; /* Đổi màu đường viền khi nhập liệu */
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-            background-color: #ffffff; /* Nền trắng khi có focus */
-        }
-
-        .form-section .btn {
-            background-color: #007bff; /* Màu nút xanh */
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px; /* Bo tròn góc cho nút */
-            transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng cho nút */
-            font-weight: 600; /* Chữ đậm cho nút */
-        }
-
-        .form-section .btn:hover {
-            background-color: #0056b3; /* Màu khi hover */
-            transform: translateY(-2px); /* Hiệu ứng nâng lên khi hover */
-        }
-
-        .footer {
-            padding: 20px 0;
-            text-align: center;
-            background-color: #f8f9fa; /* Nền chân trang màu sáng */
-        }
-
-        .footer a {
-            color: #007bff; /* Màu chữ cho liên kết chân trang */
-            text-decoration: none;
-            transition: color 0.3s; /* Hiệu ứng cho liên kết chân trang */
-        }
-
-        .footer a:hover {
-            color: #0056b3; /* Màu khi hover cho liên kết chân trang */
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column; /* Đặt chiều dọc cho các phần tử trên màn hình nhỏ */
-            }
-
-            .contact-info, .form-section {
-                padding: 30px; /* Giảm khoảng cách padding cho điện thoại */
-            }
-
-            .contact-info h2, .form-section h2 {
-                font-size: 24px; /* Giảm kích thước tiêu đề cho điện thoại */
-            }
-
-            .form-section .btn {
-                width: 100%; /* Nút chiếm toàn bộ chiều rộng */
-            }
-        }
-
-        /* Thay đổi kích thước cho phần bản đồ */
-        .map-section {
-            width: 100%; /* Đặt chiều rộng 100% */
-            height: 300px; /* Chiều cao cho bản đồ */
-            margin-top: 20px; /* Khoảng cách phía trên cho bản đồ */
-            border-radius: 5px; /* Bo tròn góc cho bản đồ */
-            overflow: hidden; /* Ẩn phần thừa */
-        }
     </style>
 </head>
 <body>
 <main>
     <div class="container mt-5 d-flex">
-        <!-- Left Section with Contact Info -->
         <div class="contact-info">
             <h2>Liên Hệ Với Chúng Tôi</h2>
             <p><strong>Địa Chỉ:</strong> Tòa T, Lầu 8, TP.HCM, Quận 12</p>
-            <p><strong>Liên Hệ:</strong> <a href="tel:+18001236879">+84 0915765058</a></p>
-            <p><strong>Hỗ Trợ Chung:</strong> <a href="mailto:contact@example.com">phatanhvu147963kk@gmail.com</a></p>
+            <p><strong>Liên Hệ:</strong> <a href="tel:+84915765058" aria-label="Số điện thoại liên hệ">+84 0915765058</a></p>
+            <p><strong>Hỗ Trợ Chung:</strong> <a href="mailto:phatanhvu147963kk@gmail.com" aria-label="Email hỗ trợ chung">phatanhvu147963kk@gmail.com</a></p>
         </div>
 
-        <!-- Right Section with Form -->
         <div class="form-section">
             <h2>Gửi Tin Nhắn Đến Chúng Tôi</h2>
-            <form>
+            <form action="/submit" method="POST">
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="firstName" class="form-label">Họ và Tên *</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="Họ" required>
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Họ" required>
                     </div>
                     <div class="col-md-6">
                         <label for="lastName" class="form-label">Tên *</label>
-                        <input type="text" class="form-control" id="lastName" placeholder="Tên" required>
+                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Tên" required>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Nhập Email *</label>
-                    <input type="email" class="form-control" id="email" placeholder="Eg. example@email.com" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Eg. example@email.com" required>
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">Nhập Số Điện Thoại</label>
-                    <input type="tel" class="form-control" id="phone" placeholder="VN. +84 090000000">
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="VN. +84 090000000">
                 </div>
                 <div class="mb-3">
                     <label for="message" class="form-label">Phản hồi *</label>
-                    <textarea class="form-control" id="message" placeholder="Viết tin nhắn cho chúng tôi" required
-                              rows="4"></textarea>
+                    <textarea class="form-control" id="message" name="message" placeholder="Viết tin nhắn cho chúng tôi" required rows="4"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg">Gửi Phản Hồi</button>
+                <button type="submit" class="btn btn-primary btn-lg" aria-label="Gửi phản hồi">Gửi Phản Hồi</button>
             </form>
         </div>
     </div>
-
-    <!-- Bản đồ -->
-    <div class="map-section">
+    <div class="map-section mt-4">
         <iframe
-                allowfullscreen=""
+                allowfullscreen
                 height="300"
                 loading="lazy"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.984946144668!2d106.6551396140281!3d10.85581339225452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752d2cf8abbd0d%3A0xf2edcda12c1e7a4c!2zVHLhuq1jIFQg4buHcHkgOCwgUGjhu6MgQ8O0bmcgMTIsIFRQLkMuIEjhu6MgQ8O0bmcgMTIsIFRQLkMuIEjhu6cgUEkgbG9hbmcgY2hpbGVubywgVDIuNSBTb2M!5e0!3m2!1svi!2s!4v1692513742185!5m2!1svi!2s"
-                style="border:0;"
-                width="100%">
+                style="border:0; width:100%;">
         </iframe>
     </div>
-
-    <div class="footer">
-        <p>Đã có tài khoản? <a href="login.html">Đăng Nhập</a></p>
-    </div>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
