@@ -40,6 +40,121 @@
     })
 </script>
 <style>
+    .contact-info {
+        background-color: #007bff;
+        color: white;
+        padding: 40px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: left;
+    }
+
+    .contact-info h2 {
+        font-size: 30px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .contact-info p {
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .contact-info a {
+        color: #ffffff;
+        text-decoration: underline;
+        transition: color 0.3s;
+    }
+
+    .contact-info a:hover {
+        color: #e0e0e0;
+    }
+
+    .form-section {
+        padding: 20px;
+        background-color: #ffffff;
+        flex: 2;
+    }
+
+    .form-section h2 {
+        font-size: 28px;
+        margin-bottom: 30px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-section .form-control {
+        background-color: #f7f7f7;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    .form-section .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        background-color: #ffffff;
+    }
+
+    .form-section .btn {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.2s;
+        font-weight: 600;
+    }
+
+    .form-section .btn:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    .footer {
+        padding: 20px 0;
+        text-align: center;
+        background-color: #f8f9fa;
+    }
+
+    .footer a {
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .footer a:hover {
+        color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+        }
+
+        .contact-info, .form-section {
+            padding: 30px;
+        }
+
+        .contact-info h2, .form-section h2 {
+            font-size: 24px;
+        }
+
+        .form-section .btn {
+            width: 100%;
+        }
+    }
+
+    .map-section {
+        width: 100%;
+        height: 300px;
+        margin-top: 20px;
+        border-radius: 5px;
+        overflow: hidden;
+    }
     .card_box{
         width: 200px;
         height: 340px;
@@ -114,19 +229,6 @@
         align-items: center;
         justify-content: space-between;
     }
-
-    /*.arrow {*/
-    /*    position: relative;*/
-    /*    right: 0px;*/
-    /*    height: 10px;*/
-    /*    transform: rotate(-90deg);*/
-    /*    border-color: #92a8d1;*/
-    /*    width: 25px;*/
-    /*    fill: #706d6d;*/
-    /*    z-index: 100000;*/
-    /*    transition: 300ms;*/
-    /*}*/
-
     .options {
         display: flex;
         flex-direction: column;
