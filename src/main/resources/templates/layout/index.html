@@ -11,7 +11,6 @@
 </head>
 <script>
     const app = angular.module('shoppingCartApp',[])
-
     app.controller('MainController',function ($scope,$http) {
         // alert("a")
         $scope.cart = {
@@ -33,13 +32,12 @@
             saveToLocalStorage(){
                 var json = JSON.stringify(angular.copy(this.items));
                 localStorage.setItem("cart",json);
-
             },
         }
-
     })
 </script>
 <style>
+
     .contact-info {
         background-color: #007bff;
         color: white;
