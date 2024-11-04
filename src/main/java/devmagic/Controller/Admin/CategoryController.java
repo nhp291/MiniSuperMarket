@@ -38,7 +38,7 @@ public class CategoryController {
     @GetMapping("/AddCategory")
     public String addCategoryForm(Model model) {
         model.addAttribute("category", new Category());
-        model.addAttribute("pageTitle", "Thêm danh mục");
+        model.addAttribute("pageTitle", "Danh mục loại sản phẩm");
         model.addAttribute("viewName", "admin/menu/AddCategory");
         return "admin/layout";
     }

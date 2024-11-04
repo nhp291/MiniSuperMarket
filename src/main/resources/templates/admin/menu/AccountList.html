@@ -2,19 +2,19 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Account List</title>
 </head>
 <body>
-<div class="main-wrapper">
+<div class="main-wrapper" th:fragment="content">
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h2> <strong>Account list</strong></h2>
+                    <h2><strong>Account list</strong></h2>
                 </div>
                 <div class="page-btn">
                     <a th:href="@{/Accounts/AddAccount}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" class="me-1 " alt="img">Add Account
+                        <img src="/admin/img/icons/plus.svg" class="me-1" alt="img">Add Account
                     </a>
                 </div>
             </div>
@@ -86,9 +86,10 @@
                             <tbody th:each="account : ${accounts}">
                             <tr>
                                 <td>
-                                    <!-- Hiển thị ảnh người dùng -->
-                                    <img th:src="${account.imageUrl != null ? account.imageUrl : '/Image/User.png'}" style="width: 50px" alt="User Image">
-
+                                    <!-- Hiển thị ảnh người dùng nếu có -->
+                                    <img th:if="${account.imageUrl != null}" th:src="@{'/Image/imageProfile/' +${account.imageUrl}}" style="width: 50px" alt="User Image">
+                                    <!-- Hiển thị ảnh mặc định nếu không có ảnh người dùng -->
+                                    <img th:unless="${account.imageUrl != null}" th:src="@{/Image/imageProfile/User.png}" style="width: 50px" alt="Default User Image">
                                 </td>
                                 <td th:text="${account.username}"></td>
                                 <td>*****</td>
