@@ -86,59 +86,19 @@
                 </div>
             </div>
 
-<!--            <div class="select">-->
-<!--                <div-->
-<!--                        class="selected"-->
-<!--                        data-default="All"-->
-<!--                        data-one="option-1"-->
-<!--                        data-two="option-2"-->
-<!--                        data-three="option-3"-->
-<!--                >-->
-<!--                    <svg-->
-<!--                            xmlns="http://www.w3.org/2000/svg"-->
-<!--                            height="1em"-->
-<!--                            viewBox="0 0 512 512"-->
-<!--                            class="arrow"-->
-<!--                    >-->
-<!--                        <path-->
-<!--                                d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"-->
-<!--                        ></path>-->
-<!--                    </svg>-->
-<!--                </div>-->
-<!--                <div class="options">-->
-<!--                    <div title="all">-->
-<!--                        <input id="all" name="option" type="radio" checked="" />-->
-<!--                        <label class="option" for="all" data-txt="All"></label>-->
-<!--                    </div>-->
-<!--                    <div title="option-1">-->
-<!--                        <input id="option-1" name="option" type="radio" />-->
-<!--                        <label class="option" for="option-1" data-txt="option-1"></label>-->
-<!--                    </div>-->
-<!--                    <div title="option-2">-->
-<!--                        <input id="option-2" name="option" type="radio" />-->
-<!--                        <label class="option" for="option-2" data-txt="option-2"></label>-->
-<!--                    </div>-->
-<!--                    <div title="option-3">-->
-<!--                        <input id="option-3" name="option" type="radio" />-->
-<!--                        <label class="option" for="option-3" data-txt="option-3"></label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
             <!--            Trang sản phẩm -->
             <div class="container-fluid">
-                <h3 class="">Sản Phẩm Nổi Bật</h3>
                 <div class="row ms-1 mt-5">
+                    <h3 class="">Sản Phẩm Nổi Bật</h3>
                     <div th:each="p : ${product}" class="col-3 mt-5 d-flex justify-content-center">
                         <div class="con">
                             <div class="card_box">
                                 <div>
                                     <a th:href="@{|/product/detail/${p.productId}|}">
-                                        <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
+                                        <div th:if="${p.images != null and p.images.size() > 0}">
+                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
+                                        </div>
                                     </a>
-<!--                                    <div th:if="${p.images != null}" th:each="image : ${p.images}">-->
-<!--&lt;!&ndash;                                        <img th:src="@{'/Image/imageUrl/' + ${image.imageUrl}}" alt="Image" style="width: 50px; height: auto;" />&ndash;&gt;-->
-<!--                                        <h2 th:text="${image.imageUrl}"></h2>-->
-<!--                                    </div>-->
                                     <div class="card-body">
                                         <h5  class="text-danger">[[${p.sale}]]00.đ</h5>
                                         <h6 class="text-primary">Giá góc [[${p.price}]]00.đ</h6>
@@ -171,21 +131,20 @@
                     <div class="row mt-2">
                         <h3 class="my-3">Sản phẩm bán chạy</h3>
                         <div class="col-3">
-                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner2.jpg" style="height: 800px" class="img-fluid " alt="...">
+                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner2.jpg" style="height: 830px" class="img-fluid " alt="...">
                         </div>
                         <div class="col-9">
                             <div class="row ms-1 mt-3">
-                                <div th:each="p : ${product}" class="col-3 mb-5 d-flex justify-content-center">
+                                <div th:each="p : ${product1}" class="col-3 mb-5 d-flex justify-content-center">
                                     <div class="con">
                                         <div class="card_box">
                                             <div>
                                                 <a th:href="@{|/product/detail/${p.productId}|}">
-                                                    <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
+                                                    <div th:if="${p.images != null and p.images.size() > 0}">
+                                                        <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
+                                                    </div>
                                                 </a>
-                                                <!--                                    <div th:if="${p.images != null}" th:each="image : ${p.images}">-->
-                                                <!--&lt;!&ndash;                                        <img th:src="@{'/Image/imageUrl/' + ${image.imageUrl}}" alt="Image" style="width: 50px; height: auto;" />&ndash;&gt;-->
-                                                <!--                                        <h2 th:text="${image.imageUrl}"></h2>-->
-                                                <!--                                    </div>-->
+
                                                 <div class="card-body">
                                                     <h5  class="text-danger">[[${p.sale}]]00.đ</h5>
                                                     <h6 class="text-primary">Giá góc [[${p.price}]]00.đ</h6>
@@ -200,19 +159,9 @@
                                     </div>
                                 </div>
                             </div>
-<!--                            <div class="container-fluid mt-5">-->
-<!--                                <nav aria-label="Page navigation example">-->
-<!--                                    <ul class="pagination d-flex justify-content-center">-->
-<!--                                        <li th:if="${currenPage > 1}" class="page-item disabled"><a class="page-link" th:href="@{'?pageNo='+${currenPage -1}}">Previous</a></li>-->
-<!--                                        <li th:each="i:${#numbers.sequence(1,totalPage)}" th:classappend="${currenPage == i ? 'active' : ''}" class="page-item">-->
-<!--                                            <a th:href="@{${keyword != null && keyword!='' ? '?keyword='+keyword+'&':'?'}+'pageNo='+${i}}" class="page-link" th:text="${i}"></a>-->
-<!--                                        </li>-->
-<!--                                        <li th:if="${currenPage < totalPage}" class="page-item"><a class="page-link" th:href="@{'?pageNo='+${currenPage +1}}">Next</a></li>-->
-<!--                                    </ul>-->
-<!--                                </nav>-->
-<!--                            </div>-->
-                        </div>
+                            <h5 class="text-center text-primary mt-3">Xem tất cả</h5>
                     </div>
+
                 </div>
 
                 <div class="container-fluid my-5">
@@ -258,109 +207,30 @@
                     <h3 class="my-3">Bán chạy</h3>
                     <div class="row">
                         <div class="col-3">
-                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner1.jpg" style="height: 670px" class="img-fluid " alt="...">
+                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner1.jpg" style="height: 830px" class="img-fluid " alt="...">
                         </div>
                         <div class="col-9">
                             <div class="row ms-1 mt-3">
-                                <div class="col-3">
-                                    <div style="width: 11rem;">
-                                        <img src="https://img.onelife.vn/pEXPj8ff1RtXJoqofCDuau_KiZt-QZBXwkawMPrHqyw/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/712-91071.jpg" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">15.000 đ</h5>
-                                            <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
-                                            <div class="d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
+                                <div th:each="p : ${product1}" class="col-3 mb-5 d-flex justify-content-center">
+                                    <div class="con">
+                                        <div class="card_box">
+                                            <div>
+                                                <a th:href="@{|/product/detail/${p.productId}|}">
+                                                    <div th:if="${p.images != null and p.images.size() > 0}">
+                                                        <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
+                                                    </div>
+                                                </a>
 
+                                                <div class="card-body">
+                                                    <h5  class="text-danger">[[${p.sale}]]00.đ</h5>
+                                                    <h6 class="text-primary">Giá góc [[${p.price}]]00.đ</h6>
+                                                    <p th:text="${p.description}" class="card-text"></p>
+                                                    <div class="d-grid gap-2">
+                                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua ngay</button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div style="width: 11rem;">
-                                        <img src="https://img.onelife.vn/rW2wuF_fJG5EInghONuaGaYo5FO7QyjwH3zMGQT4A4o/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/10/26/15439-376749.jpg" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">15.000 đ</h5>
-                                            <p class="card-text">Khoai tây Đà Lạt túi 500g (1 Túi)</p>
-                                            <div class="d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div style="width: 11rem;">
-                                        <img src="https://img.onelife.vn/tuzO4m-3UQMOmdIiKDyK9HICUFGq9yOgNKSWxsYFaog/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/4154-96660.jpg" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">15.000 đ</h5>
-                                            <p class="card-text">Nước tăng lực Redbull 250ml (1 Lon)</p>
-                                            <div class="d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div style="width: 11rem;">
-                                        <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">15.000 đ</h5>
-                                            <p class="card-text">Nho xanh Mỹ hàng air túi 1kg (1 Túi)</p>
-                                            <div class="d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div style="width: 11rem;">
-                                        <img src="https://img.onelife.vn/pEXPj8ff1RtXJoqofCDuau_KiZt-QZBXwkawMPrHqyw/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/712-91071.jpg" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">15.000 đ</h5>
-                                            <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
-                                            <div class="d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div style="width: 11rem;">
-                                        <img src="https://img.onelife.vn/rW2wuF_fJG5EInghONuaGaYo5FO7QyjwH3zMGQT4A4o/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/10/26/15439-376749.jpg" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">15.000 đ</h5>
-                                            <p class="card-text">Khoai tây Đà Lạt túi 500g (1 Túi)</p>
-                                            <div class="d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div style="width: 11rem;">
-                                        <img src="https://img.onelife.vn/tuzO4m-3UQMOmdIiKDyK9HICUFGq9yOgNKSWxsYFaog/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/4154-96660.jpg" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">15.000 đ</h5>
-                                            <p class="card-text">Nước tăng lực Redbull 250ml (1 Lon)</p>
-                                            <div class="d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div style="width: 11rem;">
-                                        <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">15.000 đ</h5>
-                                            <p class="card-text">Nho xanh Mỹ hàng air túi 1kg (1 Túi)</p>
-                                            <div class="d-grid gap-2">
-                                                <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
-                                            </div>
+                                            <span>[[${p.sale}]]</span>
                                         </div>
                                     </div>
                                 </div>
@@ -380,104 +250,32 @@
                     </div>
                 </div>
 
-                <div class="container-fluit">
+                <div class="container-fluid">
                     <div class="row">
-                        <div class="col-2">
-                            <div style="width: 12rem;">
-                                <img src="https://img.onelife.vn/pEXPj8ff1RtXJoqofCDuau_KiZt-QZBXwkawMPrHqyw/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/712-91071.jpg" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">15.000 đ</h5>
-                                    <p class="text-body-secondary mb-4">
-                                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#">Tiết kiệm 10.000 đ</a>
-                                    </p>
-                                    <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
+                        <div th:each="p : ${product2}" class="col-2 mt-5 d-flex justify-content-center">
+                            <div class="con">
+                                <div class="card_box">
+                                    <div>
+                                        <a th:href="@{|/product/detail/${p.productId}|}">
+                                            <div th:if="${p.images != null and p.images.size() > 0}">
+                                                <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
+                                            </div>
+                                        </a>
+                                        <div class="card-body">
+                                            <h5  class="text-danger">[[${p.sale}]]00.đ</h5>
+                                            <h6 class="text-primary">Giá góc [[${p.price}]]00.đ</h6>
+                                            <p th:text="${p.description}" class="card-text"></p>
+                                            <div class="d-grid gap-2">
+                                                <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua ngay</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <div style="width: 12rem;">
-                                <img src="https://img.onelife.vn/rW2wuF_fJG5EInghONuaGaYo5FO7QyjwH3zMGQT4A4o/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/10/26/15439-376749.jpg" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">15.000 đ</h5>
-                                    <p class="text-body-secondary mb-4">
-                                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#">Tiết kiệm 10.000 đ</a>
-                                    </p>
-                                    <p class="card-text">Khoai tây Đà Lạt túi 500g (1 Túi)</p>
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <div style="width: 12rem;">
-                                <img src="https://img.onelife.vn/tuzO4m-3UQMOmdIiKDyK9HICUFGq9yOgNKSWxsYFaog/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/4154-96660.jpg" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">15.000 đ</h5>
-                                    <p class="text-body-secondary mb-4">
-                                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#">Tiết kiệm 10.000 đ</a>
-                                    </p>
-                                    <p class="card-text">Nước tăng lực Redbull 250ml (1 Lon)</p>
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <div style="width: 12rem;">
-                                <img src="https://img.onelife.vn/GY2oih1assfOfQxu3X2XSPIyL3wdqrTtt2L9JZAk6Mo/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/9/23/576845-1101310_2.webp" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">15.000 đ</h5>
-                                    <p class="text-body-secondary mb-4">
-                                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.000 đ</a>
-                                    </p>
-                                    <p class="card-text">Nho xanh Mỹ hàng air túi 1kg (1 Túi)</p>
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <div style="width: 12rem;">
-                                <img src="https://img.onelife.vn/ps21hX7VfZnN9ajDxB8aORM1jSvov559xKjyntB80s8/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2023/4/28/93-99996.jpg" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">15.000 đ</h5>
-                                    <p class="text-body-secondary mb-4">
-                                        <del>25.500đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.500đ</a>
-                                    </p>
-                                    <p class="card-text">Bông cải xanh VietGAP Đà Lạt 350g (1 Bông)</p>
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-2">
-                            <div style="width: 12rem;">
-                                <img src="https://img.onelife.vn/zI9T6rmu8LMgXdWW3k4UW-QogAEYCTR9N9Zp2Wsdxtg/rs:fit:250:250:1/plain/https://storage.googleapis.com/sc_pcm_product/prod/2024/3/6/20604-031146150601_.jpg" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">15.000 đ</h5>
-                                    <p class="text-body-secondary mb-4">
-                                        <del>14.900đ</del> <a class="link-offset-2 link-underline link-underline-opacity-0" href="#"> Tiết kiệm 10.000 đ</a>
-                                    </p>
-                                    <p class="card-text">xà lách thủy tinh thủy canh gói 200g (1 Gói)</p>
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
-                                    </div>
+                                    <span>[[${p.sale}]]</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <h5 class="text-center text-primary mt-3">Xem tất cả</h5>
+                    <h5 class="text-center text-primary mt-5">Xem tất cả</h5>
                 </div>
             </div>
             <hr class="mt-5">
@@ -517,7 +315,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/bia-hoegaarden-330ml-2923.png" class="img-fluid" alt="...">
+                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/banh-mi-o-47250.jpg" class="img-fluid" alt="...">
                         </div>
                         <div class="col-7">
                             <h5>Bánh mì ổ lớn dài</h5>

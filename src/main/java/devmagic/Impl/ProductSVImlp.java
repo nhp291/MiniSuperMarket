@@ -28,6 +28,12 @@ public class ProductSVImlp implements ProductSV {
     }
 
     @Override
+    public List<Product> finTop6Product() {
+        Pageable limit = PageRequest.of(6, 6);  // Lấy trang đầu tiên với 6 sản phẩm
+        return productRepository.findAll(limit).getContent();
+    }
+
+    @Override
     public Page<Product> getall(Integer pageable) {
          Pageable page = PageRequest.of(pageable-1, 8);
         return this.productRepository.findAll(page);
@@ -35,7 +41,6 @@ public class ProductSVImlp implements ProductSV {
 
     @Override
     public List<Product> searchProduct(String keyword) {
-
         return this.productRepository.searchProduct(keyword);
     }
 
@@ -52,7 +57,13 @@ public class ProductSVImlp implements ProductSV {
 
     @Override
     public Page<Product> getForAll(Integer pageable) {
-        Pageable page = PageRequest.of(pageable +4, 6);
+        Pageable page = PageRequest.of(pageable +4, 8);
+        return this.productRepository.findAll(page);
+    }
+
+    @Override
+    public Page<Product> getFiveAll(Integer pageable) {
+        Pageable page = PageRequest.of(pageable +8, 8);
         return this.productRepository.findAll(page);
     }
 }
