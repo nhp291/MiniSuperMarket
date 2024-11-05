@@ -49,7 +49,9 @@ public class HomeUserController {
     @RequestMapping("/product/detail/{id}")
     public String ProductDetail(Model model , @PathVariable("id") Integer id) {
         Product item = productSV.findById(id);
+        List<Product> product2 = this.productSV.finTop6Product();
         model.addAttribute("item", item);
+        model.addAttribute("product2", product2);
         return "layout/ProductDetail";
     }
 
