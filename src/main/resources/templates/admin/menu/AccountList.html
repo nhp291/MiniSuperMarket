@@ -10,11 +10,11 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h2><strong>Account list</strong></h2>
+                    <h2><strong>Danh sách tài khoản</strong></h2>
                 </div>
                 <div class="page-btn">
                     <a th:href="@{/Accounts/AddAccount}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" class="me-1" alt="img">Add Account
+                        <img src="/admin/img/icons/plus.svg" class="me-1" alt="img">Thêm tài khoản
                     </a>
                 </div>
             </div>
@@ -73,14 +73,14 @@
                         <table class="table text-center">
                             <thead>
                             <tr>
-                                <th>User Images</th>
-                                <th>UserName</th>
-                                <th>Password</th>
+                                <th>Hình ảnh</th>
+                                <th>Tên người dùng</th>
+                                <th>Mật khẩu</th>
                                 <th>Email</th>
-                                <th>Phone</th>
-                                <th>Address</th>
-                                <th>Role</th>
-                                <th>Action</th>
+                                <th>Số điện thoại</th>
+                                <th>Địa chỉ</th>
+                                <th>Quyền</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody th:each="account : ${accounts}">
@@ -98,9 +98,9 @@
                                 <td th:text="${account.address}"></td>
                                 <td th:text="${account.role.roleName}"></td>
                                 <td>
-                                    <a class="bg-info btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Edit</a>
+                                    <a class="bg-info btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Sửa</a>
                                     <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
-                                        <button class="bg-danger btn" type="submit">Delete</button>
+                                        <button class="bg-danger btn" type="submit" >Xóa</button>
                                     </form>
                                 </td>
                             </tr>

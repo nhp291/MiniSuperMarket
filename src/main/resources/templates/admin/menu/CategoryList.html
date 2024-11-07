@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
 </head>
@@ -9,95 +9,40 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4> Category list</h4>
-                    <h6>View/Search  Category</h6>
+                    <h4>Danh sách loại hàng</h4>
                 </div>
                 <div class="page-btn">
-                    <a th:href="@{/Categories/AddCategory}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" class="me-1" alt="img">Add Category
-                    </a>
+                    <a th:href="@{/Categories/AddCategory}" class="btn btn-added">Thêm loại hàng</a>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-path">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <img src="/admin/img/icons/filter.svg" alt="img">
-                                    <span><img src="/admin/img/icons/closes.svg" alt="img"></span>
-                                </a>
-                            </div>
-                            <div class="search-input">
-                                <a class="btn btn-searchset"><img src="/admin/img/icons/search-white.svg" alt="img"></a>
-                            </div>
-                        </div>
-                        <div class="wordset">
-                            <ul>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                            src="/admin/img/icons/pdf.svg" alt="img"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                            src="/admin/img/icons/excel.svg" alt="img"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                            src="/admin/img/icons/printer.svg" alt="img"></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label>
-                                            <select class="form-select">
-                                                <option>Choose Category</option>
-                                                <option>Computers</option>
-                                            </select>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                    <div class="form-group">
-                                        <a class="btn btn-filters ms-auto">
-                                            <img src="/admin/img/icons/search-whites.svg" alt="img">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table datanew">
                             <thead>
                             <tr>
-                                <th>Images</th>
-                                <th>Category name</th>
-                                <th>Description</th>
-                                <th>Action</th>
+                                <th>Hình</th>
+                                <th>Tên loại hàng</th>
+                                <th>Mô tả</th>
+                                <th>Thao tác</th>
                             </tr>
                             </thead>
                             <tbody th:each="category : ${categories}">
-                                <tr>
-                                    <td>
-                                        <img th:src="@{/Image/imageUrl/{image}(image=${category.imageUrl})}"
-                                             th:alt="${category.categoryName}" style="width:70px; height:auto;" />
-                                    </td>
-                                    <td th:text="${category.categoryName}"></td>
-                                    <td th:text="${category.description}"></td>
-                                    <td>
-                                        <a th:href="@{/Categories/EditCategory/{id}(id=${category.categoryId})}">Edit</a>
-                                        <a th:href="@{/Categories/DeleteCategory/{id}(id=${category.categoryId})}">Delete</a>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>
+                                    <img th:src="@{/Image/imageUrl/{image}(image=${category.imageUrl})}"
+                                         th:alt="${category.categoryName}" style="width:70px; height:auto;" />
+                                </td>
+                                <td th:text="${category.categoryName}"></td>
+                                <td th:text="${category.description}"></td>
+                                <td>
+                                    <a th:href="@{/Categories/edit/{id}(id=${category.categoryId})}" class=" btn bg-info">Sửa</a>
+                                    <form th:action="@{/Categories/DeleteCategory/{id}(id=${category.categoryId})}" method="post" style="display:inline;">
+                                        <button class="bg-danger btn" type="submit"  onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
+                                    </form>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

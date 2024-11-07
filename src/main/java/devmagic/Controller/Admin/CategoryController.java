@@ -6,18 +6,22 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.nio.file.*;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.util.StringUtils;
 
 @Controller
 @RequestMapping("/Categories")
 public class CategoryController {
+
     @Autowired
     private CategoryService categoryService;
 
@@ -25,9 +29,6 @@ public class CategoryController {
     @GetMapping("/CategoryList")
     public String categoryList(Model model) {
         List<Category> categories = categoryService.getAllCategories();
-        if (categories == null) {
-            categories = new ArrayList<>(); // Đảm bảo danh sách không NULL
-        }
         model.addAttribute("categories", categories);
         model.addAttribute("pageTitle", "Danh sách danh mục");
         model.addAttribute("viewName", "admin/menu/CategoryList");
@@ -38,27 +39,51 @@ public class CategoryController {
     @GetMapping("/AddCategory")
     public String addCategoryForm(Model model) {
         model.addAttribute("category", new Category());
-        model.addAttribute("pageTitle", "Danh mục loại sản phẩm");
+        model.addAttribute("pageTitle", "Thêm danh mục");
         model.addAttribute("viewName", "admin/menu/AddCategory");
         return "admin/layout";
     }
 
-    // Xử lý việc tạo danh mục mới
+    // Xử lý thêm danh mục
     @PostMapping("/AddCategory")
     public String addCategory(@Valid @ModelAttribute("category") Category category,
-                              @RequestParam("imageFile") MultipartFile imageFile) {
-        // Xử lý lưu hình ảnh
-        if (!imageFile.isEmpty()) {
-            String imagePath = saveImage(imageFile); // Hàm lưu hình ảnh
-            category.setImageUrl(imagePath);
+                              BindingResult result,
+                              @RequestParam("imageFile") MultipartFile imageFile,
+                              Model model) throws IOException {
+        if (result.hasErrors()) {
+            model.addAttribute("pageTitle", "Thêm danh mục");
+            model.addAttribute("viewName", "admin/menu/AddCategory");
+            return "admin/layout";
         }
+
+        String projectImageDir = "src/main/resources/static/Image/imageUrl/";
+
+        if (!imageFile.isEmpty()) {
+            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            Path uploadPath = Paths.get(projectImageDir);
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            try (InputStream inputStream = imageFile.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new IOException("Không thể lưu tệp hình ảnh: " + fileName, e);
+            }
+            category.setImageUrl(fileName);
+        } else {
+            category.setImageUrl("/Image/imageUrl/Default.jpg");
+        }
+
         categoryService.createCategory(category);
         return "redirect:/Categories/CategoryList";
     }
 
     // Hiển thị form chỉnh sửa danh mục
-    @GetMapping("/EditCategory/{id}")
-    public String editCategoryForm(@PathVariable Integer id, Model model) {
+    @GetMapping("/edit/{id}")
+    public String editCategoryForm(@PathVariable("id") Integer id, Model model) {
         Optional<Category> categoryOptional = categoryService.findById(id);
         if (categoryOptional.isPresent()) {
             model.addAttribute("category", categoryOptional.get());
@@ -66,41 +91,58 @@ public class CategoryController {
             model.addAttribute("viewName", "admin/menu/AddCategory");
             return "admin/layout";
         } else {
-            return "redirect:/Categories/CategoryList"; // Quay về danh sách nếu không tìm thấy
+            model.addAttribute("error", "Không tìm thấy danh mục.");
+            return "redirect:/Categories/CategoryList";
         }
     }
 
-    // Xử lý việc cập nhật danh mục
-    @PostMapping("/UpdateCategory/{id}")
-    public String updateCategory(@PathVariable Integer id,
-                                 @Valid @ModelAttribute("category") Category category,
-                                 @RequestParam("imageFile") MultipartFile imageFile) {
-        // Xử lý lưu hình ảnh
+    // Xử lý cập nhật danh mục
+    @PostMapping("/update")
+    public String updateCategory(@Valid @ModelAttribute("category") Category category,
+                                 BindingResult result,
+                                 @RequestParam("imageFile") MultipartFile imageFile,
+                                 Model model) throws IOException {
+
+        if (result.hasErrors()) {
+            model.addAttribute("pageTitle", "Chỉnh sửa danh mục");
+            model.addAttribute("viewName", "admin/menu/AddCategory");
+            return "admin/layout";
+        }
+
         if (!imageFile.isEmpty()) {
-            String imagePath = saveImage(imageFile); // Hàm lưu hình ảnh
-            category.setImageUrl(imagePath);
+            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            String projectImageDir = "src/main/resources/static/Image/imageUrl/";
+            Path uploadPath = Paths.get(projectImageDir);
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            try (InputStream inputStream = imageFile.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new IOException("Không thể lưu tệp hình ảnh: " + fileName, e);
+            }
+            category.setImageUrl( fileName);
+        } else {
+            Optional<Category> existingCategory = categoryService.findById(category.getCategoryId());
+            category.setImageUrl(existingCategory.map(Category::getImageUrl).orElse("/Image/imageUrl/Default.jpg"));
         }
-        categoryService.updateCategory(id, category);
+
+        categoryService.updateCategory(category.getCategoryId(), category);
         return "redirect:/Categories/CategoryList";
     }
 
-    // Xóa danh mục theo ID
-    @GetMapping("/DeleteCategory/{id}")
-    public String deleteCategory(@PathVariable Integer id) {
-        categoryService.deleteCategory(id);
-        return "redirect:/Categories/CategoryList";
-    }
-
-    // Hàm lưu hình ảnh
-    private String saveImage(MultipartFile imageFile) {
-        String directory = "C:/Phong/Intellij_IDE/MiniSuperMarket/src/main/resources/static/Image/";
-        String imagePath = directory + imageFile.getOriginalFilename();
-        try {
-            File file = new File(imagePath);
-            imageFile.transferTo(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+    // Xóa danh mục
+    @PostMapping("/DeleteCategory/{id}")
+    public String deleteCategory(@PathVariable("id") Integer id, Model model) {
+        Optional<Category> categoryOptional = categoryService.findById(id);
+        if (categoryOptional.isPresent()) {
+            categoryService.deleteCategory(id);
+        } else {
+            model.addAttribute("error", "Không tìm thấy danh mục.");
         }
-        return "Image/" + imageFile.getOriginalFilename(); // Trả về đường dẫn tương đối
+        return "redirect:/Categories/CategoryList";
     }
 }

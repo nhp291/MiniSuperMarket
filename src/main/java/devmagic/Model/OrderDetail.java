@@ -13,21 +13,19 @@ import lombok.NoArgsConstructor;
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderDetailId; // Khóa chính với tự động tăng
+    private int orderDetailId;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    private Order order; // Khóa ngoại tham chiếu đến bảng Orders
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product; // Khóa ngoại tham chiếu đến bảng Product
+    private Product product;
 
     @Column(name = "quantity", nullable = false)
-    private int quantity; // Số lượng sản phẩm
+    private int quantity;
 
     @Column(name = "price", nullable = false)
-    private double price; // Giá của sản phẩm tại thời điểm đặt hàng
-
+    private double price;
 }
-

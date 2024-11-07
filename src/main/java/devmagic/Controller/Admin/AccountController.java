@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.springframework.util.StringUtils;
 
@@ -30,117 +29,124 @@ public class AccountController {
     @Autowired
     private RoleRepository roleRepository;
 
-    private static final Logger LOGGER = Logger.getLogger(AccountController.class.getName());
-    private static final String UPLOAD_DIR = "Image/imageProfile/";
-
-    // Phương thức xử lý lưu tài khoản và quản lý tải lên hình ảnh
-    private void handleAccountSave(Account account, MultipartFile imageFile, String password,
-                                   String confirmPassword) throws IOException {
-        if (!password.equals(confirmPassword)) {
-            throw new IllegalArgumentException("Mật khẩu không trùng khớp!");
-        }
-
-        if (!imageFile.isEmpty()) {
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            try (InputStream inputStream = imageFile.getInputStream()) {
-                Files.copy(inputStream, uploadPath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
-                account.setImageUrl("/" + UPLOAD_DIR + fileName);
-            }
-        } else if (account.getImageUrl() == null || account.getImageUrl().isEmpty()) {
-            account.setImageUrl("/" + UPLOAD_DIR + "User.jpg");
-        }
-
-        accountService.saveAccount(account);
-    }
-
-    // Lấy danh sách tài khoản
     @GetMapping("/AccountList")
     public String accountList(Model model) {
         List<Account> accounts = accountService.getAllAccounts();
         model.addAttribute("accounts", accounts);
-        model.addAttribute("pageTitle", "Danh sách tài khoản");
+        model.addAttribute("pageTitle", "Account List");
         model.addAttribute("viewName", "admin/menu/AccountList");
         return "admin/layout";
     }
 
-    // Mở form thêm tài khoản
     @GetMapping("/AddAccount")
     public String addAccountForm(Model model) {
         model.addAttribute("account", new Account());
         model.addAttribute("roles", roleRepository.findAll());
-        model.addAttribute("pageTitle", "Thêm tài khoản");
+        model.addAttribute("pageTitle", "Add Account");
         model.addAttribute("viewName", "admin/menu/AddAccount");
         return "admin/layout";
     }
 
-    // Xử lý thêm tài khoản mới
     @PostMapping("/AddAccount")
     public String addAccount(@Valid @ModelAttribute("account") Account account, BindingResult result,
-                             @RequestParam("imageUrl") MultipartFile imageFile,
-                             @RequestParam("password") String password,
-                             @RequestParam("confirmPassword") String confirmPassword,
-                             Model model) throws IOException {
+                             @RequestParam("imageFile") MultipartFile imageFile, Model model) throws IOException {
         if (result.hasErrors()) {
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("pageTitle", "Thêm tài khoản");
+            model.addAttribute("viewName", "admin/menu/AddAccount");
             return "admin/layout";
         }
 
-        try {
-            handleAccountSave(account, imageFile, password, confirmPassword);
-        } catch (IllegalArgumentException e) {
-            result.rejectValue("password", "error.account", e.getMessage());
-            model.addAttribute("roles", roleRepository.findAll());
-            return "admin/layout";
+        // Đường dẫn trong project để lưu hình ảnh
+        String projectImageDir = "src/main/resources/static/Image/imageProfile/";
+
+        if (!imageFile.isEmpty()) {
+            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            Path uploadPath = Paths.get(projectImageDir);
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            try (InputStream inputStream = imageFile.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new IOException("Không thể lưu tệp hình ảnh: " + fileName, e);
+            }
+
+            account.setImageUrl(    fileName); // URL để truy cập hình ảnh
+        } else {
+            account.setImageUrl("/Image/imageProfile/User.jpg"); // Hình ảnh mặc định
         }
 
+        // Lưu tài khoản
+        accountService.saveAccount(account);
         return "redirect:/Accounts/AccountList";
     }
 
-    // Mở form chỉnh sửa tài khoản
+
     @GetMapping("/edit/{id}")
     public String editAccountForm(@PathVariable("id") Integer id, Model model) {
         Account account = accountService.getAccountById(id);
         if (account == null) {
-            model.addAttribute("error", "Không tìm thấy tài khoản!");
+            model.addAttribute("error", "Account not found!");
             return "redirect:/Accounts/AccountList";
         }
         model.addAttribute("account", account);
         model.addAttribute("roles", roleRepository.findAll());
-        model.addAttribute("pageTitle", "Chỉnh sửa tài khoản");
+        model.addAttribute("pageTitle", "Edit Account");
         model.addAttribute("viewName", "admin/menu/AddAccount");
         return "admin/layout";
     }
 
-    // Cập nhật tài khoản
     @PostMapping("/update")
     public String updateAccount(@Valid @ModelAttribute("account") Account account, BindingResult result,
-                                @RequestParam("imageUrl") MultipartFile imageFile,
-                                @RequestParam("password") String password,
-                                @RequestParam("confirmPassword") String confirmPassword,
-                                Model model) throws IOException {
+                                @RequestParam("imageUrl") MultipartFile imageFile, @RequestParam("password") String password,
+                                @RequestParam("confirmPassword") String confirmPassword, Model model) throws IOException {
+
         if (result.hasErrors()) {
             model.addAttribute("roles", roleRepository.findAll());
-            model.addAttribute("pageTitle", "Chỉnh sửa tài khoản");
+            model.addAttribute("pageTitle", "Edit Account");
             return "admin/layout";
         }
 
-        try {
-            handleAccountSave(account, imageFile, password, confirmPassword);
-        } catch (IllegalArgumentException e) {
-            result.rejectValue("password", "error.account", e.getMessage());
-            model.addAttribute("roles", roleRepository.findAll());
-            return "admin/layout";
+        if (!password.equals("*****") && !password.isEmpty() && password.equals(confirmPassword)) {
+            account.setPassword(password);
+        } else {
+            Account existingAccount = accountService.getAccountById(account.getAccountId());
+            account.setPassword(existingAccount.getPassword());
         }
 
+        if (!imageFile.isEmpty()) {
+            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            String uploadDir = "Image/imageProfile/";
+            Path uploadPath = Paths.get(uploadDir);
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            try (InputStream inputStream = imageFile.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new IOException("Could not save image file: " + fileName, e);
+            }
+            account.setImageUrl("/Image/imageProfile/" + fileName);
+        } else {
+            Account existingAccount = accountService.getAccountById(account.getAccountId());
+            if (existingAccount.getImageUrl() == null || existingAccount.getImageUrl().isEmpty()) {
+                account.setImageUrl("/Image/imageProfile/User.png");
+            } else {
+                account.setImageUrl(existingAccount.getImageUrl());
+            }
+        }
+
+        accountService.saveAccount(account);
         return "redirect:/Accounts/AccountList";
     }
 
-    // Xóa tài khoản
     @PostMapping("/delete/{id}")
     public String deleteAccount(@PathVariable("id") Integer id) {
         accountService.deleteAccount(id);

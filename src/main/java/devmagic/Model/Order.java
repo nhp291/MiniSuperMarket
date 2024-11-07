@@ -13,20 +13,18 @@ import lombok.NoArgsConstructor;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId; // Khóa chính với tự động tăng
+    private int orderId;
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
-    private Account account; // Khóa ngoại tham chiếu đến bảng Account
+    private Account account;
 
     @Column(name = "order_date", nullable = false)
-    private java.util.Date orderDate; // Ngày đặt hàng
+    private java.util.Date orderDate;
 
     @Column(name = "payment_status", nullable = false)
-    private String paymentStatus; // Trạng thái thanh toán
+    private String paymentStatus;
 
     @Column(name = "payment_method", nullable = false)
-    private String paymentMethod; // Phương thức thanh toán
-
+    private String paymentMethod;
 }
-
