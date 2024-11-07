@@ -11,23 +11,29 @@ import java.util.List;
 
 @Service
 public class AccountService {
-    @Autowired
-    private AccountRepository accountRepository;
+
+    private final AccountRepository accountRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    public AccountService(AccountRepository accountRepository, RoleRepository roleRepository) {
+        this.accountRepository = accountRepository;
+        this.roleRepository = roleRepository;
+    }
 
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
 
     public void saveAccount(Account account) {
-        // Kiểm tra role xem đã được chọn chưa
         if (account.getRole() != null) {
             Role role = roleRepository.findById(account.getRole().getRoleId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid role ID: " + account.getRole().getRoleId()));
-            account.setRole(role); // Gán lại role từ cơ sở dữ liệu
+            account.setRole(role);
         }
+
+        System.out.println("Saving account: " + account.toString());
+
         accountRepository.save(account);
     }
 

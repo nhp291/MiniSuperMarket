@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<div class="main-wrapper">
+<div class="main-wrapper" th:fragment="content">
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
@@ -98,14 +98,14 @@
                         <table class="table datanew">
                             <thead>
                             <tr>
-                                <th>Images</th>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Brand</th>
-                                <th>Price</th>
-                                <th>Sale</th>
-                                <th>Qty</th>
-                                <th>Action</th>
+                                <th>Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Thương hiệu</th>
+                                <th>Giá</th>
+                                <th>Giảm giá</th>
+                                <th>Số lượng</th>
+                                <th></th>
                             </tr>
                             </thead>
 
@@ -123,8 +123,8 @@
                                     <td th:text="${product.sale != null ? product.sale : 0}">Giảm giá</td>
                                     <td th:text="${product.stockQuantity}">Số lượng</td>
                                     <td>
-                                        <a th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">Chỉnh sửa</a>
-                                        <a th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">Xóa</a>
+                                        <a class="btn bg-info" th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">Sửa</a>
+                                        <a class="btn bg-danger" th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">Xóa</a>
                                     </td>
                                 </tr>
                             </tbody>

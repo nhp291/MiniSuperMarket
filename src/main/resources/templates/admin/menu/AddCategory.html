@@ -3,58 +3,65 @@
 <head>
     <meta charset="utf-8">
     <title>Create New Product Category</title>
-    <link rel="stylesheet" href="/path/to/your/styles.css"> <!-- Link đến file CSS của bạn -->
+    <link rel="stylesheet" href="/admin/css/styles.css">
 </head>
 <body>
-<div class="main-wrapper">
+<div class="main-wrapper" th:fragment="content">
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Product Add Category</h4>
-                    <h6>Create new product Category</h6>
+                    <h4>Thêm loại hàng</h4>
                 </div>
                 <div class="page-btn">
                     <a th:href="@{/Categories/CategoryList}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" class="me-1" alt="img"> Category List
+                        <img src="/admin/img/icons/plus.svg" class="me-1" alt="img"> Danh sách loại hàng
                     </a>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-12 col-sm-12 col-12">
-                            <div class="form-group">
-                                <label>Category Name</label>
-                                <input type="text" th:field="*{categoryName}" class="form-control" required />
-                                <div th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}" class="text-danger"></div>
+                    <form th:action="@{/Categories/AddCategory}" th:object="${category}" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <!-- Tên loại hàng -->
+                            <div class="col-lg-12 col-sm-12 col-12">
+                                <div class="form-group">
+                                    <label for="categoryName">Tên loại hàng</label>
+                                    <input type="text" th:field="*{categoryName}" class="form-control" id="categoryName" placeholder="Nhập tên loại hàng" required />
+                                    <div th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}" class="text-danger"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea th:field="*{description}" class="form-control" required></textarea>
-                                <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
+
+                            <!-- Mô tả loại hàng -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="description">Mô tả</label>
+                                    <textarea th:field="*{description}" class="form-control" id="description" placeholder="Nhập mô tả" required></textarea>
+                                    <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label>Product Image</label>
-                                <div class="image-upload">
-                                    <input type="file" th:field="*{imageUrl}" accept="image/*" class="form-control-file" required />
-                                    <div class="image-uploads">
-                                        <img src="/admin/img/icons/upload.svg" alt="img">
-                                        <h4>Drag and drop a file to upload</h4>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Product Image</label>
+                                    <div class="image-upload">
+                                        <input type="file" name="imageFile" class="form-control">
+                                        <div class="image-uploads">
+                                            <img src="/admin/img/icons/upload.svg" alt="img">
+                                            <h4>Drag and drop a file to upload</h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Nút thao tác -->
+                            <div class="col-lg-12">
+                                <button type="submit" class="btn btn-submit me-2">Lưu</button>
+                                <a th:href="@{/Categories/AddCategory}" class="btn btn-cancel">Hủy</a>
+                            </div>
                         </div>
-                        <div class="col-lg-12">
-                            <button type="submit" class="btn btn-submit me-2">Submit</button>
-                            <a th:href="@{/Categories/CategoryList}" class="btn btn-cancel">Cancel</a>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

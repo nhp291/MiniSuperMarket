@@ -2,122 +2,72 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
+    <title>Add Account</title>
+    <link rel="stylesheet" href="/admin/css/styles.css"> <!-- Ensure correct path to CSS -->
 </head>
 <body>
-<div class="main-wrapper">
+<div class="main-wrapper" th:fragment="content">
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Add Account</h4>
-                    <h6></h6>
+                    <h4>Account Add</h4>
+                    <h6>Create new Account</h6>
                 </div>
                 <div class="page-btn">
                     <a th:href="@{/Accounts/AccountList}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" class="me-1" alt="img"> Account List
+                        <img src="/admin/img/icons/plus.svg" alt="img" class="me-1">Account List
                     </a>
                 </div>
             </div>
-
             <form th:action="${#strings.isEmpty(account.accountId) ? '/Accounts/AddAccount' : '/Accounts/update'}"
                   th:object="${account}" method="post" enctype="multipart/form-data">
-
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="col-lg-4 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>User Name</label>
-                                    <label>
-                                        <input type="text" id="username" th:field="*{username}" required>
-                                    </label>
+                                    <input type="text" id="username" th:field="*{username}" required class="form-control">
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="col-lg-4 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Email</label>
-                                    <label>
-                                        <input style="padding: 8px; width: 100%; border: 1px solid #ccc; border-radius: 4px;"
-                                               type="email" id="email" th:field="*{email}" required>
-                                    </label>
+                                    <input type="email" id="email" th:field="*{email}" required class="form-control">
                                 </div>
                             </div>
-
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <div class="pass-group">
-                                        <input type="password" id="password" th:field="*{password}"
-                                               th:placeholder="${#strings.isEmpty(account.accountId) ? 'Enter password' : '*****'}"
-                                               class="form-control" th:readonly="${!#strings.isEmpty(account.accountId) && !#strings.isEmpty(account.password)}">
-                                        <span class="fas toggle-password fa-eye-slash" onclick="togglePasswordVisibility('password', this)"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Confirm Password</label>
-                                    <div class="pass-group">
-                                        <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
-                                               th:placeholder="${#strings.isEmpty(account.accountId) ? 'Confirm password' : '*****'}"
-                                               class="form-control" th:readonly="${!#strings.isEmpty(account.accountId) && !#strings.isEmpty(account.password)}">
-                                        <span class="fas toggle-password fa-eye-slash" onclick="togglePasswordVisibility('confirmPassword', this)"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Phone</label>
-                                    <label>
-                                        <input type="text" id="phoneNumber" th:field="*{phoneNumber}">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Address</label>
-                                    <label>
-                                        <input type="text" id="address" th:field="*{address}">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="col-lg-4 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="role">Role</label>
-                                    <label>
-                                        <select id="role" th:field="*{role}" class="form-select selectpicker"
-                                                data-live-search="true" required>
-                                            <!--                                            <option value="" disabled selected>Select Role</option>-->
-                                            <option th:each="role : ${roles}" th:value="${role.roleId}"
-                                                    th:text="${role.roleName}"></option>
-                                        </select>
-                                    </label>
+                                    <select id="role" th:field="*{role}" class="form-select selectpicker" data-live-search="true" required>
+                                        <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"></option>
+                                    </select>
                                 </div>
                             </div>
-
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <!-- Hiển thị hình ảnh hiện tại nếu có -->
-                                <div th:if="${account.imageUrl != null}">
-                                    <h5>Current Image:</h5>
-                                    <img th:src="@{${account.imageUrl}}" alt="User Image" style="max-width: 50px;">
-                                </div>
-                                <!-- Nếu chưa có ảnh, hiển thị ảnh mặc định -->
-                                <div th:if="${account.imageUrl == null}">
-                                    <img th:src="@{'/Image/User.png'}" alt="Default User Image"
-                                         style="max-width: 60px; margin-left: 40%; margin-top: 8%">
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <input type="text" id="address" th:field="*{address}" class="form-control">
                                 </div>
                             </div>
-
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="password" th:field="*{password}"  class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input type="text" th:field="*{phoneNumber}" required class="form-control">
+                                </div>
+                            </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
-                                    <label>User Image</label>
+                                    <label>Product Image</label>
                                     <div class="image-upload">
-
-
-                                        <!-- Input để tải ảnh lên -->
-                                        <input type="file" name="imageUrl">
+                                        <input type="file" name="imageFile" class="form-control">
                                         <div class="image-uploads">
                                             <img src="/admin/img/icons/upload.svg" alt="img">
                                             <h4>Drag and drop a file to upload</h4>
@@ -125,79 +75,22 @@
                                     </div>
                                 </div>
                             </div>
-
-
-                            <!-- Các nút ở dưới cùng -->
                             <div class="col-lg-12">
-                                <button type="submit" formaction="/Accounts/AddAccount" id="createButton" class="btn btn-submit me-2"
-                                        th:if="${!#strings.isEmpty(account.accountId)}"> <!-- Hiện Create khi đang tạo mới -->
+                                <button type="submit" formaction="/Accounts/AddAccount" class="btn btn-submit me-2">
                                     <span>Create</span>
                                 </button>
-                                <button type="submit" formaction="/Accounts/update" id="updateButton" class="btn btn-submit me-2"
-                                        th:if="${!#strings.isEmpty(account.accountId)}" th:disabled="${#strings.isEmpty(account.accountId)}"> <!-- Vô hiệu hóa nếu là thêm mới -->
-                                    <span>Update</span>
-                                </button>
-                                <button type="submit" class="btn btn-danger me-2"
-                                        th:formaction="@{/Accounts/delete/{id}(id=${account.accountId})}" id="deleteButton"
-                                        th:if="${!#strings.isEmpty(account.accountId)}" th:disabled="${#strings.isEmpty(account.accountId)}"> <!-- Vô hiệu hóa nếu là thêm mới -->
-                                    Delete
-                                </button>
-                                <button type="reset" class="btn btn-cancel" onclick="resetForm()">Reset</button>
+<!--                                <button type="submit" class="btn btn-submit bg-danger me-2"-->
+<!--                                        th:formaction="@{/Accounts/delete/{id}(id=${account.accountId})}">-->
+<!--                                    Delete-->
+<!--                                </button>-->
+                                <a th:href="@{/Accounts/AddAccount}" class="btn btn-cancel">Reset</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
 </body>
-<script>
-    function togglePasswordVisibility(fieldId, icon) {
-        const passwordField = document.getElementById(fieldId);
-
-        // Kiểm tra loại trường mật khẩu
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            icon.classList.remove("fa-eye"); // Biểu tượng hiện
-            icon.classList.add("fa-eye-slash"); // Biểu tượng ẩn
-        } else {
-            passwordField.type = "password";
-            icon.classList.remove("fa-eye-slash"); // Biểu tượng ẩn
-            icon.classList.add("fa-eye"); // Biểu tượng hiện
-        }
-    }
-    function resetForm() {
-        // Reset password fields
-        document.getElementById("password").value = '';
-        document.getElementById("confirmPassword").value = '';
-
-        // Kích hoạt nút "Create" và vô hiệu hóa các nút "Update" và "Delete"
-        const createButton = document.getElementById("createButton");
-        const updateButton = document.getElementById("updateButton");
-        const deleteButton = document.getElementById("deleteButton");
-
-        createButton.disabled = false; // Kích hoạt nút Create
-        updateButton.disabled = true; // Vô hiệu hóa nút Update
-        deleteButton.disabled = true; // Vô hiệu hóa nút Delete
-    }
-    window.onload = function() {
-        resetForm(); // Thiết lập trạng thái ban đầu cho các nút
-    };
-    function editAccountForm(account) {
-        // Giả sử bạn đã có logic để tải thông tin tài khoản vào các trường
-        document.getElementById("accountId").value = account.accountId;
-        document.getElementById("accountName").value = account.accountName;
-        // Cập nhật thêm các trường thông tin khác...
-
-        // Vô hiệu hóa nút Create và kích hoạt nút Update và Delete
-        document.getElementById("createButton").disabled = true; // Vô hiệu hóa nút Create
-        document.getElementById("updateButton").disabled = false; // Kích hoạt nút Update
-        document.getElementById("deleteButton").disabled = false; // Kích hoạt nút Delete
-    }
-
-</script>
-
-
 </html>

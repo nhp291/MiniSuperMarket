@@ -8,7 +8,6 @@
           content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <!--  title thay đổi theo nội dung  -->
     <title th:text="${pageTitle}">Default Title</title>
 
     <link rel="shortcut icon" type="image/x-icon" href="/admin/img/logo.jpg">
@@ -23,28 +22,19 @@
 
 </head>
 <body>
-<!--loading-->
 <div id="global-loader">
     <div class="whirly-loader"></div>
 </div>
 
 <div class="main-wrapper">
 
-    <!--  Start header  -->
     <div th:replace="~{/admin/header}"></div>
-    <!--  End header  -->
 
-    <!--  Start slidebar  -->
     <div th:replace="~{/admin/slidebar}"></div>
-    <!--  End SlideBar  -->
 
-    <!--  Start main  -->
-    <!-- Nội dung chính sẽ được thay đổi tùy theo trang -->
-    <div th:replace="~{${viewName}}"></div>
-    <!--  End main  -->
+    <div th:replace="~{${viewName} :: content}"></div>
 
 </div>
-
 
 <script src="/admin/js/jquery-3.6.0.min.js"></script>
 
