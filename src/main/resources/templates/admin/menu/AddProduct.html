@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Add Product</title>
 </head>
 <body>
 <div class="main-wrapper" th:fragment="content">
     <div class="page-wrapper">
         <div class="content">
-            <div class="content" action="/addProduct" method="post" enctype="multipart/form-data">
+            <form th:action="${url}" th:object="${productDTO}" method="post" enctype="multipart/form-data">
                 <div class="page-header">
                     <div class="page-title">
                         <h4>Product Add</h4>
@@ -24,80 +24,118 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
+                            <!-- Product Name -->
                             <div class="col-lg-4 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Product Name</label>
-                                    <label class="w-100">
-<!--                                        <input type="text">-->
-                                        <input type="text" id="name" name="name" required>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Category</label>
-                                    <label>
-                                        <select class="form-select w-100 h-100">
-                                            <option>Choose Category</option>
-                                            <option>Computers</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Quantity</label>
-                                    <label>
-                                        <input type="text">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Price</label>
-                                    <label>
-                                        <input type="text">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Sale</label>
-                                    <label class="w-100">
-                                        <input type="text">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label>Description</label>
-                                    <label>
-                                        <textarea class="form-control"></textarea>
-                                    </label>
+                                    <label for="name">Product Name</label>
+                                    <input type="text" id="name" name="name" class="form-control" th:value="${productDTO.name}" required>
                                 </div>
                             </div>
 
-                            <div class="col-lg-12">
+                            <!-- Category -->
+                            <div class="col-lg-4 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label> Product Image</label>
-                                    <div class="image-upload">
-                                        <input type="file">
-                                        <div class="image-uploads">
-                                            <img src="/admin/img/icons/upload.svg" alt="img">
-                                            <h4>Drag and drop a file to upload</h4>
-                                        </div>
-                                    </div>
+                                    <label>Category</label>
+                                    <select class="form-select" name="categoryId" required>
+                                        <option value="">Chọn danh mục</option>
+                                        <th:block th:each="category : ${categories}">
+                                            <option th:value="${category.categoryId}"
+                                                    th:text="${category.categoryName}"
+                                                    th:selected="${productDTO.categoryId == category.categoryId}"></option>
+                                        </th:block>
+                                    </select>
                                 </div>
                             </div>
+
+                            <!-- Quantity -->
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Quantity</label>
+                                    <input type="number" name="stockQuantity" class="form-control" th:value="${productDTO.stockQuantity}" required>
+                                </div>
+                            </div>
+
+                            <!-- Price -->
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Price</label>
+                                    <input type="number" name="price" class="form-control" th:value="${productDTO.price}" required>
+                                </div>
+                            </div>
+
+                            <!-- Sale -->
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Sale</label>
+                                    <input type="number" name="sale" class="form-control" th:value="${productDTO.sale != null ? productDTO.sale : 0}">
+                                </div>
+                            </div>
+
+                            <!-- Warehouse -->
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Warehouse</label>
+                                    <select class="form-select" name="warehouseId" required>
+                                        <option value="">Chọn kho</option>
+                                        <th:block th:each="warehouse : ${warehouses}">
+                                            <option th:value="${warehouse.warehouseId}"
+                                                    th:text="${warehouse.warehouseName}"
+                                                    th:selected="${productDTO.warehouseId == warehouse.warehouseId}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Brand -->
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Brand</label>
+                                    <select class="form-select" name="brandId" required>
+                                        <option value="">Chọn thương hiệu</option>
+                                        <th:block th:each="brand : ${brands}">
+                                            <option th:value="${brand.brandId}"
+                                                    th:text="${brand.brandName}"
+                                                    th:selected="${productDTO.brandId == brand.brandId}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
                             <div class="col-lg-12">
-                                <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
-                                <a href="ProductList.html" class="btn btn-cancel">Cancel</a>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea class="form-control" name="description" th:text="${productDTO.description}" required></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Product Images -->
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Product Images</label>
+
+                                    <!-- Display existing images -->
+                                    <div class="image-container" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                        <div th:each="image : ${images}">
+                                            <img th:src="@{'/Image/imageUrl/' + ${image.imageUrl}}" alt="Image" style="width: 150px; height: auto;" />
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload new images -->
+                                    <label>Upload New Images</label>
+                                    <input type="file" name="images" multiple>
+                                </div>
+                            </div>
+
+                            <!-- Submit and Cancel buttons -->
+                            <div class="col-lg-12">
+                                <button type="submit" class="btn btn-submit me-2">Submit</button>
+                                <a th:href="@{/Products/AddProduct}" class="btn btn-cancel">Cancel</a>
                             </div>
                         </div>
                     </div>
                 </div>
-
-            </div>
+            </form>
         </div>
     </div>
 </div>

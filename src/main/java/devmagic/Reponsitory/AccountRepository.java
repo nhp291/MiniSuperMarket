@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     Page<Account> findAll(Pageable pageable);
+
+    long count();
+
 }

@@ -26,53 +26,36 @@ public class ProductService {
     @Autowired
     private ProductImageRepository productImageRepository;
 
-    private final String UPLOAD_DIRECTORY = "./uploads/products/";
+    private final String UPLOAD_DIRECTORY = "./Image/imageUrl/"; // Thư mục lưu trữ ảnh
 
-    /**
-     * Lấy tất cả sản phẩm
-     * @return Danh sách tất cả sản phẩm
-     */
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    /**
-     * Lấy sản phẩm theo ID
-     * @param id ID của sản phẩm cần tìm
-     * @return Sản phẩm nếu tìm thấy, null nếu không tìm thấy
-     */
     public Product getProductById(Integer id) {
         return productRepository.findById(id).orElse(null);
     }
 
-    /**
-     * Tạo sản phẩm mới
-     * @param product Đối tượng Product cần tạo
-     * @param file File hình ảnh của sản phẩm
-     * @return Sản phẩm đã được tạo
-     */
     @Transactional
-    public Product createProduct(Product product, MultipartFile file) {
+    public Product createProduct(Product product, List<MultipartFile> files) throws IOException {
         Product savedProduct = productRepository.save(product);
-        if (file != null && !file.isEmpty()) {
-            String fileName = saveImage(file);
-            ProductImage productImage = new ProductImage();
-            productImage.setProduct(savedProduct);
-            productImage.setImageUrl(fileName);
-            productImageRepository.save(productImage);
+
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    String fileName = saveImage(file);
+                    ProductImage productImage = new ProductImage();
+                    productImage.setProduct(savedProduct);
+                    productImage.setImageUrl(fileName);
+                    productImageRepository.save(productImage);
+                }
+            }
         }
         return savedProduct;
     }
 
-    /**
-     * Cập nhật sản phẩm
-     * @param id ID của sản phẩm cần cập nhật
-     * @param product Thông tin sản phẩm mới
-     * @param file File hình ảnh mới (nếu có)
-     * @return Sản phẩm đã được cập nhật, null nếu không tìm thấy sản phẩm
-     */
     @Transactional
-    public Product updateProduct(Integer id, Product product, MultipartFile file) {
+    public Product updateProduct(Integer id, Product product, MultipartFile file) throws IOException {
         Optional<Product> existingProductOpt = productRepository.findById(id);
         if (existingProductOpt.isPresent()) {
             Product existingProduct = existingProductOpt.get();
@@ -82,7 +65,6 @@ public class ProductService {
             existingProduct.setSale(product.getSale());
             existingProduct.setStockQuantity(product.getStockQuantity());
             existingProduct.setCategory(product.getCategory());
-            existingProduct.setBrand(product.getBrand());
             existingProduct.setWarehouse(product.getWarehouse());
 
             Product updatedProduct = productRepository.save(existingProduct);
@@ -100,36 +82,22 @@ public class ProductService {
         return null;
     }
 
-    /**
-     * Xóa sản phẩm theo ID
-     * @param id ID của sản phẩm cần xóa
-     */
+    @Transactional
     public void deleteProduct(Integer id) {
         productRepository.deleteById(id);
     }
 
-    /**
-     * Lấy danh sách hình ảnh của sản phẩm
-     * @param productId ID của sản phẩm
-     * @return Danh sách hình ảnh của sản phẩm
-     */
     public List<ProductImage> getImagesByProductId(int productId) {
         return productImageRepository.findByProduct_ProductId(productId);
     }
 
-    /**
-     * Lưu file hình ảnh
-     * @param file File hình ảnh cần lưu
-     * @return Tên file đã lưu
-     */
-    private String saveImage(MultipartFile file) {
-        try {
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path path = Paths.get(UPLOAD_DIRECTORY + fileName);
-            Files.write(path, file.getBytes());
-            return fileName;
-        } catch (IOException e) {
-            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
-        }
+    public String saveImage(MultipartFile file) throws IOException {
+//        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String fileName = file.getOriginalFilename();
+        Path path = Paths.get(UPLOAD_DIRECTORY + fileName);
+        Files.createDirectories(path.getParent());
+        Files.write(path, file.getBytes());
+        return fileName;
     }
+
 }

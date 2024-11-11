@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,4 +25,9 @@ public class Warehouse {
     @Column(name = "location", nullable = false)
     @NotEmpty(message = "Địa điểm kho không được để trống")
     private String location;
+
+    @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Product> products;
+
+
 }

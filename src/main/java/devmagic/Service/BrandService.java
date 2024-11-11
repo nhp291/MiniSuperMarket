@@ -28,4 +28,8 @@ public class BrandService {
     public void deleteBrand(Integer id) {
         brandsRepository.deleteById(id);
     }
+
+    public long getTotalBrands() {
+        return brandsRepository.count();  // Sử dụng brandsRepository thay vì brandRepository
+    }
 }

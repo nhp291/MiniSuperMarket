@@ -102,6 +102,8 @@
                                 <th>Tên sản phẩm</th>
                                 <th>Danh mục</th>
                                 <th>Thương hiệu</th>
+                                <th>Tên kho</th>
+                                <th>Mô tả</th>
                                 <th>Giá</th>
                                 <th>Giảm giá</th>
                                 <th>Số lượng</th>
@@ -119,6 +121,8 @@
                                     <td th:text="${product.name}">Tên sản phẩm</td>
                                     <td th:text="${product.category.categoryName}">Danh mục</td>
                                     <td th:text="${product.brand.brandName}">Thương hiệu</td>
+                                    <td th:text="${product.warehouse.warehouseName}">kho</td>
+                                    <td th:text="${product.description}">Mô tả</td>
                                     <td th:text="${product.price}">Giá</td>
                                     <td th:text="${product.sale != null ? product.sale : 0}">Giảm giá</td>
                                     <td th:text="${product.stockQuantity}">Số lượng</td>
