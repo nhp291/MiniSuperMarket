@@ -1,7 +1,11 @@
 package devmagic.Controller.Admin;
 
 import devmagic.Model.Account;
+import devmagic.Reponsitory.CategoryRepository;
+import devmagic.Reponsitory.ProductRepository;
 import devmagic.Service.AccountService;
+import devmagic.Service.BrandService;
+import devmagic.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +21,30 @@ public class HomeController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private BrandService brandService;
+
     @GetMapping("/Home")
     public String Home(Model model) {
+
+        long productCount = productRepository.countProducts(); // Sử dụng phương thức countProducts() như đã tạo
+        model.addAttribute("productCount", productCount);
+
+        long totalAccounts = accountService.getTotalAccounts();  // Gọi phương thức để đếm số lượng Account
+        model.addAttribute("totalAccounts", totalAccounts);
+
+        long categoryCount = categoryService.getTotalCategories(); // Gọi phương thức để đếm số lượng Category
+        model.addAttribute("categoryCount", categoryCount);
+
+        long brandCount = brandService.getTotalBrands(); // Gọi phương thức để đếm số lượng Brand
+        model.addAttribute("brandCount", brandCount);
+
         model.addAttribute("pageTitle", "Home Page");
         model.addAttribute("viewName", "admin/index");
         return "admin/layout";
