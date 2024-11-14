@@ -33,4 +33,9 @@ public class CategoryService {
     public void deleteCategory(int id) {
         categoryRepository.deleteById(id);
     }
+
+    public long getTotalCategories() {
+        return categoryRepository.count();  // Gọi phương thức để đếm số lượng Category
+    }
+
 }

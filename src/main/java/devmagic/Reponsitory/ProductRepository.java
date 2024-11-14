@@ -13,5 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.category.categoryId = ?1")
     List<Product> findByCategoryId(String cid);
     // Use Integer if your ID is Integerr
+    @Query("SELECT COUNT(p) FROM Product p")
+    long countProducts();
 }
 

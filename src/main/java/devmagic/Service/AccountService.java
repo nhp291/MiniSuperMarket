@@ -45,4 +45,8 @@ public class AccountService {
         accountRepository.deleteById(id);
     }
 
+    public long getTotalAccounts() {
+        return accountRepository.count();  // Trả về số lượng Account
+    }
+
 }
