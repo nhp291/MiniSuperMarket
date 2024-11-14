@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class HomeUserController {
@@ -23,6 +24,7 @@ public class HomeUserController {
 
     @RequestMapping("/layout/Home")
     public String Home(Model model, @Param("keyword") String keyword, @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo) {
+
         Page<Product> list = this.productSV.getall(pageNo);
         List<Product> product2 = this.productSV.finTop6Product();
         Page<Product> list1 = this.productSV.getForAll(pageNo);
@@ -39,9 +41,14 @@ public class HomeUserController {
     }
 
     @RequestMapping("/layout/Product")
-    public String Product(Model model) {
-        List<Product> list = this.productSV.findAll();
-        model.addAttribute("product", list);
+    public String Product(Model model,@RequestParam("cid")Optional<String> cid) {
+        if (cid.isPresent()) {
+            List<Product> list = this.productSV.findByCategoryId(cid.get());
+            model.addAttribute("product", list);
+        }else{
+            List<Product> list = this.productSV.findAll();
+            model.addAttribute("product", list);
+        }
         return "layout/Product";
     }
 

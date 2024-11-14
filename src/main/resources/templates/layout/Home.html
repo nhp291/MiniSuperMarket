@@ -10,8 +10,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <title>Title</title>
 </head>
-<body >
-<main >
+<body>
+
+<main>
+
     <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false">
         <div class="carousel-inner">
             <div class="carousel-item active">
@@ -36,53 +38,12 @@
     <div class="container-fluid">
         <div class="container-fluid">
             <div class="row text-center ">
-                <div class="col-1 p-3" >
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468893-1.TGTC.png" class="img-fluid" alt="...">
-                    <h6>Thới giới trái cây</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444280-Type02_RauTraiCay.png" class="img-fluid"  alt="...">
-                    <h6>Rau củ quả</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444253-Type01_ThitHeo.png" class="img-fluid"  alt="...">
-                    <h6>Thịt cá trứng</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/469187-4.Sua.png" class="img-fluid"  alt="...">
-                    <h6>Sữa , bơ , phô mai</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444256-Type03_DongMat.png" class="img-fluid"  alt="...">
-                    <h6>Thực phẩm đông - mát</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444257-Type09_BanhKeo.png" class="img-fluid"  alt="...">
-                    <h6>Bánh kẹo - Đồ ngọt</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468884-12.BuaAnTienLoi.png" class="img-fluid"  alt="...">
-                    <h6>Thực phẩm chế biến</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444260-Type05_GaoBot.png" class="img-fluid"  alt="...">
-                    <h6>Gạo Đậu - Đồ khô</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444280-Type02_RauTraiCay.png" class="img-fluid"  alt="...">
-                    <h6>Rau củ quả</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468883-11.Bia.png" class="img-fluid"  alt="...">
-                    <h6>Chăm sóc cá nhân</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/469191-10.Mi.png" class="img-fluid"  alt="...">
-                    <h6>Mì , Phở - Thức ăn nhanh</h6>
-                </div>
-                <div class="col-1 p-3">
-                    <img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444259-Type06_DauAn.png" class="img-fluid"  alt="...">
-                    <h6>Dầu ăn - Gia vị </h6>
+                <div th:each="c, iterStat : ${cate}"
+                     th:if="${iterStat.index} < 12" class="col-6 col-sm-4 col-md-2 col-lg-1 p-3 p-3">
+                    <a th:href="@{|/layout/Product?cid=${c.categoryId}|} " class=" text-decoration-none text-dark" >
+                        <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" alt="...">
+                        <h6>[[${c.categoryName}]]</h6>
+                    </a>
                 </div>
             </div>
 
@@ -90,7 +51,7 @@
             <div class="container-fluid">
                 <div class="row ms-1 mt-5">
                     <h3 class="">Sản Phẩm Nổi Bật</h3>
-                    <div th:each="p : ${product}" class="col-3 mt-5 d-flex justify-content-center">
+                    <div th:each="p : ${product}" class="col-12 col-sm-6 col-md-4 col-lg-3 mt-5 d-flex justify-content-center">
                         <div class="con">
                             <div class="card_box">
                                 <div>
@@ -100,18 +61,28 @@
                                         </div>
                                     </a>
                                     <div class="card-body">
-                                        <h5  class="text-danger">[[${p.sale}]]00.đ</h5>
-                                        <h6 class="text-primary">Giá góc [[${p.price}]]00.đ</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
+                                                <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
+                                                <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
+                                            </div>
+                                            <div th:unless="${p.sale != null}">
+                                                <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                            </div>
+                                        </div>
                                         <p th:text="${p.description}" class="card-text"></p>
                                         <div class="d-grid gap-2">
-                                            <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua ngay</button>
+                                            <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary">
+                                                <i class="bi bi-cart-plus"></i> Mua ngay
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                                <span>[[${p.sale}]]</span>
+                                <span th:if="${p.sale != null}"></span>
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <div class="container-fluid mt-5">
                     <nav aria-label="Page navigation example">
@@ -135,7 +106,7 @@
                         </div>
                         <div class="col-9">
                             <div class="row ms-1 mt-3">
-                                <div th:each="p : ${product1}" class="col-3 mb-5 d-flex justify-content-center">
+                                <div th:each="p : ${product1}" class="col-12 col-sm-6 col-md-4 col-lg-3  d-flex justify-content-center">
                                     <div class="con">
                                         <div class="card_box">
                                             <div>
@@ -144,29 +115,36 @@
                                                         <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
                                                     </div>
                                                 </a>
-
                                                 <div class="card-body">
-                                                    <h5  class="text-danger">[[${p.sale}]]00.đ</h5>
-                                                    <h6 class="text-primary">Giá góc [[${p.price}]]00.đ</h6>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
+                                                            <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
+                                                            <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
+                                                        </div>
+                                                        <div th:unless="${p.sale != null}">
+                                                            <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                                        </div>
+                                                    </div>
                                                     <p th:text="${p.description}" class="card-text"></p>
                                                     <div class="d-grid gap-2">
-                                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua ngay</button>
+                                                        <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary">
+                                                            <i class="bi bi-cart-plus"></i> Mua ngay
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <span>[[${p.sale}]]</span>
+                                            <span th:if="${p.sale != null}"></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <h5 class="text-center text-primary mt-3">Xem tất cả</h5>
                     </div>
-
                 </div>
 
                 <div class="container-fluid my-5">
                     <div class="row">
-                        <div class="col-4">
+                        <div class=" col-12 col-sm-8 col-md-6 col-lg-4">
                             <div class="card text-dark">
                                 <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner2-1.jpg" class="card-img" alt="...">
                                 <div class="card-img-overlay ms-2">
@@ -177,7 +155,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 col-12 col-sm-8 col-md-6 col-lg-4">
                             <div class="card text-dark">
                                 <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner3-1.jpg" class="card-img" alt="...">
                                 <div class="card-img-overlay ms-2">
@@ -188,7 +166,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 col-12 col-sm-8 col-md-4 col-lg-">
                             <div class="card text-dark">
                                 <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner4-1.jpg" class="card-img" alt="...">
                                 <div class="card-img-overlay ms-2">
@@ -211,7 +189,7 @@
                         </div>
                         <div class="col-9">
                             <div class="row ms-1 mt-3">
-                                <div th:each="p : ${product1}" class="col-3 mb-5 d-flex justify-content-center">
+                                <div th:each="p : ${product1}" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                                     <div class="con">
                                         <div class="card_box">
                                             <div>
@@ -220,17 +198,25 @@
                                                         <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
                                                     </div>
                                                 </a>
-
                                                 <div class="card-body">
-                                                    <h5  class="text-danger">[[${p.sale}]]00.đ</h5>
-                                                    <h6 class="text-primary">Giá góc [[${p.price}]]00.đ</h6>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
+                                                            <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
+                                                            <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
+                                                        </div>
+                                                        <div th:unless="${p.sale != null}">
+                                                            <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                                        </div>
+                                                    </div>
                                                     <p th:text="${p.description}" class="card-text"></p>
                                                     <div class="d-grid gap-2">
-                                                        <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua ngay</button>
+                                                        <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary">
+                                                            <i class="bi bi-cart-plus"></i> Mua ngay
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <span>[[${p.sale}]]</span>
+                                            <span th:if="${p.sale != null}"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -252,7 +238,7 @@
 
                 <div class="container-fluid">
                     <div class="row">
-                        <div th:each="p : ${product2}" class="col-2 mt-5 d-flex justify-content-center">
+                        <div th:each="p : ${product2}" class="col-12 col-sm-6 col-md-4 col-lg-2 mt-5 d-flex justify-content-center">
                             <div class="con">
                                 <div class="card_box">
                                     <div>
@@ -262,15 +248,24 @@
                                             </div>
                                         </a>
                                         <div class="card-body">
-                                            <h5  class="text-danger">[[${p.sale}]]00.đ</h5>
-                                            <h6 class="text-primary">Giá góc [[${p.price}]]00.đ</h6>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
+                                                    <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
+                                                    <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
+                                                </div>
+                                                <div th:unless="${p.sale != null}">
+                                                    <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                                </div>
+                                            </div>
                                             <p th:text="${p.description}" class="card-text"></p>
                                             <div class="d-grid gap-2">
-                                                <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua ngay</button>
+                                                <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary">
+                                                    <i class="bi bi-cart-plus"></i> Mua ngay
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <span>[[${p.sale}]]</span>
+                                    <span th:if="${p.sale != null}"></span>
                                 </div>
                             </div>
                         </div>
