@@ -72,8 +72,9 @@
                                         </div>
                                         <p th:text="${p.description}" class="card-text"></p>
                                         <div class="d-grid gap-2">
-                                            <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary">
-                                                <i class="bi bi-cart-plus"></i> Mua ngay
+                                            <button type="button" class="btn btn-outline-primary add-to-cart"
+                                                    th:attr="data-product-id=${p.productId}, data-product-name=${p.name}, data-product-price=${p.price}, data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}">
+                                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
                                             </button>
                                         </div>
                                     </div>
