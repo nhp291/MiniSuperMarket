@@ -26,53 +26,14 @@
             <div class="col-6 my-auto"> Danh Mục Sản Phẩm</div>
           </div>
           <div class="row mt-5">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444280-Type02_RauTraiCay.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto"> Rau củ quả</div>
+            <a th:each="c: ${cate}" th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="d-flex align-items-center justify-content-center text-decoration-none text-dark" >
+              <div class="col-2 me-3 mt-3">
+                <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl}} + '.webp' " class="img-fluid mb-3"  alt="...">
+              </div>
+              <div class="col-6 my-auto "> [[${c.categoryName}]]</div>
+            </a>
           </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/469187-4.Sua.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto"> Sữa , Phô mai</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444256-Type03_DongMat.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Thực Phẩm đông - mát</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444257-Type09_BanhKeo.png" class="img-fluid" alt="..."> </div>
-            <div class="col-7 my-auto"> Bánh Kẹo - Đồ ngọt</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468884-12.BuaAnTienLoi.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Thực Phẩm chế biến</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444260-Type05_GaoBot.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Gạo Đậu - Đồ khô</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444280-Type02_RauTraiCay.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Chăm sóc cá nhân</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/469191-10.Mi.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Mì , Phở - Thức ăn nhanh</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/27/444259-Type06_DauAn.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Dầu ăn - Gia vị </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468883-11.Bia.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Bia - rượu</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/469191-10.Mi.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Mì - miếng , bún</div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-3 ms-3"><img src="https://storage.googleapis.com/sc_pcm_product/prod/2024/6/28/468890-15.TrangMieng.png" class="img-fluid"  alt="..."> </div>
-            <div class="col-7 my-auto">Tráng miêng , ăn xế</div>
-          </div>
+
         </div>
         <div class="col-lg-9 ">
           <div class="container-fluid mx-5">
@@ -136,7 +97,6 @@
                       <p class="card-text">Khoai tây Đà Lạt túi 500g (1 Túi)</p>
                       <div class="d-grid gap-2">
                         <button type="button" class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Mua</button>
-
                       </div>
                     </div>
                   </div>

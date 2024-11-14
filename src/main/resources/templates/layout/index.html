@@ -35,6 +35,105 @@
             },
         }
     })
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Hàm hiển thị giỏ hàng
+        function displayCart() {
+            let cart;
+            try {
+                cart = JSON.parse(localStorage.getItem('cart')) || [];
+            } catch (e) {
+                console.error('Lỗi khi đọc dữ liệu giỏ hàng:', e);
+                cart = [];
+            }
+
+            const cartContainer = document.getElementById("cart-container");
+            cartContainer.innerHTML = ''; // Xóa nội dung cũ
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = "<p>Giỏ hàng của bạn đang trống.</p>";
+                return;
+            }
+
+            let totalAmount = 0;
+
+            // Hiển thị từng sản phẩm trong giỏ hàng
+            cart.forEach(item => {
+                const itemId = item.id;
+                const itemName = item.name;
+                const itemPrice = item.price;
+                const itemQuantity = item.quantity;
+                const itemTotal = itemPrice * itemQuantity;
+                const itemImage = item.image;
+
+                totalAmount += itemTotal; // Cộng dồn tổng giá trị sản phẩm
+
+                const cartItem = document.createElement("div");
+                cartItem.classList.add("cart-item");
+                cartItem.innerHTML = `
+                        <img src="${itemImage}" alt="${itemName}">  <!-- Hiển thị hình ảnh -->
+                        <div>
+                            <p><strong>Mã sản phẩm:</strong> ${itemId}</p>
+                            <h3>${itemName}</h3>
+                            <p><strong>Giá:</strong> ${itemPrice} VND</p>
+                            <p><strong>Số lượng:</strong> ${itemQuantity}</p>
+                            <p><strong>Tổng:</strong> ${itemTotal} VND</p>
+                        </div>
+                    `;
+                cartContainer.appendChild(cartItem);
+            });
+
+            // Hiển thị tổng giá trị của tất cả sản phẩm trong giỏ hàng
+            const totalElement = document.createElement("p");
+            totalElement.classList.add("cart-total");
+            totalElement.textContent = `Tổng tiền: ${totalAmount} VND`;
+            cartContainer.appendChild(totalElement);
+        }
+
+        // Hàm xóa giỏ hàng
+        function clearCart() {
+            localStorage.removeItem('cart');
+            displayCart();
+            alert("Giỏ hàng đã được xóa.");
+        }
+
+        // Dùng Event Delegation để giảm số lượng sự kiện
+        document.body.addEventListener('click', function (event) {
+            if (event.target.classList.contains('add-to-cart')) {
+                const productId = event.target.getAttribute('data-product-id');
+                const productName = event.target.getAttribute('data-product-name');
+                const productPrice = Number(event.target.getAttribute('data-product-price'));
+                const productImage = event.target.getAttribute('data-product-image');
+
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                const existingProductIndex = cart.findIndex(item => item.id === productId);
+
+                if (existingProductIndex !== -1) {
+                    cart[existingProductIndex].quantity += 1;
+                } else {
+                    cart.push({
+                        id: productId,
+                        name: productName,
+                        price: productPrice,
+                        quantity: 1,
+                        image: productImage
+                    });
+                }
+
+                localStorage.setItem('cart', JSON.stringify(cart));
+                alert('Sản phẩm đã được thêm vào giỏ hàng');
+                displayCart();
+            }
+        });
+
+        // Hiển thị giỏ hàng khi tải trang
+        displayCart();
+
+        // Đưa hàm clearCart ra ngoài phạm vi DOMContentLoaded
+        window.clearCart = clearCart;
+    });
+
 </script>
 <style>
 

@@ -66,4 +66,9 @@ public class ProductSVImlp implements ProductSV {
         Pageable page = PageRequest.of(pageable +8, 8);
         return this.productRepository.findAll(page);
     }
+
+    @Override
+    public List<Product> findByCategoryId(String cid) {
+        return productRepository.findByCategoryId(cid);
+    }
 }

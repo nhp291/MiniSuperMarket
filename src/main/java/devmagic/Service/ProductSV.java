@@ -14,5 +14,6 @@ public interface ProductSV {
     Page<Product> seachProduct(String keyword,Integer pageNo);
     Page<Product> getForAll(Integer pageable);
     Page<Product> getFiveAll(Integer pageable);
+    List<Product> findByCategoryId(String cid);
 
 }
