@@ -3,6 +3,7 @@ package devmagic.Controller.User;
 import devmagic.Model.Account;
 import devmagic.Service.AccountService;
 import devmagic.Service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,30 +31,28 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@RequestParam("username") String username,
                         @RequestParam("password") String password,
-                        Model model) {
-        // Kiểm tra thông tin đăng nhập (tên đăng nhập và mật khẩu)
+                        Model model, HttpSession session) {
+
         if (userService.checkLogin(username, password)) {
-            // Lấy thông tin tài khoản dựa trên tên đăng nhập
             Account account = userService.findByUsername(username);
 
-            // Kiểm tra tài khoản người dùng có tồn tại không
             if (account != null) {
-                // Kiểm tra quyền dựa trên vai trò của tài khoản
-                if ("Admin".equals(account.getRole())) {
-                    // Nếu người dùng là admin, chuyển hướng tới trang quản trị
+                // Lưu username vào session
+                session.setAttribute("username", account.getUsername());
+                session.setAttribute("user", account);
+
+                if ("Admin".equals(account.getRole().getRoleName())) {
                     return "redirect:/Admin/Home";
                 } else {
-                    // Nếu người dùng là tài khoản thông thường, chuyển hướng tới trang sản phẩm
                     return "redirect:/layout/Product";
                 }
             }
         } else {
-            // Nếu thông tin đăng nhập không chính xác, hiển thị lại trang đăng nhập với thông báo lỗi
             model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không chính xác!");
             return "user/login";
         }
 
-        // Trường hợp bất ngờ (không xác định), quay lại trang đăng nhập
         return "user/login";
     }
+
 }

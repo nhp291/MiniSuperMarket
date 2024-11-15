@@ -7,9 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-<main>
     <style>
         .login-container {
             max-width: 900px;
@@ -23,55 +20,18 @@
             position: relative;
         }
 
-<<<<<<< HEAD
+        /* Phần trái - Nền gradient kèm hình ảnh */
         .left-section {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
-            padding: 30px;
+            padding: 40px;
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
             text-align: left;
         }
-
-        .left-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://source.unsplash.com/800x600/?tech') no-repeat center center/cover;
-            opacity: 0.1;
-            z-index: 0;
-        }
-=======
-         .login-container {
-             max-width: 800px;
-             margin: 40px auto;
-             background-color: #ffffff;
-             border-radius: 25px;
-             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); /* Bóng đổ cho giao diện đẹp */
-             overflow: hidden;
-             display: flex;
-             transition: all 0.4s ease-in-out;
-             position: relative;
-         }
-
-         /* Phần bên trái - Nền gradient kèm hình ảnh */
-         .left-section {
-             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-             color: white;
-             padding: 40px;
-             flex: 1;
-             display: flex;
-             flex-direction: column;
-             justify-content: center;
-             position: relative;
-             text-align: left;
-         }
->>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
 
         .left-section h1 {
             font-size: 36px;
@@ -142,7 +102,7 @@
         .social-login-buttons {
             display: flex;
             justify-content: center;
-            gap: 15px; /* Thêm khoảng cách giữa các nút */
+            gap: 15px;
             margin-top: 15px;
         }
 
@@ -155,7 +115,7 @@
             justify-content: center;
             color: white;
             transition: transform 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ cho nút */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .btn-social.google {
@@ -168,7 +128,7 @@
 
         .btn-social:hover {
             transform: scale(1.1);
-            opacity: 0.9; /* Thay đổi độ mờ khi hover */
+            opacity: 0.9;
         }
 
         .terms a {
@@ -196,7 +156,6 @@
                 padding: 30px 20px;
             }
 
-<<<<<<< HEAD
             .btn-social {
                 width: 40px;
                 height: 40px;
@@ -208,16 +167,15 @@
                 max-width: 95%;
                 padding: 20px;
             }
-=======
-             .left-section {
-                 padding: 35px 20px;
-                 text-align: center;
-             }
 
-             .right-section {
-                 padding: 30px 15px;
-             }
->>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
+            .left-section {
+                padding: 35px 20px;
+                text-align: center;
+            }
+
+            .right-section {
+                padding: 30px 15px;
+            }
 
             .btn-social {
                 width: 35px;
@@ -225,7 +183,6 @@
             }
         }
 
-<<<<<<< HEAD
         @media (max-width: 576px) {
             .login-container {
                 max-width: 100%;
@@ -243,7 +200,9 @@
             }
         }
     </style>
-
+</head>
+<body>
+<main>
     <div class="container login-container">
         <!-- Phần trái (Giới thiệu) -->
         <div class="left-section">
@@ -251,30 +210,6 @@
             <h1>Đăng Nhập</h1>
             <p>Chào mừng bạn trở lại! Hãy đăng nhập để tiếp tục trải nghiệm tuyệt vời với chúng tôi.</p>
         </div>
-=======
-         <!-- Phần phải (Form đăng nhập) -->
-         <div class="right-section">
-             <h3 class="mb-2">Đăng Nhập Ngay</h3>
-             <p class="mb-2">Nhập thông tin tài khoản của bạn</p>
-
-             <form>
-                 <div class="form-floating mb-2">
-                     <input type="email" class="form-control" id="email" placeholder="Email">
-                     <label for="email">Email *</label>
-                 </div>
-                 <div class="form-floating mb-2">
-                     <input type="password" class="form-control" id="password" placeholder="Mật khẩu">
-                     <label for="password">Mật khẩu *</label>
-                 </div>
-                 <button type="submit" class="btn btn-login">Đăng Nhập</button>
-             </form>
-
-             <div class="mt-5 text-center">
-                 Bạn chưa có tài khoản? <a href="layout/register">Đăng ký</a>
-             </div>
-
-             <hr class="my-2">
->>>>>>> 91aea754d11b20a4396ca202d039ac67e92b56bd
 
         <!-- Phần phải (Form đăng nhập) -->
         <div class="right-section">
@@ -288,13 +223,12 @@
                 </div>
                 <div class="form-floating mb-4">
                     <input class="form-control" id="password" name="password" placeholder="Mật khẩu" type="password">
-                    <label for="password">Mật khẩu </label>
+                    <label for="password">Mật khẩu</label>
                 </div>
                 <div class="form-floating mb-4">
                     <button class="btn btn-login" type="submit">Đăng Nhập</button>
                 </div>
             </form>
-
 
             <div class="mt-4 text-center">
                 Bạn chưa có tài khoản? <a href="#">Đăng ký</a>

@@ -165,44 +165,39 @@
 
         <!-- Form Section -->
         <div class="form-container">
-            <form>
+            <form th:action="@{/updateInfo}" th:object="${user}" method="post">
                 <div class="form-row">
                     <div class="form-column">
                         <label for="username" class="form-label">User Name</label>
-                        <input type="text" class="form-control" id="username" placeholder="nguyenvana" required>
+                        <input type="text" class="form-control" th:field="*{username}" placeholder="nguyenvana" required>
                     </div>
-
                     <div class="form-column">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="•••••••" required>
+                        <input type="password" class="form-control" th:field="*{password}" placeholder="•••••••" required>
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div class="form-column">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="example@example.com" required>
+                        <input type="email" class="form-control" th:field="*{email}" placeholder="example@example.com" required>
                     </div>
-
                     <div class="form-column">
                         <label for="phone_number" class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" id="phone_number" placeholder="+84 123 456 789" required>
+                        <input type="tel" class="form-control" th:field="*{phoneNumber}" placeholder="+84 123 456 789" required>
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div class="form-column">
                         <label for="address" class="form-label">Địa chỉ</label>
-                        <input type="text" class="form-control" id="address" placeholder="123 Đường ABC, Phường XYZ, Quận 1, TP.HCM" required>
+                        <input type="text" class="form-control" th:field="*{address}" placeholder="123 Đường ABC, Phường XYZ, Quận 1, TP.HCM" required>
                     </div>
                 </div>
-
-                <!-- Button Group -->
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary mx-3">Lưu</button>
-                    <button type="button" class="btn btn-danger">Hủy</button>
+                    <button type="submit" class="btn btn-primary mx-3">Lưu</button>
+                    <button type="button" class="btn btn-danger" onclick="window.location.href='/info'">Hủy</button>
                 </div>
             </form>
+
         </div>
     </div>
 </main>
