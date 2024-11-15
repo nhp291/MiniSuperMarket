@@ -1,7 +1,10 @@
 package devmagic.Service;
 
 import devmagic.Model.Account;
+import devmagic.Model.Role;
+import devmagic.Reponsitory.RoleRepository;
 import devmagic.Reponsitory.UserRepository;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +15,22 @@ public class UserService {
 
     // Khai báo biến userRepository kiểu UserRepository để quản lý dữ liệu người dùng
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
+    public Integer findRoleIdByName(String roleName) {
+        Role role = roleRepository.findByName(roleName);
+        return role != null ? role.getRoleId() : null;
+    }
+    public Role findRoleById(Integer id) {
+        return roleRepository.findById(id).orElse(null);
+    }
+
+
 
     // Constructor để khởi tạo UserService với userRepository
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     // Phương thức tìm kiếm người dùng theo tên đăng nhập (username)
@@ -60,4 +75,6 @@ public class UserService {
     public Optional<Account> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+
 }
