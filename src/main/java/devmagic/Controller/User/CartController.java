@@ -2,6 +2,8 @@ package devmagic.Controller.User;
 
 import devmagic.Service.CartService;
 import devmagic.Dto.CartDto;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,8 +19,30 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @GetMapping("/shoppingcart/{userId}")
-    public String shoppingCart(@PathVariable Integer userId, Model model) {
+    // Hàm tiện ích để lấy userId từ cookie
+    private Integer getUserIdFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accountId".equals(cookie.getName())) {
+                    try {
+                        return Integer.parseInt(cookie.getValue());
+                    } catch (NumberFormatException e) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @GetMapping("/shoppingcart")
+    public String shoppingCart(HttpServletRequest request, Model model) {
+        Integer userId = getUserIdFromCookies(request);
+        if (userId == null) {
+            return "redirect:/user/login"; // Chuyển hướng đến trang đăng nhập nếu không có userId trong cookie
+        }
+
         CartDto cartDto = cartService.getCartByUserId(userId);
         double totalPrice = cartService.calculateTotalPrice(cartDto);
         model.addAttribute("cart", cartDto);
@@ -26,31 +50,51 @@ public class CartController {
         return "cart/shoppingcart"; // trả về view shoppingcart.html
     }
 
-    @PostMapping("/updateQuantity/{userId}/{productId}")
+    @PostMapping("/updateQuantity/{productId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateQuantity(@PathVariable Integer userId, @PathVariable Integer productId, @RequestBody Map<String, Integer> request) {
+    public ResponseEntity<Map<String, Object>> updateQuantity(@PathVariable Integer productId, @RequestBody Map<String, Integer> request, HttpServletRequest requestHttp) {
+        Integer userId = getUserIdFromCookies(requestHttp);
+        if (userId == null) {
+            return ResponseEntity.status(401).body(null); // Trả về lỗi 401 nếu không có userId
+        }
+
         int quantityChange = request.get("quantityChange");
         Map<String, Object> response = cartService.updateQuantity(userId, productId, quantityChange);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/updatePaymentMethod/{userId}")
+    @PostMapping("/updatePaymentMethod")
     @ResponseBody
-    public ResponseEntity<String> updatePaymentMethod(@PathVariable Integer userId, @RequestBody Map<String, String> request) {
+    public ResponseEntity<String> updatePaymentMethod(@RequestBody Map<String, String> request, HttpServletRequest requestHttp) {
+        Integer userId = getUserIdFromCookies(requestHttp);
+        if (userId == null) {
+            return ResponseEntity.status(401).body("User not authenticated"); // Trả về lỗi 401 nếu không có userId
+        }
+
         String paymentMethod = request.get("paymentMethod");
         cartService.updatePaymentMethod(userId, paymentMethod);
         return ResponseEntity.ok("Payment method updated to " + paymentMethod);
     }
 
-    @PostMapping("/removeItem/{userId}/{productId}")
+    @PostMapping("/removeItem/{productId}")
     @ResponseBody
-    public ResponseEntity<String> removeItem(@PathVariable Integer userId, @PathVariable Integer productId) {
+    public ResponseEntity<String> removeItem(@PathVariable Integer productId, HttpServletRequest requestHttp) {
+        Integer userId = getUserIdFromCookies(requestHttp);
+        if (userId == null) {
+            return ResponseEntity.status(401).body("User not authenticated"); // Trả về lỗi 401 nếu không có userId
+        }
+
         cartService.removeItem(userId, productId);
         return ResponseEntity.ok("Item removed from cart");
     }
 
-    @GetMapping("/invoice/{userId}")
-    public String invoice(@PathVariable Integer userId, Model model) {
+    @GetMapping("/invoice")
+    public String invoice(HttpServletRequest request, Model model) {
+        Integer userId = getUserIdFromCookies(request);
+        if (userId == null) {
+            return "redirect:/user/login"; // Chuyển hướng đến trang đăng nhập nếu không có userId trong cookie
+        }
+
         CartDto cartDto = cartService.getCartByUserId(userId);
         double totalPrice = cartService.calculateTotalPrice(cartDto);
         String invoiceNumber = "INV-" + System.currentTimeMillis(); // Tạo mã hóa đơn
@@ -70,8 +114,6 @@ public class CartController {
         model.addAttribute("customerAddress", customerAddress);
         return "cart/invoice"; // trả về view invoice.html
     }
-
-
 
     @GetMapping("/paymenthistory")
     public String paymentHistory(Model model) {
