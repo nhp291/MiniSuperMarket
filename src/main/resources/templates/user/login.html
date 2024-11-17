@@ -20,7 +20,6 @@
             position: relative;
         }
 
-        /* Phần trái - Nền gradient kèm hình ảnh */
         .left-section {
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
@@ -29,7 +28,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;
             text-align: left;
         }
 
@@ -146,96 +144,40 @@
                 flex-direction: column;
                 margin: 20px auto;
             }
-
-            .left-section {
-                padding: 30px 20px;
-                text-align: center;
-            }
-
-            .right-section {
-                padding: 30px 20px;
-            }
-
-            .btn-social {
-                width: 40px;
-                height: 40px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .login-container {
-                max-width: 95%;
-                padding: 20px;
-            }
-
-            .left-section {
-                padding: 35px 20px;
-                text-align: center;
-            }
-
-            .right-section {
-                padding: 30px 15px;
-            }
-
-            .btn-social {
-                width: 35px;
-                height: 35px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .login-container {
-                max-width: 100%;
-                padding: 15px;
-            }
-
-            .btn-login {
-                font-size: 14px;
-                padding: 10px 0;
-            }
-
-            .btn-social {
-                width: 30px;
-                height: 30px;
-            }
         }
     </style>
 </head>
 <body>
 <main>
     <div class="container login-container">
-        <!-- Phần trái (Giới thiệu) -->
+        <!-- Phần trái -->
         <div class="left-section">
             <div class="logo">DEV MAGIC</div>
             <h1>Đăng Nhập</h1>
             <p>Chào mừng bạn trở lại! Hãy đăng nhập để tiếp tục trải nghiệm tuyệt vời với chúng tôi.</p>
         </div>
 
-        <!-- Phần phải (Form đăng nhập) -->
+        <!-- Phần phải -->
         <div class="right-section">
             <h3 class="mb-4">Đăng Nhập Ngay</h3>
-            <p class="mb-4">Nhập thông tin tài khoản của bạn</p>
-
             <form action="/login" method="post">
                 <div class="form-floating mb-4">
                     <input class="form-control" id="email" name="username" placeholder="Tên đăng nhập" type="text">
                     <label for="email">Tên đăng nhập</label>
                 </div>
-                <div class="form-floating mb-4">
+                <div class="form-floating mb-4 position-relative">
                     <input class="form-control" id="password" name="password" placeholder="Mật khẩu" type="password">
                     <label for="password">Mật khẩu</label>
+                    <span class="toggle-password" onclick="togglePassword()" style="position: absolute; right: 20px; top: 15px; cursor: pointer;">
+                        <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                    </span>
                 </div>
-                <div class="form-floating mb-4">
-                    <button class="btn btn-login" type="submit">Đăng Nhập</button>
-                </div>
+                <button class="btn btn-login" type="submit">Đăng Nhập</button>
             </form>
-
             <div class="mt-4 text-center">
                 Bạn chưa có tài khoản? <a href="register">Đăng ký</a>
             </div>
-
             <hr class="my-4">
-
             <div class="text-center">
                 <p>Hoặc đăng nhập với</p>
                 <div class="social-login-buttons">
@@ -246,6 +188,23 @@
         </div>
     </div>
 </main>
+
+<script>
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        const toggleIcon = document.getElementById('togglePasswordIcon');
+
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        }
+    }
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script crossorigin="anonymous" src="https://kit.fontawesome.com/a076d05399.js"></script>
