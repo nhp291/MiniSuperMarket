@@ -14,10 +14,10 @@
 
 <main>
 
-    <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false">
+    <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="5000" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="https://kingfoodmart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fonelife-public%2Fmedia%2Fimages%2F2024%2F09%2F6ReuBAblob&w=1920&q=75" class="d-block w-100" alt="...">
+                <img src="/Image/imageUrl/banner3.jpeg" class="d-block w-100" alt="...">
             </div>
             <div class="carousel-item">
                 <img src="https://kingfoodmart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fonelife-public%2Fmedia%2Fimages%2F2024%2F10%2FUfwRrgblob&w=1920&q=75" class="d-block w-100" alt="...">
@@ -35,23 +35,110 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-    <div class="container-fluid">
-        <div class="container-fluid">
-            <div class="row text-center ">
-                <div th:each="c, iterStat : ${cate}"
-                     th:if="${iterStat.index} < 12" class="col-6 col-sm-4 col-md-2 col-lg-1 p-3 p-3">
-                    <a th:href="@{|/layout/Product?cid=${c.categoryId}|} " class=" text-decoration-none text-dark" >
-                        <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" alt="...">
-                        <h6>[[${c.categoryName}]]</h6>
-                    </a>
+    <div class="container my-5">
+        <hr>
+        <div class="row">
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-5"><img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic4-icon1.png" width="100"></div>
+                    <div class="col-7 my-auto">
+                        <h5 >Tươi Sạch</h5>
+                        <h6>Luôn mang đến đến cho bạn sự hài lòng</h6>
+                    </div>
                 </div>
             </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-5"><img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon2.png" width="100"></div>
+                    <div class="col-7 my-auto">
+                        <h5 >Hữu Cơ</h5>
+                        <h6>Lựa chọn những mặt hàng tốt nhất</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-4"><img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon3.png" width="100"></div>
+                    <div class="col-8 my-auto">
+                        <h5 >Chất Lượng </h5>
+                        <h6>Đảm bảo chất lượng tuyệt đối cho khách hàng</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-4"><img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon4.png" width="100"></div>
+                    <div class="col-8 my-auto">
+                        <h5 >Tự Nhiên</h5>
+                        <h6>Sản phẩm được lấy từ môi trường thiên nhiên</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class=" col-12 col-sm-8 col-md-6 col-lg-4">
+                <div class="card text-dark">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner2-1.jpg" class="card-img" alt="...">
+                    <div class="card-img-overlay ms-2">
+                        <h5 class="card-title mb-2">Rau Củ Tươi Sạch</h5>
+                        <p class="card-text text-danger">Sale off 25%</p>
+                        <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
+                        <p class="card-text mt-4"><button type="button" class="btn btn-primary">Mua ngay </button></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 col-12 col-sm-8 col-md-6 col-lg-4">
+                <div class="card text-dark">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner3-1.jpg" class="card-img" alt="...">
+                    <div class="card-img-overlay ms-2">
+                        <h5 class="card-title mb-2">Dầu thực vật</h5>
+                        <p class="card-text text-danger">Giảm giá</p>
+                        <h5 class="card-text mx-auto mt-5 ">Chỉ với</h5>
+                        <h3 class="card-text text-danger ">99.000đ</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 col-12 col-sm-8 col-md-4 col-lg-">
+                <div class="card text-dark">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner4-1.jpg" class="card-img" alt="...">
+                    <div class="card-img-overlay ms-2">
+                        <h5 class="card-title mb-2">Trái cây
+                            chất lượng</h5>
+                        <p class="card-text text-danger">Sale off 40%</p>
+                        <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
+                        <p class="card-text mt-4"><button type="button" class="btn btn-primary">Mua ngay</button></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="container-fluid ">
+
+                <div class="container">
+                    <h3  class="text-center my-3">Danh Mục Sản Phẩm</h3>
+                    <div class="row text-center ">
+                        <div th:each="c, iterStat : ${cate}"
+                             th:if="${iterStat.index} < 12" class="col-6 col-sm-4 col-md-2 col-lg-1 p-3 p-3">
+                            <a th:href="@{|/layout/Product?cid=${c.categoryId}|} " class=" text-decoration-none text-dark" >
+                                <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" alt="...">
+                                <h6>[[${c.categoryName}]]</h6>
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
             <!--            Trang sản phẩm -->
-            <div class="container-fluid">
-                <div class="row ms-1 mt-5">
-                    <h3 class="">Sản Phẩm Nổi Bật</h3>
-                    <div th:each="p : ${product}" class="col-12 col-sm-6 col-md-4 col-lg-3 mt-5 d-flex justify-content-center">
+            <div class="container-fluid mt-5">
+                <div class="row">
+                    <div>
+                        <h3>Sản Phẩm Nổi Bật</h3>
+                    </div>
+                    <div th:each="p : ${product}" class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 d-flex justify-content-center">
                         <div class="con">
                             <div class="card_box">
                                 <div>
@@ -100,14 +187,14 @@
                     <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner.jpg" class="img-fluid" alt="...">
                 </div>
                 <div class="container-fluid">
+                    <h2 class="mb-3">Bán Chạy</h2>
                     <div class="row mt-2">
-                        <h3 class="my-3">Sản phẩm bán chạy</h3>
                         <div class="col-3">
                             <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner2.jpg" style="height: 830px" class="img-fluid " alt="...">
                         </div>
                         <div class="col-9">
-                            <div class="row ms-1 mt-3">
-                                <div th:each="p : ${product1}" class="col-12 col-sm-6 col-md-4 col-lg-3  d-flex justify-content-center">
+                            <div class="row ms-1 mt-4">
+                                <div th:each="p : ${product1}" class="col-12 col-sm-6 col-md-4 col-lg-3 mt-2 d-flex justify-content-center">
                                     <div class="con">
                                         <div class="card_box">
                                             <div>
@@ -183,7 +270,7 @@
                 </div>
 
                 <div class="container-fluit">
-                    <h3 class="my-3">Bán chạy</h3>
+                    <h2 class="my-3">Khuyến Mãi</h2>
                     <div class="row">
                         <div class="col-3">
                             <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner1.jpg" style="height: 830px" class="img-fluid " alt="...">
@@ -278,68 +365,25 @@
         </div>
 
         <div class="container-fluid">
-            <div class="row mt-5">
-                <div class="col-7">
-                    <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/1-6664.png" class="img-fluid" alt="...">
-                </div>
-                <div class="col-4">
-                    <div class="row">
-                        <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/banh-mi-o-47250.jpg" class="img-fluid" alt="...">
-                        </div>
-                        <div class="col-7">
-                            <h5>Bánh mì ổ lớn dài đặt biệt chỉ có tại việt nam chỉ với </h5>
-
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/1-6664.png" class="img-fluid" alt="...">
-                        </div>
-                        <div class="col-7">
-                            <h5>Bánh mì ổ lớn dài</h5>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/banh-mi-o-47250.jpg" class="img-fluid" alt="...">
-                        </div>
-                        <div class="col-7">
-                            <h5>Bánh mì ổ lớn dài</h5>
-
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/banh-mi-o-47250.jpg" class="img-fluid" alt="...">
-                        </div>
-                        <div class="col-7">
-                            <h5>Bánh mì ổ lớn dài</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
             <div class="container-fluid mt-4">
                 <div class="row">
                     <div class="col-3">
-                        <img src="https://cdn.tgdd.vn/bachhoaxanh/he-thong-sieu-thi/Content/images/store/4.jpg" class="img-fluid" alt="...">
+                        <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-2-380x380.jpg" class="img-fluid" alt="...">
                         <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
                         <h6 class="mt-4 text-secondary"> Cập nhật ngày : 10/06/2024</h6>
                     </div>
                     <div class="col-3">
-                        <img src="https://cdn.tgdd.vn/bachhoaxanh/he-thong-sieu-thi/Content/images/store/10.jpg" class="img-fluid" alt="...">
+                        <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-1-380x380.jpg" class="img-fluid" alt="...">
                         <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
                         <h6 class="mt-4 text-secondary"> Cập nhật ngày : 10/06/2024</h6>
                     </div>
                     <div class="col-3">
-                        <img src="https://cdn.tgdd.vn/bachhoaxanh/he-thong-sieu-thi/Content/images/store/5.jpg" class="img-fluid" alt="...">
+                        <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-3-380x380.jpg" class="img-fluid" alt="...">
                         <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
                         <h6 class="mt-4 text-secondary"> Cập nhật ngày : 10/06/2024</h6>
                     </div>
                     <div class="col-3">
-                        <img src="https://cdn.tgdd.vn/bachhoaxanh/he-thong-sieu-thi/Content/images/store/4.jpg" class="img-fluid" alt="...">
+                        <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-3-380x380.jpg" class="img-fluid" alt="...">
                         <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
                         <h6 class="mt-4 text-secondary"> Cập nhật ngày : 10/06/2024</h6>
                     </div>
@@ -347,6 +391,7 @@
             </div>
         </div>
         <!--   phạm vi quản lý -->
+    </div>
     </div>
     <script src="/templates/product/shopping-cart.js"></script>
 </main>

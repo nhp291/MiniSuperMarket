@@ -49,4 +49,28 @@ public class AccountService {
         return accountRepository.count();  // Trả về số lượng Account
     }
 
+    public void saveAccountUser(Account account) {
+        // Kiểm tra username hoặc email đã tồn tại chưa
+        if (accountRepository.existsByUsernameOrEmail(account.getUsername(), account.getEmail())) {
+            throw new IllegalArgumentException("Username hoặc email đã tồn tại!");
+        }
+
+        // Tìm Role mặc định từ cơ sở dữ liệu (roleId = 2 cho ROLE_USER)
+        Role defaultRole = roleRepository.findById(2)
+                .orElseThrow(() -> new IllegalArgumentException("Role mặc định không tồn tại!"));
+
+        // Gán Role mặc định nếu chưa được thiết lập
+        if (account.getRole() == null) {
+            account.setRole(defaultRole); // Gán đối tượng Role vào tài khoản
+        }
+
+        // Nếu imageUrl không có, đặt NULL
+        if (account.getImageUrl() == null || account.getImageUrl().isEmpty()) {
+            account.setImageUrl(null);
+        }
+
+        // Lưu tài khoản vào cơ sở dữ liệu
+        accountRepository.save(account);
+    }
+
 }
