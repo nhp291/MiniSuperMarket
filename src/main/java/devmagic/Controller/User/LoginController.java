@@ -3,6 +3,8 @@ package devmagic.Controller.User;
 import devmagic.Model.Account;
 import devmagic.Service.AccountService;
 import devmagic.Service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,28 +33,41 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@RequestParam("username") String username,
                         @RequestParam("password") String password,
-                        Model model, HttpSession session) {
+                        Model model, HttpSession session,
+                        HttpServletResponse response) {
 
         if (userService.checkLogin(username, password)) {
             Account account = userService.findByUsername(username);
 
             if (account != null) {
-                // Lưu username vào session
+                // Lưu thông tin vào session
                 session.setAttribute("username", account.getUsername());
+                session.setAttribute("role", account.getRole().getRoleName());
                 session.setAttribute("user", account);
 
+                // Tạo cookie để lưu thông tin
+                Cookie usernameCookie = new Cookie("username", account.getUsername());
+                Cookie roleCookie = new Cookie("role", account.getRole().getRoleName());
+                roleCookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
+                usernameCookie.setMaxAge(7 * 24 * 60 * 60); // 7 ngày
+                usernameCookie.setHttpOnly(true);
+                roleCookie.setHttpOnly(true);
+                response.addCookie(usernameCookie);
+                response.addCookie(roleCookie);
+
+                // Phân quyền
                 if ("Admin".equals(account.getRole().getRoleName())) {
                     return "redirect:/Admin/Home";
                 } else {
-                    return "redirect:/layout/Product";
+                    return "redirect:/layout/Home";
                 }
             }
-        } else {
-            model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không chính xác!");
-            return "user/login";
         }
 
+        model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không chính xác!");
         return "user/login";
     }
+
+
 
 }
