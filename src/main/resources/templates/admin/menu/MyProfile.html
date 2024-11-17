@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Dreams Pos admin template</title>
+    <title>My Profile</title>
 </head>
 <body>
 <div class="main-wrapper" th:fragment="content">
@@ -15,76 +15,76 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-body">
-                    <div class="profile-set">
-                        <div class="profile-head">
-                        </div>
-                        <div class="profile-top">
-                            <div class="profile-content">
-                                <div class="profile-contentimg">
-                                    <img src="/admin/img/customer/customer5.jpg" alt="img" id="blah">
-                                    <div class="profileupload">
-                                        <input type="file" id="imgInp">
-                                        <a href="javascript:void(0);"><img src="/admin/img/icons/edit-set.svg"
-                                                                           alt="img"></a>
+            <form th:action="@{/Admin/UpdateProfile}" th:object="${account}" method="post" enctype="multipart/form-data">
+                <div class="card profile-contentname">
+                    <div class="card-body">
+                        <div class="profile-set">
+                            <div class="profile-head bg-info"></div>
+                            <div class="profile-top">
+                                <div class="profile-content">
+                                    <div class="profile-contentimg">
+                                        <img th:src="@{'/Image/imageProfile/'+${account.imageUrl}}" alt="Profile Image" id="blah">
+                                        <div class="profileupload">
+                                            <input type="file" name="imageFile" id="imgInp">
+                                            <a href="javascript:void(0);"><img src="/admin/img/icons/edit-set.svg" alt="Edit"></a>
+                                        </div>
+                                    </div>
+                                    <div class="profile-contentname">
+                                        <h2 th:text="${account.username}">Tên đăng nhập</h2>
                                     </div>
                                 </div>
-                                <div class="profile-contentname">
-                                    <h2>William Castillo</h2>
-                                    <h4>Updates Your Photo and Personal Details.</h4>
+                                <div class="ms-auto">
+                                    <button type="submit" class="btn btn-submit me-2">Cập nhật</button>
+                                    <a href="javascript:void(0);" class="btn btn-cancel">Quên mật khẩu</a>
                                 </div>
                             </div>
-                            <div class="ms-auto">
-                                <a href="javascript:void(0);" class="btn btn-submit me-2">Save</a>
-                                <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
-                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>First Name</label>
-                                <input type="text" placeholder="William">
+                        <div class="row">
+<!--                            <div class="col-lg-6 col-sm-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <label>Last Name</label>-->
+<!--                                    <input type="text" th:field="*{lastName}" placeholder="Castilo" class="form-control">-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" th:field="*{email}" placeholder="william@example.com" class="form-control">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>Last Name</label>
-                                <input type="text" placeholder="Castilo">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input type="text" th:field="*{phoneNumber}" placeholder="+1452 876 5432" class="form-control">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" placeholder="william@example.com">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>User Name</label>
+                                    <input type="text" th:field="*{username}" placeholder="William" class="form-control">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <input type="text" placeholder="+1452 876 5432">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <div class="pass-group">
+                                        <input type="password" name="password" class="pass-input form-control" placeholder="******">
+                                        <span class="fas toggle-password fa-eye-slash"></span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>User Name</label>
-                                <input type="text" placeholder="+1452 876 5432">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-sm-12">
-                            <div class="form-group">
-                                <label>Password</label>
-                                <div class="pass-group">
-                                    <input type="password" class=" pass-input">
-                                    <span class="fas toggle-password fa-eye-slash"></span>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>Địa chỉ</label>
+                                    <label>
+                                        <input type="text" th:field="*{address}"placeholder="William" class="form-control">
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
+            </form>
         </div>
     </div>
 </div>

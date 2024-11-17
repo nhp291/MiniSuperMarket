@@ -28,4 +28,18 @@ public class OrderService {
     public void deleteOrder(Integer id) {
         ordersRepository.deleteById(id);
     }
+
+
+    public Long getTotalOrders() {
+        return ordersRepository.countTotalOrders();
+    }
+
+    public Double getTotalRevenue() {
+        return ordersRepository.calculateTotalRevenue();
+    }
+
+    public List<Object[]> getRevenueByMonth() {
+        return ordersRepository.getRevenueByMonth();
+    }
+
 }
