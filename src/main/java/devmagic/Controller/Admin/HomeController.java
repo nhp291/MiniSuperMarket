@@ -95,7 +95,7 @@ public class HomeController {
             model.addAttribute("pageTitle", "My Profile Page");
             model.addAttribute("viewName", "admin/menu/MyProfile");
             return "admin/layout";
-        }
+        }   
 
         // Lấy tài khoản từ session
         Account currentAccount = (Account) session.getAttribute("user");
