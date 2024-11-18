@@ -27,7 +27,7 @@ public class UserController {
             response.put("accountId", accountId);
             return ResponseEntity.ok(response);
         } else {
-            response.put("error", -1); // Trả về -1 nếu không tìm thấy accountId
+            response.put("error", -1);
             return ResponseEntity.status(404).body(response);
         }
     }
