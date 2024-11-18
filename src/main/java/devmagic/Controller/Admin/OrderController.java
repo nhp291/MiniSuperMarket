@@ -42,5 +42,20 @@ public class OrderController {
         ordersService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/orders/total")
+    public Long getTotalOrders() {
+        return ordersService.getTotalOrders();
+    }
+
+    @GetMapping("/orders/revenue")
+    public Double getTotalRevenue() {
+        return ordersService.getTotalRevenue();
+    }
+
+    @GetMapping("/orders/revenue-by-month")
+    public List<Object[]> getRevenueByMonth() {
+        return ordersService.getRevenueByMonth();
+    }
 }
 

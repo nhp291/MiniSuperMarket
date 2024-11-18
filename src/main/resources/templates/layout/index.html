@@ -10,30 +10,31 @@
     <title>Title</title>
 </head>
 <script>
-    const app = angular.module('shoppingCartApp',[])
-    app.controller('MainController',function ($scope,$http) {
+    const app = angular.module('shoppingCartApp', []);
+    app.controller('MainController', function ($scope, $http) {
         $scope.cart = {
             items: [],
-            add(id){
-                alert(id)
+            add(id) {
+                alert(id);
                 var item = this.items.find(item => item.id == id);
-                if(item){
+                if (item) {
                     item.qty++;
-                    this.saveToLocalStorage()
-                }else{
-                    $http.get('/product/detail/{id}').then(resp =>{
-                        resp.data().qty = 1;
-                        this.items.push(resp.data);
+                    this.saveToLocalStorage();
+                } else {
+                    $http.get(`/product/detail/${id}`).then(resp => {
+                        let product = resp.data;
+                        product.qty = 1; // Thêm số lượng ban đầu là 1
+                        this.items.push(product);
                         this.saveToLocalStorage();
-                    })
+                    });
                 }
             },
-            saveToLocalStorage(){
+            saveToLocalStorage() {
                 var json = JSON.stringify(angular.copy(this.items));
-                localStorage.setItem("cart",json);
+                localStorage.setItem("cart", json);
             },
-        }
-    })
+        };
+    });
 
     document.addEventListener("DOMContentLoaded", function () {
         // Hàm hiển thị giỏ hàng
@@ -58,7 +59,7 @@
 
             // Hiển thị từng sản phẩm trong giỏ hàng
             cart.forEach(item => {
-                const  itemUserId = item.User;
+                const itemUserId = item.User;
                 const itemId = item.id;
                 const itemName = item.name;
                 const itemPrice = item.price;
@@ -71,14 +72,14 @@
                 const cartItem = document.createElement("div");
                 cartItem.classList.add("cart-item");
                 cartItem.innerHTML = `
-                        <div>
-                            <p><strong>Mã sản phẩm:</strong> ${itemImage}</p>
-                            <h3>${itemName}</h3>
-                            <p><strong>Giá:</strong> ${itemPrice} VND</p>
-                            <p><strong>Số lượng:</strong> ${itemQuantity}</p>
-                            <p><strong>Tổng:</strong> ${itemTotal} VND</p>
-                        </div>
-                    `;
+                    <div>
+                        <p><strong>Mã sản phẩm:</strong> ${itemImage}</p>
+                        <h3>${itemName}</h3>
+                        <p><strong>Giá:</strong> ${itemPrice} VND</p>
+                        <p><strong>Số lượng:</strong> ${itemQuantity}</p>
+                        <p><strong>Tổng:</strong> ${itemTotal} VND</p>
+                    </div>
+                `;
                 cartContainer.appendChild(cartItem);
             });
 
@@ -112,31 +113,92 @@
                 if (existingProductIndex !== -1) {
                     alert('Bạn vừa thêm sản phẩm đã được thêm vào trước đó');
                     cart[existingProductIndex].quantity += 1;
-
                 } else {
                     cart.push({
-                        User : productUserId,
+                        User: productUserId,
                         id: productId,
                         name: productName,
                         price: productPrice,
                         quantity: 1,
                         image: productImage
                     });
-                    alert('Thêm giỏ hàng thàng công');
+                    alert('Thêm giỏ hàng thành công');
                 }
                 localStorage.setItem('cart', JSON.stringify(cart));
                 displayCart();
             }
         });
 
-        // Hiển thị giỏ hàng khi tải trang
-        displayCart();
+        // // Hiển thị giỏ hàng khi tải trang
+        // displayCart();
 
         // Đưa hàm clearCart ra ngoài phạm vi DOMContentLoaded
         window.clearCart = clearCart;
+
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const carousel = document.querySelector('.category-carousel');
+        const prevButton = document.getElementById("prevButton");
+        const nextButton = document.getElementById("nextButton");
+        const hiddenItems = document.querySelectorAll('.category-item.d-none'); // Các mục ẩn
+
+        // Hàm cuộn liên tục
+        function smoothScroll() {
+            const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+            const scrollLeft = carousel.scrollLeft;
+        }
+
+        // Sự kiện cuộn sang phải (next button)
+        nextButton.addEventListener('click', function () {
+            const scrollLeft = carousel.scrollLeft;
+            const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+
+            // Nếu cuộn đến cuối, quay lại đầu
+            if (scrollLeft >= maxScrollLeft) {
+                carousel.scrollLeft = 0; // Quay lại đầu danh sách
+            } else {
+                // Cuộn mượt mà sang phải 200px
+                carousel.scrollBy({
+                    left: 200,
+                    behavior: 'smooth'
+                });
+            }
+
+            // Hiển thị các mục ẩn khi cuộn gần đến cuối
+            if (scrollLeft >= maxScrollLeft - 50) {
+                hiddenItems.forEach(item => item.classList.remove('d-none'));
+            }
+        });
+
+        // Sự kiện cuộn sang trái (prev button)
+        prevButton.addEventListener('click', function () {
+            const scrollLeft = carousel.scrollLeft;
+
+            // Nếu cuộn đến đầu, quay lại cuối
+            if (scrollLeft === 0) {
+                carousel.scrollLeft = carousel.scrollWidth; // Quay lại cuối danh sách
+            } else {
+                // Cuộn mượt mà sang trái 200px
+                carousel.scrollBy({
+                    left: -200,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        // Lắng nghe sự kiện cuộn để hiển thị các mục ẩn khi cuộn đến gần cuối
+        carousel.addEventListener('scroll', function () {
+            smoothScroll();
+        });
+
+        // Ẩn thanh cuộn để tạo trải nghiệm mượt mà
+        carousel.style.overflow = "hidden"; // Ẩn thanh cuộn
     });
 
 </script>
+
 <style>
 
     .contact-info {
@@ -255,8 +317,8 @@
         overflow: hidden;
     }
     .card_box{
-        width: 200px;
-        height: 340px;
+        width: 230px;
+        height: 360px;
         position: relative;
         cursor: pointer;
         transition: all .3s;
@@ -276,14 +338,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-    .text-success-emphasis{
-        color: #679210;
-    }
-    hr {
-        height: 4px; /* Độ dày */
-        background-color: #679210; /* Màu sắc */
-        border: none; /* Loại bỏ đường viền mặc định */
     }
 
     .card_box span::after {
