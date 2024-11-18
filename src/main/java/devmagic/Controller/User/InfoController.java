@@ -14,78 +14,71 @@ import jakarta.servlet.http.HttpServletRequest;
 public class InfoController {
 
     @Autowired
-    private UserService userService; // Service tương tác với database
+    private UserService userService;
 
     // Hiển thị thông tin người dùng
     @GetMapping
     public String getInfo(Model model, HttpServletRequest request) {
-        // Lấy cookie từ request
-        Cookie[] cookies = request.getCookies();
-        String username = null;
+        String username = getUsernameFromCookies(request);
 
-        // Tìm cookie chứa username
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    username = cookie.getValue();
-                    break;
-                }
-            }
+        if (username == null) {
+            model.addAttribute("error", "Bạn chưa đăng nhập. Vui lòng đăng nhập trước.");
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập
         }
 
-        if (username != null) {
-            // Lấy thông tin người dùng từ database
-            Account account = userService.findByUsername(username);
-            if (account != null) {
-                model.addAttribute("user", account);
-                return "info"; // Trả về template info.html
-            } else {
-                model.addAttribute("error", "Không tìm thấy tài khoản người dùng.");
-                return "error"; // Trả về trang lỗi nếu không tìm thấy tài khoản
-            }
-        } else {
-            model.addAttribute("error", "Không tìm thấy thông tin người dùng trong cookie.");
-            return "error"; // Hoặc trang lỗi nếu không có username trong cookie
+        // Lấy thông tin người dùng từ database
+        Account account = userService.findByUsername(username);
+        if (account == null) {
+            model.addAttribute("error", "Không tìm thấy thông tin tài khoản.");
+            return "error"; // Trả về trang lỗi nếu không tìm thấy tài khoản
         }
+
+        // Truyền thông tin người dùng vào view
+        model.addAttribute("user", account);
+        return "info"; // Trả về template info.html
     }
 
     // Xử lý cập nhật thông tin
     @PostMapping("/updateInfo")
     public String updateInfo(@ModelAttribute("user") Account updatedAccount, HttpServletRequest request, Model model) {
-        // Lấy cookie từ request
+        String username = getUsernameFromCookies(request);
+
+        if (username == null) {
+            model.addAttribute("error", "Bạn chưa đăng nhập. Vui lòng đăng nhập trước.");
+            return "redirect:/login";
+        }
+
+        Account existingAccount = userService.findByUsername(username);
+        if (existingAccount == null) {
+            model.addAttribute("error", "Không tìm thấy thông tin tài khoản.");
+            return "error";
+        }
+
+        // Cập nhật thông tin người dùng
+        existingAccount.setEmail(updatedAccount.getEmail());
+        existingAccount.setPhoneNumber(updatedAccount.getPhoneNumber());
+        existingAccount.setAddress(updatedAccount.getAddress());
+
+
+        // Lưu lại thông tin
+        userService.save(existingAccount);
+        model.addAttribute("success", "Cập nhật thông tin thành công.");
+
+        // Sau khi cập nhật, trả lại trang thông tin người dùng với các thay đổi đã lưu
+        model.addAttribute("user", existingAccount);
+        return "info"; // Trả về template info.html với thông tin đã cập nhật
+    }
+
+    // Phương thức lấy username từ cookie
+    private String getUsernameFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        String username = null;
+        if (cookies == null) return null;
 
-        // Tìm cookie chứa username
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    username = cookie.getValue();
-                    break;
-                }
+        for (Cookie cookie : cookies) {
+            if ("username".equals(cookie.getName())) {
+                return cookie.getValue();
             }
         }
-
-        if (username != null) {
-            Account existingAccount = userService.findByUsername(username);
-            if (existingAccount != null) {
-                // Cập nhật thông tin người dùng
-                existingAccount.setUsername(updatedAccount.getUsername());
-                existingAccount.setEmail(updatedAccount.getEmail());
-                existingAccount.setPhoneNumber(updatedAccount.getPhoneNumber());
-                existingAccount.setAddress(updatedAccount.getAddress());
-
-                userService.save(existingAccount); // Lưu lại thông tin đã cập nhật
-                model.addAttribute("success", "Cập nhật thông tin thành công!");
-                return "redirect:/info?success"; // Chuyển hướng lại trang info với thông báo thành công
-            } else {
-                model.addAttribute("error", "Không tìm thấy tài khoản người dùng để cập nhật.");
-                return "error"; // Trả về trang lỗi nếu không tìm thấy tài khoản
-            }
-        } else {
-            model.addAttribute("error", "Không tìm thấy thông tin người dùng trong cookie.");
-            return "error"; // Nếu không tìm thấy cookie username
-        }
+        return null;
     }
 }
-
