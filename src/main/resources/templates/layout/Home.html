@@ -151,6 +151,7 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
                                                 <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
+
                                                 <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
                                             </div>
                                             <div th:unless="${p.sale != null}">
@@ -160,8 +161,18 @@
                                         <p th:text="${p.description}" class="card-text"></p>
                                         <div class="d-grid gap-2">
                                             <button type="button" class="btn btn-outline-primary add-to-cart"
-                                                    th:attr="data-product-id=${p.productId}, data-product-name=${p.name}, data-product-price=${p.price}, data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}">
+                                                    th:if="${username != null}"
+                                                    th:attr="
+                                                    data-product-id=${p.productId},
+                                                    data-product-name=${p.name},
+                                                    data-product-price=${p.price},
+                                                    data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
+                                                    data-accountId=${accountId}">
                                                 <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
+                                            </button>
+
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                    th:if="${username == null}" disabled>Đăng nhập
                                             </button>
                                         </div>
                                     </div>

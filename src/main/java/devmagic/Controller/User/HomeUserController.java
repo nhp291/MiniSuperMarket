@@ -4,6 +4,8 @@ package devmagic.Controller.User;
 
 import devmagic.Model.Product;
 import devmagic.Service.ProductSV;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -23,7 +25,17 @@ public class HomeUserController {
     ProductSV productSV;
 
     @RequestMapping("/layout/Home")
-    public String Home(Model model, @Param("keyword") String keyword, @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo) {
+    public String Home(Model model, @Param("keyword") String keyword, @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNo,HttpServletRequest request) {
+        // Lấy dữ liệu từ cookie (ví dụ lấy username từ cookie)
+        String username = getUsernameFromCookies(request);
+        Integer accountId = getAccountIdFromCookies(request);
+
+        if (username != null) {
+            model.addAttribute("username", username); // Thêm vào model để hiển thị trên trang
+        }
+        if (accountId != null) {
+            model.addAttribute("accountId", accountId); // Thêm vào model để hiển thị trên trang
+        }
 
         Page<Product> list = this.productSV.getall(pageNo);
         List<Product> product2 = this.productSV.finTop6Product();
@@ -38,6 +50,38 @@ public class HomeUserController {
         model.addAttribute("product1", list1);
         model.addAttribute("product2", product2);
         return "layout/Home";
+    }
+
+    // Phương thức để lấy username từ cookie
+    private String getUsernameFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("username".equals(cookie.getName())) {  // Kiểm tra cookie tên 'username'
+                    return cookie.getValue();  // Trả về giá trị của cookie 'username'
+                }
+            }
+        }
+        return null; // Nếu không có cookie 'username'
+    }
+
+    // Phương thức để lấy accountId từ cookie
+    private Integer getAccountIdFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accountId".equals(cookie.getName())) {  // Kiểm tra cookie tên 'accountId'
+                    try {
+                        return Integer.parseInt(cookie.getValue());  // Chuyển giá trị cookie thành Integer
+                    } catch (NumberFormatException e) {
+                        // Nếu không thể chuyển đổi giá trị của cookie thành Integer, log lỗi
+                        System.out.println("Lỗi khi chuyển đổi giá trị accountId từ cookie: " + e.getMessage());
+                        return null;
+                    }
+                }
+            }
+        }
+        return null; // Nếu không có cookie 'accountId'
     }
 
     @RequestMapping("/layout/Product")

@@ -12,7 +12,6 @@
 <script>
     const app = angular.module('shoppingCartApp',[])
     app.controller('MainController',function ($scope,$http) {
-        // alert("a")
         $scope.cart = {
             items: [],
             add(id){
@@ -59,6 +58,7 @@
 
             // Hiển thị từng sản phẩm trong giỏ hàng
             cart.forEach(item => {
+                const  itemUserId = item.User;
                 const itemId = item.id;
                 const itemName = item.name;
                 const itemPrice = item.price;
@@ -71,9 +71,8 @@
                 const cartItem = document.createElement("div");
                 cartItem.classList.add("cart-item");
                 cartItem.innerHTML = `
-                        <img src="${itemImage}" alt="${itemName}">  <!-- Hiển thị hình ảnh -->
                         <div>
-                            <p><strong>Mã sản phẩm:</strong> ${itemId}</p>
+                            <p><strong>Mã sản phẩm:</strong> ${itemImage}</p>
                             <h3>${itemName}</h3>
                             <p><strong>Giá:</strong> ${itemPrice} VND</p>
                             <p><strong>Số lượng:</strong> ${itemQuantity}</p>
@@ -100,6 +99,7 @@
         // Dùng Event Delegation để giảm số lượng sự kiện
         document.body.addEventListener('click', function (event) {
             if (event.target.classList.contains('add-to-cart')) {
+                const productUserId = event.target.getAttribute('data-accountId');
                 const productId = event.target.getAttribute('data-product-id');
                 const productName = event.target.getAttribute('data-product-name');
                 const productPrice = Number(event.target.getAttribute('data-product-price'));
@@ -110,19 +110,21 @@
                 const existingProductIndex = cart.findIndex(item => item.id === productId);
 
                 if (existingProductIndex !== -1) {
+                    alert('Bạn vừa thêm sản phẩm đã được thêm vào trước đó');
                     cart[existingProductIndex].quantity += 1;
+
                 } else {
                     cart.push({
+                        User : productUserId,
                         id: productId,
                         name: productName,
                         price: productPrice,
                         quantity: 1,
                         image: productImage
                     });
+                    alert('Thêm giỏ hàng thàng công');
                 }
-
                 localStorage.setItem('cart', JSON.stringify(cart));
-                alert('Sản phẩm đã được thêm vào giỏ hàng');
                 displayCart();
             }
         });
