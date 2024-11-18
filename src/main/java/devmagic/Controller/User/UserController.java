@@ -17,26 +17,6 @@ import java.util.Map;
 @RequestMapping("/api")
 public class UserController {
 
-    // Lấy accountId từ cookie và trả về thông tin người dùng
-    @GetMapping("/layout/Home")
-    public String dashboard(HttpServletRequest request, Model model) {
-        String username = getUsernameFromCookies(request);
-        Integer accountId = getAccountIdFromCookies(request);
-
-        // Kiểm tra và lưu thông tin vào Model
-        if (username != null) {
-            model.addAttribute("username", username);
-        } else {
-            model.addAttribute("error", "Bạn cần đăng nhập để truy cập trang này.");
-        }
-
-        if (accountId != null) {
-            model.addAttribute("accountId", accountId);
-        }
-
-        return "layout/Home"; // Trả về trang dashboard
-    }
-
     private String getUsernameFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
