@@ -20,7 +20,7 @@ public class LogoutController {
         deleteCookie("username", response);
         deleteCookie("accountId", response);
 
-        // Chuyển hướng về trang đăng nhập
+        // Chuyển hướng về trang đăng nhập mà không có tham số trên URL
         return "redirect:/user/login";
     }
 

@@ -102,6 +102,13 @@
             color: #888;
         }
 
+        /* Thông báo lỗi */
+        .text-danger {
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
         /* Media Queries tùy chỉnh cho tính đáp ứng */
         @media (max-width: 768px) {
             .registration-container {
@@ -124,33 +131,35 @@
             <p class="mb-2">Đăng ký để truy cập nội dung cao cấp của chúng tôi</p>
 
             <!-- Hiển thị thông báo thành công hoặc lỗi -->
-            <div th:if="${successMessage}" class="alert alert-success" role="alert">
-                <p th:text="${successMessage}">Đăng ký thành công!</p>
+            <div id="successMessage" class="alert alert-success" style="display: none;">
+                Đăng ký thành công!
             </div>
-            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-                <p th:text="${errorMessage}">Đăng ký thất bại!</p>
+            <div id="errorMessage" class="alert alert-danger" style="display: none;">
+                Vui lòng kiểm tra lại thông tin của bạn.
             </div>
 
-            <form action="/register" method="POST">
+            <form id="registerForm">
                 <div class="form-floating mb-4">
                     <input class="form-control" id="username" name="username" placeholder="Tên đăng nhập" type="text" required>
                     <label for="username">Tên đăng nhập *</label>
+                    <div class="text-danger" id="usernameError">Tên đăng nhập không được để trống.</div>
                 </div>
                 <div class="form-floating mb-4">
                     <input class="form-control" id="password" name="password" placeholder="Mật khẩu" type="password" required>
                     <label for="password">Mật khẩu *</label>
-                    <!-- Biểu tượng mắt cho mật khẩu -->
                     <i id="togglePassword" class="fas fa-eye password-icon"></i>
+                    <div class="text-danger" id="passwordError">Mật khẩu không được để trống.</div>
                 </div>
                 <div class="form-floating mb-4">
                     <input class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu" type="password" required>
                     <label for="confirmPassword">Xác nhận mật khẩu *</label>
-                    <!-- Biểu tượng mắt cho xác nhận mật khẩu -->
                     <i id="toggleConfirmPassword" class="fas fa-eye password-icon"></i>
+                    <div class="text-danger" id="confirmPasswordError">Mật khẩu xác nhận không khớp.</div>
                 </div>
                 <div class="form-floating mb-4">
                     <input class="form-control" id="email" name="email" placeholder="Email" type="email" required>
                     <label for="email">Email *</label>
+                    <div class="text-danger" id="emailError">Email không hợp lệ.</div>
                 </div>
                 <div class="form-floating mb-4">
                     <input class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Số điện thoại" type="text">
@@ -164,29 +173,81 @@
             </form>
 
             <div class="mt-4 text-center">
-                Bạn đã có tài khoản? <a href="user/login">Đăng nhập</a>
+                Bạn đã có tài khoản? <a href="/user/login">Đăng nhập</a>
             </div>
         </div>
     </div>
 </main>
 
 <script>
-    // JavaScript để hiển thị/ẩn mật khẩu và xác nhận mật khẩu
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('password');
+    document.getElementById('registerForm').addEventListener('submit', function (event) {
+        let isValid = true;
 
-    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-    const confirmPasswordField = document.getElementById('confirmPassword');
+        // Kiểm tra tên đăng nhập
+        const username = document.getElementById('username');
+        const usernameError = document.getElementById('usernameError');
+        if (!username.value.trim()) {
+            usernameError.style.display = 'block';
+            isValid = false;
+        } else {
+            usernameError.style.display = 'none';
+        }
+
+        // Kiểm tra mật khẩu
+        const password = document.getElementById('password');
+        const passwordError = document.getElementById('passwordError');
+        if (!password.value.trim()) {
+            passwordError.style.display = 'block';
+            isValid = false;
+        } else {
+            passwordError.style.display = 'none';
+        }
+
+        // Kiểm tra xác nhận mật khẩu
+        const confirmPassword = document.getElementById('confirmPassword');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        if (confirmPassword.value !== password.value) {
+            confirmPasswordError.style.display = 'block';
+            isValid = false;
+        } else {
+            confirmPasswordError.style.display = 'none';
+        }
+
+        // Kiểm tra email
+        const email = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email.value.trim())) {
+            emailError.style.display = 'block';
+            isValid = false;
+        } else {
+            emailError.style.display = 'none';
+        }
+
+        // Hiển thị lỗi chung nếu có
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        if (!isValid) {
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            event.preventDefault();
+        } else {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'block';
+        }
+    });
 
     // Hiển thị/ẩn mật khẩu
-    togglePassword.addEventListener('click', function () {
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordField = document.getElementById('password');
         const type = passwordField.type === 'password' ? 'text' : 'password';
         passwordField.type = type;
         this.classList.toggle('fa-eye-slash');
     });
 
     // Hiển thị/ẩn xác nhận mật khẩu
-    toggleConfirmPassword.addEventListener('click', function () {
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+        const confirmPasswordField = document.getElementById('confirmPassword');
         const type = confirmPasswordField.type === 'password' ? 'text' : 'password';
         confirmPasswordField.type = type;
         this.classList.toggle('fa-eye-slash');
