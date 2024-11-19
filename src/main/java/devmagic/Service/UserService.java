@@ -26,7 +26,6 @@ public class UserService {
     }
 
 
-
     // Constructor để khởi tạo UserService với userRepository
     public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
@@ -77,4 +76,7 @@ public class UserService {
     }
 
 
+    public void save(Account existingAccount) {
+        userRepository.save(existingAccount);
+    }
 }

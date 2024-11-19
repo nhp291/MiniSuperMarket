@@ -458,6 +458,13 @@
         <!-- Hiển thị nút với tên người dùng khi đã đăng nhập -->
         <button th:if="${username != null}" th:text="' '+${username} +' ' "  class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         </button>
+        
+        <ul class="dropdown-menu">
+          <li><a th:href="@{/user/login}" class="dropdown-item" href="#"><i class="bi bi-person-circle"></i> Đăng Nhập</a></li>
+          <li><a th:href="@{/user/register}" class="dropdown-item" href="#"><i class="bi bi-person-exclamation"></i> Đăng Ký</a></li>
+          <li><a th:href="@{/user/info}" class="dropdown-item" href="#"><i class="bi bi-person-add"></i>Thông tin khách hàng</a></li>
+          <li><a th:href="@{/user/logout}" class="dropdown-item" href="#"><i class="bi bi-box-arrow-right"></i> Đăng Xuất</a></li>
+
         <button th:if="${username == null}" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           Tài khoản
         </button>

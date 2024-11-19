@@ -72,5 +72,8 @@ public class AccountService {
         // Lưu tài khoản vào cơ sở dữ liệu
         accountRepository.save(account);
     }
+    public boolean isUsernameOrEmailExist(String username, String email) {
+        return accountRepository.existsByUsernameOrEmail(username, email);
+    }
 
 }
