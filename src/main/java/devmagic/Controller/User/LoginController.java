@@ -65,7 +65,7 @@ public class LoginController {
         if (account.getRole() != null && "Admin".equals(account.getRole().getRoleName())) {
             return "redirect:/Admin/Home";
         } else {
-            return "redirect:/layout/Product";
+            return "redirect:/layout/Home";
         }
     }
 }

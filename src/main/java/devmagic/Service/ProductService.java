@@ -5,6 +5,10 @@ import devmagic.Model.ProductImage;
 import devmagic.Reponsitory.ProductImageRepository;
 import devmagic.Reponsitory.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +32,61 @@ public class ProductService {
 
     private final String UPLOAD_DIRECTORY = "./Image/imageUrl/"; // Thư mục lưu trữ ảnh
 
+
+    public List<Product> findAll() {
+        return productRepository.findAll();
+    }
+
+
+    public Product findById(Integer id) {
+        return productRepository.findById(id).get();
+    }
+
+    public List<Product> finTop6Product() {
+        Pageable limit = PageRequest.of(6, 6);  // Lấy trang đầu tiên với 6 sản phẩm
+        return productRepository.findAll(limit).getContent();
+    }
+
+    public Page<Product> getall(Integer pageable) {
+        Pageable page = PageRequest.of(pageable-1, 8);
+        return this.productRepository.findAll(page);
+    }
+
+    public List<Product> searchProduct(String keyword) {
+        return this.productRepository.searchProduct(keyword);
+    }
+
+    public Page<Product> seachProduct(String keyword, Integer pageNo) {
+        List list = this.searchProduct(keyword);
+        Pageable pageable = PageRequest.of(pageNo, 8);
+        Integer start = (int) pageable.getOffset();
+        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > list.size() ? list.size() : pageable.getOffset() + pageable.getPageSize());
+        list = list.subList(start, end);
+        return new PageImpl<Product>(list, pageable, this.searchProduct(keyword).size());
+    }
+
+
+
+    public Page<Product> getFiveAll(Integer pageable) {
+        Pageable page = PageRequest.of(pageable +8, 8);
+        return this.productRepository.findAll(page);
+    }
+
+    public List<Product> findByCategoryId(String cid) {
+        return productRepository.findByCategoryId(cid);
+    }
+
+    public Page<Product> getForAll(Integer pageable) {
+        Pageable page = PageRequest.of(pageable +4, 8);
+        return this.productRepository.findAll(page);
+    }
+
+    public Page<Product> filterProductsByPrice(Double minPrice, Double maxPrice, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo - 1, 8); // Số lượng sản phẩm mỗi trang
+        if (minPrice == null) minPrice = 0.0;
+        if (maxPrice == null) maxPrice = Double.MAX_VALUE;
+        return productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+    }
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }

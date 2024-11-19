@@ -1,6 +1,8 @@
 package devmagic.Reponsitory;
 
 import devmagic.Model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,5 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     // Use Integer if your ID is Integerr
     @Query("SELECT COUNT(p) FROM Product p")
     long countProducts();
+    Page<Product> findByPriceBetween(Double minPrice, Double maxPrice, Pageable pageable);
+
 }
 

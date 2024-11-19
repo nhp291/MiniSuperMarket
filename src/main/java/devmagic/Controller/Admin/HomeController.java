@@ -1,7 +1,6 @@
 package devmagic.Controller.Admin;
 
 import devmagic.Model.Account;
-import devmagic.Reponsitory.CategoryRepository;
 import devmagic.Reponsitory.ProductRepository;
 import devmagic.Service.AccountService;
 import devmagic.Service.BrandService;
@@ -21,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 
 @Controller
 @RequestMapping("/Admin")
@@ -40,18 +38,25 @@ public class HomeController {
     private BrandService brandService;
 
     @GetMapping("/Home")
-    public String Home(Model model) {
+    public String Home(Model model, HttpSession session) {
+        // Lấy tài khoản người dùng từ session
+        Account account = (Account) session.getAttribute("user");
 
-        long productCount = productRepository.countProducts(); // Sử dụng phương thức countProducts() như đã tạo
+        // Truyền thông tin tài khoản vào model
+        if (account != null) {
+            model.addAttribute("account", account);
+        }
+
+        long productCount = productRepository.countProducts();
         model.addAttribute("productCount", productCount);
 
-        long totalAccounts = accountService.getTotalAccounts();  // Gọi phương thức để đếm số lượng Account
+        long totalAccounts = accountService.getTotalAccounts();
         model.addAttribute("totalAccounts", totalAccounts);
 
-        long categoryCount = categoryService.getTotalCategories(); // Gọi phương thức để đếm số lượng Category
+        long categoryCount = categoryService.getTotalCategories();
         model.addAttribute("categoryCount", categoryCount);
 
-        long brandCount = brandService.getTotalBrands(); // Gọi phương thức để đếm số lượng Brand
+        long brandCount = brandService.getTotalBrands();
         model.addAttribute("brandCount", brandCount);
 
         model.addAttribute("pageTitle", "Home Page");
@@ -62,24 +67,22 @@ public class HomeController {
 
     @GetMapping("/GeneralSettings")
     public String GeneralSettings(Model model) {
-        model.addAttribute("pageTitle", "My Profile Page");
+        model.addAttribute("pageTitle", "General Settings");
         model.addAttribute("viewName", "admin/menu/GeneralSettings");
         return "admin/layout";
     }
 
     @GetMapping("/MyProfile")
     public String MyProfile(Model model, HttpSession session) {
-        // Lấy thông tin tài khoản từ session
         Account account = (Account) session.getAttribute("user");
 
         if (account != null) {
-            // Truyền thông tin tài khoản vào model
             model.addAttribute("account", account);
-            model.addAttribute("pageTitle", "My Profile Page");
+            model.addAttribute("pageTitle", "My Profile");
             model.addAttribute("viewName", "admin/menu/MyProfile");
         } else {
             model.addAttribute("error", "Chưa đăng nhập");
-            return "user/login";  // Nếu không có thông tin tài khoản trong session, chuyển đến trang login
+            return "user/login";  // Nếu chưa đăng nhập, chuyển hướng tới trang login
         }
 
         return "admin/layout";
@@ -91,150 +94,73 @@ public class HomeController {
                                 @RequestParam("imageFile") MultipartFile imageFile,
                                 HttpSession session,
                                 Model model) throws IOException {
+
         if (result.hasErrors()) {
-            model.addAttribute("pageTitle", "My Profile Page");
+            model.addAttribute("pageTitle", "My Profile");
             model.addAttribute("viewName", "admin/menu/MyProfile");
             return "admin/layout";
-        }   
+        }
 
-        // Lấy tài khoản từ session
         Account currentAccount = (Account) session.getAttribute("user");
         if (currentAccount == null) {
             model.addAttribute("error", "Bạn cần đăng nhập trước khi cập nhật thông tin.");
             return "user/login";
         }
 
-        // Cập nhật thông tin từ form
+        // Cập nhật thông tin người dùng
         currentAccount.setUsername(account.getUsername());
         currentAccount.setEmail(account.getEmail());
         currentAccount.setPhoneNumber(account.getPhoneNumber());
         currentAccount.setAddress(account.getAddress());
 
-        // Xử lý cập nhật ảnh đại diện nếu có
+        // Xử lý ảnh đại diện nếu có
         if (!imageFile.isEmpty()) {
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            String uploadDir = "src/main/resources/static/Image/imageProfile/";
-            Path uploadPath = Paths.get(uploadDir);
+            // Lấy MIME type của tệp
+            String contentType = imageFile.getContentType();
+            if (contentType != null && contentType.startsWith("image/")) {
+                String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+                String uploadDir = "src/main/resources/static/Image/imageProfile/";
+                Path uploadPath = Paths.get(uploadDir);
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
 
-            try (InputStream inputStream = imageFile.getInputStream()) {
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-                currentAccount.setImageUrl(fileName);
-            } catch (IOException e) {
-                throw new IOException("Không thể lưu hình ảnh: " + fileName, e);
+                try (InputStream inputStream = imageFile.getInputStream()) {
+                    Path filePath = uploadPath.resolve(fileName);
+                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                    currentAccount.setImageUrl(fileName);
+                } catch (IOException e) {
+                    throw new IOException("Không thể lưu hình ảnh: " + fileName, e);
+                }
+            } else {
+                throw new IOException("Tệp không phải là hình ảnh hợp lệ");
             }
         }
 
-        // Lưu thay đổi vào cơ sở dữ liệu
+        // Lưu thông tin tài khoản đã thay đổi
         accountService.saveAccount(currentAccount);
 
-        // Cập nhật session
+        // Cập nhật thông tin trong session
         session.setAttribute("user", currentAccount);
 
         model.addAttribute("success", "Cập nhật thông tin thành công!");
-        return "redirect:/Admin/MyProfile";
+        return "redirect:/Admin/MyProfile"; // Quay lại trang hồ sơ
     }
 
+    // Xử lý khi người dùng click logout
+    @PostMapping("/Admin/Logout")
+    public String logout(HttpSession session) {
+        // Xóa thông tin người dùng khỏi session
+        session.invalidate(); // Hoặc bạn có thể xóa thông tin cụ thể: session.removeAttribute("account");
+
+        // Sau khi logout xong, chuyển hướng đến trang chủ
+        return "redirect:/layout/Home";
+    }
+
+    @GetMapping("/Admin/Home")
+    public String home() {
+        return "home"; // Trả về tên view trang Home (có thể là home.html hoặc trang khác tùy theo cấu hình của bạn)
+    }
 
 }
-
-
-
-
-
-
-
-
-//    @GetMapping("/WareHouse")
-//    public String WareHouse(Model model) {
-//        model.addAttribute("pageTitle", "WareHouse Page");
-//        model.addAttribute("viewName", "admin/menu/WareHouse");
-//        return "admin/layout";
-//    }
-//
-//
-//
-//    @GetMapping("/PromotionList")
-//    public String PromotionList(Model model) {
-//        model.addAttribute("pageTitle", "Promotion List Page");
-//        model.addAttribute("viewName", "admin/menu/PromotionList");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/AddPromotion")
-//    public String AddQuotation(Model model) {
-//        model.addAttribute("pageTitle", "Add Promotion Page");
-//        model.addAttribute("viewName", "admin/menu/AddPromotion");
-//        return "admin/layout";
-//    }
-//
-//
-//
-//    @GetMapping("/error-404")
-//    public String error_404(Model model) {
-//        model.addAttribute("pageTitle", "error-404 Page");
-//        model.addAttribute("viewName", "admin/menu/error-404");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/error-500")
-//    public String error_500(Model model) {
-//        model.addAttribute("pageTitle", "error-500 Page");
-//        model.addAttribute("viewName", "admin/menu/error-500");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/ChartApex")
-//    public String ChartApex(Model model) {
-//        model.addAttribute("pageTitle", "Chart-Apex Page");
-//        model.addAttribute("viewName", "admin/menu/chart-apex");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/ChartJs")
-//    public String ChartJs(Model model) {
-//        model.addAttribute("pageTitle", "Chart-js Page");
-//        model.addAttribute("viewName", "admin/menu/chart-js");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/ChartMorris")
-//    public String ChartMorris(Model model) {
-//        model.addAttribute("pageTitle", "Chart-Morris Page");
-//        model.addAttribute("viewName", "admin/menu/chart-morris");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/ChartFlot")
-//    public String ChartFlot(Model model) {
-//        model.addAttribute("pageTitle", "Chart-Flot Page");
-//        model.addAttribute("viewName", "admin/menu/chart-flot");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/ChartPeity")
-//    public String ChartPeity(Model model) {
-//        model.addAttribute("pageTitle", "Chart-Peity Page");
-//        model.addAttribute("viewName", "admin/menu/chart-peity");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/Profile")
-//    public String Profile(Model model) {
-//        model.addAttribute("pageTitle", "Profile Page");
-//        model.addAttribute("viewName", "admin/menu/profile");
-//        return "admin/layout";
-//    }
-//
-//    @GetMapping("/Generalsettings")
-//    public String Generalsettings(Model model) {
-//        model.addAttribute("pageTitle", "Generalsettings Page");
-//        model.addAttribute("viewName", "admin/menu/generalsettings");
-//        return "admin/layout";
-//    }
-//}
-

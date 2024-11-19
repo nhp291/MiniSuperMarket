@@ -46,7 +46,7 @@ public class Account {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @Transient // Chỉ để kiểm tra, không lưu vào cơ sở dữ liệu
+    @Transient
     private String confirmPassword;
 
 }

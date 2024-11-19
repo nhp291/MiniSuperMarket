@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="ms-auto">
                                     <button type="submit" class="btn btn-submit me-2">Cập nhật</button>
-                                    <a href="javascript:void(0);" class="btn btn-cancel">Quên mật khẩu</a>
+                                    <a th:href="@{/Password/ChangePassword(username=${username})}" class="btn btn-cancel">Cập nhật mật khẩu</a>
                                 </div>
                             </div>
                         </div>
@@ -64,15 +64,16 @@
                                     <input type="text" th:field="*{username}" placeholder="William" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-sm-12">
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <div class="pass-group">
-                                        <input type="password" name="password" class="pass-input form-control" placeholder="******">
-                                        <span class="fas toggle-password fa-eye-slash"></span>
-                                    </div>
-                                </div>
-                            </div>
+<!--                            <div class="col-lg-6 col-sm-12">-->
+<!--                                <div class="form-group">-->
+<!--                                    <label>Password</label>-->
+<!--                                    <div class="pass-group">-->
+<!--                                        <input type="password" name="password" class="pass-input form-control" placeholder="******" readonly id="passwordField">-->
+<!--                                        <span class="fas toggle-password fa-eye-slash" id="togglePassword"></span>-->
+<!--                                    </div>-->
+<!--                                    <small id="passwordHint" class="form-text text-muted">Hãy click vào "Cập nhật mật khẩu" để thay đổi mật khẩu.</small>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <div class="col-lg-6 col-sm-12">
                                 <div class="form-group">
                                     <label>Địa chỉ</label>
@@ -88,5 +89,11 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('passwordField').addEventListener('click', function() {
+        alert("Hãy click vào 'Cập nhật mật khẩu' để thay đổi mật khẩu.");
+    });
+
+</script>
 </body>
 </html>
