@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">-->
-<html lang="vi" >
+<html lang="vi">
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
@@ -13,68 +13,376 @@
 <body>
 
 <main>
+    <style>
+        /* Bố cục cho container */
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
 
-    <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false" data-bs-interval="5000" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="https://kingfoodmart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fonelife-public%2Fmedia%2Fimages%2F2024%2F09%2F6ReuBAblob&w=1920&q=75" class="d-block w-100" alt="...">
+        .image-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Vị trí của text-container */
+        .text-container {
+            position: absolute;
+            top: 35%;
+            left: 65%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* Định dạng chung cho các chữ */
+        .text {
+            position: absolute;
+            /*font-size: 35px;*/
+            text-shadow: 2px 2px 4px rgb(255, 255, 255);
+            opacity: 0;
+            animation-duration: 2s;
+            animation-fill-mode: forwards;
+            white-space: nowrap;
+            width: auto; /* Đảm bảo kích thước phù hợp */
+        }
+
+
+        /* Hiệu ứng từ các hướng */
+        .moving-from-top {
+            animation-name: moveFromTop;
+            animation-delay: 0s; /* Không độ trễ */
+        }
+
+        .moving-from-bottom {
+            animation-name: moveFromBottom;
+            animation-delay: 0.2s; /* Độ trễ 0.5 giây */
+        }
+
+        .moving-from-left {
+            animation-name: moveFromLeft;
+            animation-delay: 0.2s; /* Độ trễ 1 giây */
+        }
+
+        .moving-from-right {
+            animation-name: moveFromRight;
+            animation-delay: 0.2s; /* Độ trễ 1.5 giây */
+        }
+
+        .moving-from-center {
+            animation-name: moveFromCenter;
+            animation-delay: 0.2s; /* Độ trễ 1.5 giây */
+        }
+
+        .moving-from-button {
+            animation-name: moveFromButton;
+            animation-delay: 0.2s; /* Độ trễ 1.5 giây */
+        }
+
+        .center-text {
+            opacity: 0;
+            animation-name: fadeIn;
+            animation-delay: 0.2s; /* Hiển thị sau cùng */
+            animation-duration: 1s;
+        }
+
+        /* Keyframes cho từng hướng */
+        @keyframes moveFromTop {
+            0% {
+                left: -150%;
+                bottom: -40px;
+                opacity: 0;
+            }
+            100% {
+                left: -180px;
+                bottom: -20px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes moveFromBottom {
+            0% {
+                right: -50%;
+                left: -20px;
+                bottom: 60px;
+                opacity: 0;
+            }
+            100% {
+                left: 15px;
+                bottom: -20px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes moveFromLeft {
+            0% {
+                left: -150%;
+                bottom: -60px;
+                opacity: 0;
+            }
+            100% {
+                left: -175px;
+                bottom: -60px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes moveFromRight {
+            0% {
+                right: -50%;
+                left: -40px;
+                bottom: 60px;
+                opacity: 0;
+            }
+            100% {
+                left: 40px;
+                bottom: -60px;
+                opacity: 1;
+            }
+        }
+
+        /* Hiệu ứng fade in */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes moveFromCenter {
+            0% {
+                right: -50%;
+                left: -20px;
+                bottom: 60px;
+                opacity: 0;
+            }
+            100% {
+                left: -165px;
+                bottom: -100px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes moveFromButton {
+            0% {
+                right: -50%;
+                left: -20px;
+                bottom: 60px;
+                opacity: 0;
+            }
+            100% {
+                left: -165px;
+                bottom: -170px;
+                opacity: 1;
+            }
+        }
+        .category-carousel {
+            display: flex;
+            overflow-x: auto;  /* Đảm bảo nội dung có thể cuộn ngang */
+            scroll-snap-type: x mandatory;
+            gap: 10px;
+            scroll-behavior: smooth;
+            position: relative;
+
+            /* Ẩn thanh cuộn */
+            -ms-overflow-style: none;  /* Cho IE 10+ */
+            scrollbar-width: none;  /* Cho Firefox */
+        }
+
+        .category-carousel::-webkit-scrollbar {
+            display: none;  /* Ẩn thanh cuộn trong Webkit (Chrome, Safari, Edge) */
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-8">
+                <div class="image-container">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-slider1.jpg"
+                         class="img-fluid" alt="...">
+                    <div class="text-container">
+                        <h1>
+                            <div class="text moving-from-top ">Trang trại</div>
+                            <div class="text moving-from-bottom text-primary">Thực phẩm</div>
+                            <div class="text moving-from-left">tươi sạch &</div>
+                            <div class="text moving-from-right text-primary">100 % Hữu cơ</div>
+                            <div class="text moving-from-button text-primary">
+                                <button type="button" class="btn btn-primary">Mua Ngay</button>
+                            </div>
+                        </h1>
+                        <h6>
+                            <div class="text moving-from-center text-secondary">Chúng bạn có 1 trãi nghiệm hài lòng</div>
+                        </h6>
+                    </div>
+                </div>
+
             </div>
-            <div class="carousel-item">
-                <img src="https://kingfoodmart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fonelife-public%2Fmedia%2Fimages%2F2024%2F10%2FUfwRrgblob&w=1920&q=75" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item">
-                <img src="https://kingfoodmart.com/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fonelife-public%2Fmedia%2Fimages%2F2024%2F10%2FvtuvdAblob&w=1920&q=75" class="d-block w-100" alt="...">
+            <div class="col-4">
+                <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic22-banner-1.jpg"
+                     class="img-fluid" alt="...">
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-5"><img
+                            src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic4-icon1.png"
+                            width="100"></div>
+                    <div class="col-7 my-auto">
+                        <h5>Tươi Sạch</h5>
+                        <h6>Luôn mang đến đến cho bạn sự hài lòng</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-5"><img
+                            src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon2.png"
+                            width="100"></div>
+                    <div class="col-7 my-auto">
+                        <h5>Hữu Cơ</h5>
+                        <h6>Lựa chọn những mặt hàng tốt nhất</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-4"><img
+                            src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon3.png"
+                            width="100"></div>
+                    <div class="col-8 my-auto">
+                        <h5>Chất Lượng </h5>
+                        <h6>Đảm bảo chất lượng tuyệt đối cho khách hàng</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row">
+                    <div class="col-4"><img
+                            src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon4.png"
+                            width="100"></div>
+                    <div class="col-8 my-auto">
+                        <h5>Tự Nhiên</h5>
+                        <h6>Sản phẩm được lấy từ môi trường thiên nhiên</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid">
-        <div class="container-fluid">
-            <div class="row text-center ">
-                <div th:each="c, iterStat : ${cate}"
-                     th:if="${iterStat.index} < 12" class="col-6 col-sm-4 col-md-2 col-lg-1 p-3 p-3">
-                    <a th:href="@{|/layout/Product?cid=${c.categoryId}|} " class=" text-decoration-none text-dark" >
-                        <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" alt="...">
-                        <h6>[[${c.categoryName}]]</h6>
-                    </a>
+        <div class="container-fluid ">
+            <div class="container">
+                <h3 class="text-center mt-5">Danh Mục Sản Phẩm</h3>
+
+                <div class="row text-center">
+                    <div class="col-1 d-flex align-items-center justify-content-md-start">
+                        <button id="prevButton" class="btn btn-outline-secondary">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                    </div>
+
+                    <div class="col-10">
+                        <div class="category-carousel overflow-auto d-flex" style="scroll-snap-type: x mandatory;">
+                            <!-- Hiển thị chỉ 8 mục đầu tiên -->
+                            <div th:each="c, iterStat : ${cate}" class="category-item col-6 col-sm-4 col-md-2 col-lg-1 p-2" style="scroll-snap-align: start;">
+                                <a th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="text-decoration-none text-dark">
+                                    <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" alt="...">
+                                    <h6>[[${c.categoryName}]]</h6>
+                                </a>
+                            </div>
+
+                            <!-- Các mục còn lại, ẩn cho đến khi có sự kiện -->
+                            <div th:each="c, iterStat : ${cate}" th:if="${iterStat.index} >= 8" class="category-item col-6 col-sm-4 col-md-2 col-lg-1 p-2 d-none" style="scroll-snap-align: start;">
+                                <a th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="text-decoration-none text-dark">
+                                    <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" alt="...">
+                                    <h6>[[${c.categoryName}]]</h6>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-1 d-flex align-items-center justify-content-md-end">
+                        <button id="nextButton" class="btn btn-outline-secondary">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
+
             <!--            Trang sản phẩm -->
-            <div class="container-fluid">
-                <div class="row ms-1 mt-5">
-                    <h3 class="">Sản Phẩm Nổi Bật</h3>
-                    <div th:each="p : ${product}" class="col-12 col-sm-6 col-md-4 col-lg-3 mt-5 d-flex justify-content-center">
+            <div class="container-fluid mt-5">
+                <div class="row">
+                    <div>
+                        <h3>Sản Phẩm Nổi Bật</h3>
+                    </div>
+                    <form th:action="@{/layout/Home}" method="get" class="filter-form mb-4">
+                        <div class="row">
+                            <div class="col-12 col-sm-5 mb-2">
+
+                            </div>
+                            <div class="col-12 col-sm-2 mb-2">
+
+                            </div>
+                            <div class="col-12 col-sm-5 d-flex align-items-end">
+                                <div class="mx-2">
+                                    <label for="minPrice">Giá tối thiểu:</label>
+                                    <input type="number" id="minPrice" name="minPrice" class="form-control " min="0" th:value="${minPrice}" placeholder="0"></div>
+                                <div class="mx-2">
+                                    <label for="maxPrice">Giá tối đa: </label>
+                                    <input type="number" id="maxPrice" name="maxPrice" class="form-control " min="0"
+                                           th:value="${maxPrice}" placeholder="0">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Lọc</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div th:each="p : ${product}"
+                         class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center ">
                         <div class="con">
-                            <div class="card_box">
+                            <div class="card_box ">
                                 <div>
                                     <a th:href="@{|/product/detail/${p.productId}|}">
                                         <div th:if="${p.images != null and p.images.size() > 0}">
-                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
+                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}"
+                                                 class="card-img-top "/>
                                         </div>
                                     </a>
                                     <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
                                             <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
                                                 <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-                                                <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
+
+                                                <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
+                                                    [[${p.price}]].đ</h6>
                                             </div>
                                             <div th:unless="${p.sale != null}">
-                                                <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                                <h5 class="text-danger mb-0 ">[[${p.price}]].đ</h5>
                                             </div>
                                         </div>
-                                        <p th:text="${p.description}" class="card-text"></p>
-                                        <div class="d-grid gap-2">
-                                            <button type="button" class="btn btn-outline-primary add-to-cart"
-                                                    th:attr="data-product-id=${p.productId}, data-product-name=${p.name}, data-product-price=${p.price}, data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}">
-                                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
+                                        <h5 th:text="${p.description}" class="card-text"></h5>
+                                        <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
+                                        <div class="d-grid gap-2 d-md-block">
+                                            <button type="button" class="btn btn-primary add-to-cart"
+                                                    th:if="${username != null}"
+                                                    th:attr="
+                                                    data-product-id=${p.productId},
+                                                    data-product-name=${p.name},
+                                                    data-product-price=${p.price},
+                                                    data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
+                                                    data-accountId=${accountId}">
+                                               Mua Ngay
+                                            </button>
+
+                                            <button type="button" class="btn btn-secondary"
+                                                    th:if="${username == null}" disabled>Đăng nhập
                                             </button>
                                         </div>
                                     </div>
@@ -88,131 +396,72 @@
                 <div class="container-fluid mt-5">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination d-flex justify-content-center">
-                            <li th:if="${currenPage > 1}" class="page-item disabled"><a class="page-link" th:href="@{'?pageNo='+${currenPage -1}}">Previous</a></li>
-                                <li th:each="i:${#numbers.sequence(1,totalPage)}" th:classappend="${currenPage == i ? 'active' : ''}" class="page-item">
-                                <a th:href="@{${keyword != null && keyword!='' ? '?keyword='+keyword+'&':'?'}+'pageNo='+${i}}" class="page-link" th:text="${i}"></a>
+                            <li th:if="${currenPage > 1}" class="page-item disabled"><a class="page-link"
+                                                                                        th:href="@{'?pageNo='+${currenPage -1}}">Previous</a>
                             </li>
-                            <li th:if="${currenPage < totalPage}" class="page-item"><a class="page-link" th:href="@{'?pageNo='+${currenPage +1}}">Next</a></li>
+                            <li th:each="i:${#numbers.sequence(1,totalPage)}"
+                                th:classappend="${currenPage == i ? 'active' : ''}" class="page-item">
+                                <a th:href="@{${keyword != null && keyword!='' ? '?keyword='+keyword+'&':'?'}+'pageNo='+${i}}"
+                                   class="page-link" th:text="${i}"></a>
+                            </li>
+                            <li th:if="${currenPage < totalPage}" class="page-item">
+                                <a class="page-link" th:href="@{'?pageNo='+${currenPage +1}}">Next</a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
                 <div class="container-fluid my-5">
-                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner.jpg" class="img-fluid" alt="...">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner.jpg"
+                         class="img-fluid" alt="...">
                 </div>
                 <div class="container-fluid">
+                    <h2 class="mb-3">Bán Chạy</h2>
                     <div class="row mt-2">
-                        <h3 class="my-3">Sản phẩm bán chạy</h3>
                         <div class="col-3">
-                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner2.jpg" style="height: 830px" class="img-fluid " alt="...">
+                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner2.jpg"
+                                 style="height: 830px" class="img-fluid " alt="...">
                         </div>
                         <div class="col-9">
-                            <div class="row ms-1 mt-3">
-                                <div th:each="p : ${product1}" class="col-12 col-sm-6 col-md-4 col-lg-3  d-flex justify-content-center">
+                            <div class="row ms-1 mt-4">
+                                <div th:each="p : ${product1}"
+                                     class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center ">
                                     <div class="con">
-                                        <div class="card_box">
+                                        <div class="card_box ">
                                             <div>
                                                 <a th:href="@{|/product/detail/${p.productId}|}">
                                                     <div th:if="${p.images != null and p.images.size() > 0}">
-                                                        <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
+                                                        <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}"
+                                                             class="card-img-top "/>
                                                     </div>
                                                 </a>
                                                 <div class="card-body">
-                                                    <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
                                                         <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
                                                             <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-                                                            <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
+
+                                                            <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
+                                                                [[${p.price}]].đ</h6>
                                                         </div>
                                                         <div th:unless="${p.sale != null}">
-                                                            <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                                            <h5 class="text-danger mb-0 ">[[${p.price}]].đ</h5>
                                                         </div>
                                                     </div>
-                                                    <p th:text="${p.description}" class="card-text"></p>
-                                                    <div class="d-grid gap-2">
-                                                        <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary">
-                                                            <i class="bi bi-cart-plus"></i> Mua ngay
+                                                    <h5 th:text="${p.description}" class="card-text"></h5>
+                                                    <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
+                                                    <div class="d-grid gap-2 d-md-block">
+                                                        <button type="button" class="btn btn-primary add-to-cart"
+                                                                th:if="${username != null}"
+                                                                th:attr="
+                                                    data-product-id=${p.productId},
+                                                    data-product-name=${p.name},
+                                                    data-product-price=${p.price},
+                                                    data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
+                                                    data-accountId=${accountId}">
+                                                            Mua Ngay
                                                         </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <span th:if="${p.sale != null}"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <h5 class="text-center text-primary mt-3">Xem tất cả</h5>
-                    </div>
-                </div>
 
-                <div class="container-fluid my-5">
-                    <div class="row">
-                        <div class=" col-12 col-sm-8 col-md-6 col-lg-4">
-                            <div class="card text-dark">
-                                <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner2-1.jpg" class="card-img" alt="...">
-                                <div class="card-img-overlay ms-2">
-                                    <h5 class="card-title mb-2">Rau Củ Tươi Sạch</h5>
-                                    <p class="card-text text-danger">Sale off 25%</p>
-                                    <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
-                                    <p class="card-text mt-4"><button type="button" class="btn btn-primary">Mua ngay </button></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-4 col-12 col-sm-8 col-md-6 col-lg-4">
-                            <div class="card text-dark">
-                                <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner3-1.jpg" class="card-img" alt="...">
-                                <div class="card-img-overlay ms-2">
-                                    <h5 class="card-title mb-2">Dầu thực vật</h5>
-                                    <p class="card-text text-danger">Giảm giá</p>
-                                    <h5 class="card-text mx-auto mt-5 ">Chỉ với</h5>
-                                    <h3 class="card-text text-danger ">99.000đ</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-4 col-12 col-sm-8 col-md-4 col-lg-">
-                            <div class="card text-dark">
-                                <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner4-1.jpg" class="card-img" alt="...">
-                                <div class="card-img-overlay ms-2">
-                                    <h5 class="card-title mb-2">Trái cây
-                                        chất lượng</h5>
-                                    <p class="card-text text-danger">Sale off 40%</p>
-                                    <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
-                                    <p class="card-text mt-4"><button type="button" class="btn btn-primary">Mua ngay</button></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container-fluit">
-                    <h3 class="my-3">Bán chạy</h3>
-                    <div class="row">
-                        <div class="col-3">
-                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner1.jpg" style="height: 830px" class="img-fluid " alt="...">
-                        </div>
-                        <div class="col-9">
-                            <div class="row ms-1 mt-3">
-                                <div th:each="p : ${product1}" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
-                                    <div class="con">
-                                        <div class="card_box">
-                                            <div>
-                                                <a th:href="@{|/product/detail/${p.productId}|}">
-                                                    <div th:if="${p.images != null and p.images.size() > 0}">
-                                                        <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
-                                                    </div>
-                                                </a>
-                                                <div class="card-body">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
-                                                            <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-                                                            <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
-                                                        </div>
-                                                        <div th:unless="${p.sale != null}">
-                                                            <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
-                                                        </div>
-                                                    </div>
-                                                    <p th:text="${p.description}" class="card-text"></p>
-                                                    <div class="d-grid gap-2">
-                                                        <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary">
-                                                            <i class="bi bi-cart-plus"></i> Mua ngay
+                                                        <button type="button" class="btn btn-secondary"
+                                                                th:if="${username == null}" disabled>Đăng nhập
                                                         </button>
                                                     </div>
                                                 </div>
@@ -225,130 +474,224 @@
                             <h5 class="text-center text-primary mt-3">Xem tất cả</h5>
                         </div>
                     </div>
-                </div>
 
-                <div class="bg-warning text-dark bg-opacity-25 mt-5">
-                    <div class="row">
-                        <div class="col-4"></div>
-                        <div class="col-4"></div>
-                        <div class="col-4">
-                            <img src="https://storage.googleapis.com/onelife-public/cate_banner/17.TrangMiengAnXe.jpg" class="img-fluid" alt="...">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container-fluid">
-                    <div class="row">
-                        <div th:each="p : ${product2}" class="col-12 col-sm-6 col-md-4 col-lg-2 mt-5 d-flex justify-content-center">
-                            <div class="con">
-                                <div class="card_box">
-                                    <div>
-                                        <a th:href="@{|/product/detail/${p.productId}|}">
-                                            <div th:if="${p.images != null and p.images.size() > 0}">
-                                                <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top"/>
-                                            </div>
-                                        </a>
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
-                                                    <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-                                                    <h6 class="text-primary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6>
-                                                </div>
-                                                <div th:unless="${p.sale != null}">
-                                                    <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
-                                                </div>
-                                            </div>
-                                            <p th:text="${p.description}" class="card-text"></p>
-                                            <div class="d-grid gap-2">
-                                                <button th:attr="ng-click=@{|cart.add(${p.productId})|}" type="button" class="btn btn-outline-primary">
-                                                    <i class="bi bi-cart-plus"></i> Mua ngay
-                                                </button>
-                                            </div>
-                                        </div>
+                    <div class="container-fluid my-5">
+                        <div class="row">
+                            <div class=" col-12 col-sm-8 col-md-6 col-lg-4">
+                                <div class="card text-dark">
+                                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner2-1.jpg"
+                                         class="card-img" alt="...">
+                                    <div class="card-img-overlay ms-2">
+                                        <h5 class="card-title mb-2">Rau Củ Tươi Sạch</h5>
+                                        <p class="card-text text-danger">Sale off 25%</p>
+                                        <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
+                                        <p class="card-text mt-4">
+                                            <button type="button" class="btn btn-primary">Mua ngay</button>
+                                        </p>
                                     </div>
-                                    <span th:if="${p.sale != null}"></span>
+                                </div>
+                            </div>
+                            <div class="col-4 col-12 col-sm-8 col-md-6 col-lg-4">
+                                <div class="card text-dark">
+                                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner3-1.jpg"
+                                         class="card-img" alt="...">
+                                    <div class="card-img-overlay ms-2">
+                                        <h5 class="card-title mb-2">Dầu thực vật</h5>
+                                        <p class="card-text text-danger">Giảm giá</p>
+                                        <h5 class="card-text mx-auto mt-5 ">Chỉ với</h5>
+                                        <h3 class="card-text text-danger ">99.000đ</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 col-12 col-sm-8 col-md-4 col-lg-">
+                                <div class="card text-dark">
+                                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner4-1.jpg"
+                                         class="card-img" alt="...">
+                                    <div class="card-img-overlay ms-2">
+                                        <h5 class="card-title mb-2">Trái cây
+                                            chất lượng</h5>
+                                        <p class="card-text text-danger">Sale off 40%</p>
+                                        <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
+                                        <p class="card-text mt-4">
+                                            <button type="button" class="btn btn-primary">Mua ngay</button>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <h5 class="text-center text-primary mt-5">Xem tất cả</h5>
-                </div>
-            </div>
-            <hr class="mt-5">
-        </div>
 
-        <div class="container-fluid">
-            <div class="row mt-5">
-                <div class="col-7">
-                    <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/1-6664.png" class="img-fluid" alt="...">
+                    <div class="container-fluid">
+                        <h2 class="my-3">Khuyến Mãi</h2>
+                        <div class="row">
+                            <!-- Banner Image Section -->
+                            <div class="col-12 col-md-3">
+                                <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner1.jpg"
+                                     class="img-fluid w-100" alt="Khuyến Mãi">
+                            </div>
+
+                            <!-- Product Section -->
+                            <div class="col-12 col-md-9">
+                                <div class="row ms-1 mt-3">
+                                    <div th:each="p : ${product1}"
+                                         class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center">
+                                        <div class="con">
+                                            <div class="card_box">
+                                                <div>
+                                                    <a th:href="@{|/product/detail/${p.productId}|}">
+                                                        <div th:if="${p.images != null and p.images.size() > 0}">
+                                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}"
+                                                                 class="card-img-top" alt="Product Image"/>
+                                                        </div>
+                                                    </a>
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
+                                                                <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
+                                                                <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
+                                                                    [[${p.price}]].đ</h6>
+                                                            </div>
+                                                            <div th:unless="${p.sale != null}">
+                                                                <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                                            </div>
+                                                        </div>
+                                                        <h5 th:text="${p.description}" class="card-text"></h5>
+                                                        <h6 class="text-success">Sản phẩm bán trong ngày</h6>
+                                                        <div class="d-grid gap-2 d-md-block">
+                                                            <button type="button" class="btn btn-primary add-to-cart"
+                                                                    th:if="${username != null}"
+                                                                    th:attr="
+                                            data-product-id=${p.productId},
+                                            data-product-name=${p.name},
+                                            data-product-price=${p.price},
+                                            data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
+                                            data-accountId=${accountId}">
+                                                                Mua Ngay
+                                                            </button>
+
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    th:if="${username == null}" disabled>Đăng nhập
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span th:if="${p.sale != null}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- View All Button -->
+                                <h5 class="text-center text-primary mt-3">
+                                    <a href="#" class="text-decoration-none">Xem tất cả</a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="bg-warning text-dark bg-opacity-25 mt-5">
+                        <div class="row">
+                            <div class="col-4"></div>
+                            <div class="col-4"></div>
+                            <div class="col-4">
+                                <img src="https://storage.googleapis.com/onelife-public/cate_banner/17.TrangMiengAnXe.jpg"
+                                     class="img-fluid " alt="...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div th:each="p : ${product2}"
+                                 class="col-12 col-sm-6 col-md-4 col-lg-2 mt-5 mb-5 d-flex justify-content-center ">
+                                <div class="con">
+                                    <div class="card_box ">
+                                        <div>
+                                            <a th:href="@{|/product/detail/${p.productId}|}">
+                                                <div th:if="${p.images != null and p.images.size() > 0}">
+                                                    <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}"
+                                                         class="card-img-top "/>
+                                                </div>
+                                            </a>
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
+                                                        <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
+
+                                                        <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
+                                                            [[${p.price}]].đ</h6>
+                                                    </div>
+                                                    <div th:unless="${p.sale != null}">
+                                                        <h5 class="text-danger mb-0 ">[[${p.price}]].đ</h5>
+                                                    </div>
+                                                </div>
+                                                <h5 th:text="${p.description}" class="card-text"></h5>
+                                                <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
+                                                <div class="d-grid gap-2 d-md-block">
+                                                    <button type="button" class="btn btn-primary add-to-cart"
+                                                            th:if="${username != null}"
+                                                            th:attr="
+                                                    data-product-id=${p.productId},
+                                                    data-product-name=${p.name},
+                                                    data-product-price=${p.price},
+                                                    data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
+                                                    data-accountId=${accountId}">
+                                                        Mua Ngay
+                                                    </button>
+
+                                                    <button type="button" class="btn btn-secondary"
+                                                            th:if="${username == null}" disabled>Đăng nhập
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span th:if="${p.sale != null}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="text-center text-primary mt-5"><a th:href="@{/layout/Product}">Xem tất cả</a></h5>
+                    </div>
                 </div>
-                <div class="col-4">
+                <hr class="mt-5">
+            </div>
+
+            <div class="container-fluid">
+                <div class="container mt-4">
                     <div class="row">
-                        <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/banh-mi-o-47250.jpg" class="img-fluid" alt="...">
+                        <!-- Bài đăng blog 1 -->
+                        <div class="col-12 col-sm-6 col-md-3 mb-4">
+                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-2-380x380.jpg" class="img-fluid" alt="Bài đăng blog 1">
+                            <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
+                            <h6 class="mt-4 text-secondary">Cập nhật ngày : 10/06/2024</h6>
                         </div>
-                        <div class="col-7">
-                            <h5>Bánh mì ổ lớn dài đặt biệt chỉ có tại việt nam chỉ với </h5>
-
+                        <!-- Bài đăng blog 2 -->
+                        <div class="col-12 col-sm-6 col-md-3 mb-4">
+                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-1-380x380.jpg" class="img-fluid" alt="Bài đăng blog 2">
+                            <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
+                            <h6 class="mt-4 text-secondary">Cập nhật ngày : 10/06/2024</h6>
                         </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/1-6664.png" class="img-fluid" alt="...">
+                        <!-- Bài đăng blog 3 -->
+                        <div class="col-12 col-sm-6 col-md-3 mb-4">
+                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-3-380x380.jpg" class="img-fluid" alt="Bài đăng blog 3">
+                            <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
+                            <h6 class="mt-4 text-secondary">Cập nhật ngày : 10/06/2024</h6>
                         </div>
-                        <div class="col-7">
-                            <h5>Bánh mì ổ lớn dài</h5>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/banh-mi-o-47250.jpg" class="img-fluid" alt="...">
-                        </div>
-                        <div class="col-7">
-                            <h5>Bánh mì ổ lớn dài</h5>
-
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-5">
-                            <img src="https://sieuthifoodmart.com/thumbs/713x482x1/upload/photo/banh-mi-o-47250.jpg" class="img-fluid" alt="...">
-                        </div>
-                        <div class="col-7">
-                            <h5>Bánh mì ổ lớn dài</h5>
+                        <!-- Bài đăng blog 4 -->
+                        <div class="col-12 col-sm-6 col-md-3 mb-4">
+                            <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-3-380x380.jpg" class="img-fluid" alt="Bài đăng blog 4">
+                            <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
+                            <h6 class="mt-4 text-secondary">Cập nhật ngày : 10/06/2024</h6>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-            <div class="container-fluid mt-4">
-                <div class="row">
-                    <div class="col-3">
-                        <img src="https://cdn.tgdd.vn/bachhoaxanh/he-thong-sieu-thi/Content/images/store/4.jpg" class="img-fluid" alt="...">
-                        <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
-                        <h6 class="mt-4 text-secondary"> Cập nhật ngày : 10/06/2024</h6>
-                    </div>
-                    <div class="col-3">
-                        <img src="https://cdn.tgdd.vn/bachhoaxanh/he-thong-sieu-thi/Content/images/store/10.jpg" class="img-fluid" alt="...">
-                        <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
-                        <h6 class="mt-4 text-secondary"> Cập nhật ngày : 10/06/2024</h6>
-                    </div>
-                    <div class="col-3">
-                        <img src="https://cdn.tgdd.vn/bachhoaxanh/he-thong-sieu-thi/Content/images/store/5.jpg" class="img-fluid" alt="...">
-                        <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
-                        <h6 class="mt-4 text-secondary"> Cập nhật ngày : 10/06/2024</h6>
-                    </div>
-                    <div class="col-3">
-                        <img src="https://cdn.tgdd.vn/bachhoaxanh/he-thong-sieu-thi/Content/images/store/4.jpg" class="img-fluid" alt="...">
-                        <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
-                        <h6 class="mt-4 text-secondary"> Cập nhật ngày : 10/06/2024</h6>
-                    </div>
-                </div>
-            </div>
+            <!--   phạm vi quản lý -->
         </div>
-        <!--   phạm vi quản lý -->
     </div>
-    <script src="/templates/product/shopping-cart.js"></script>
+
 </main>
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>-->

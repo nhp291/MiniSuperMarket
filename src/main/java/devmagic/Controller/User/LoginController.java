@@ -37,6 +37,7 @@ public class LoginController {
             Account account = userService.findByUsername(username);
 
             if (account != null) {
+              
                 // Kiểm tra vai trò
                 if (account.getRole() == null) {
                     model.addAttribute("error", "Tài khoản của bạn chưa được gán vai trò. Vui lòng liên hệ quản trị viên.");
