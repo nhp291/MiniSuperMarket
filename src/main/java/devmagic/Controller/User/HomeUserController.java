@@ -146,5 +146,10 @@ public class HomeUserController {
     public String info(Model model) {
         return "user/info";
     }
+
+    @GetMapping("ForgotPassword")
+    public String ForgotPassword(Model model) {
+        return "ForgotPassword";
+    }
 }
 
