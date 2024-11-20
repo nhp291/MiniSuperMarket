@@ -26,10 +26,24 @@ public class LoginController {
                         @RequestParam("password") String password,
                         Model model, HttpSession session, HttpServletResponse response) {
 
+        // Kiểm tra đầu vào trống
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            model.addAttribute("error", "Tên đăng nhập và mật khẩu không được để trống!");
+            return "user/login";
+        }
+
+        // Kiểm tra đăng nhập
         if (userService.checkLogin(username, password)) {
             Account account = userService.findByUsername(username);
 
             if (account != null) {
+              
+                // Kiểm tra vai trò
+                if (account.getRole() == null) {
+                    model.addAttribute("error", "Tài khoản của bạn chưa được gán vai trò. Vui lòng liên hệ quản trị viên.");
+                    return "user/login";
+                }
+
                 // Lưu thông tin vào session
                 initializeUserSession(session, account);
 

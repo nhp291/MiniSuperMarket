@@ -20,6 +20,10 @@ public class AccountService {
         this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
     }
+    // Lấy tài khoản theo username (hoặc email)
+    public Account getAccountByUsername(String username) {
+        return accountRepository.findByUsernameOrEmail(username, username).orElse(null);
+    }
 
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
@@ -71,6 +75,9 @@ public class AccountService {
 
         // Lưu tài khoản vào cơ sở dữ liệu
         accountRepository.save(account);
+    }
+    public boolean isUsernameOrEmailExist(String username, String email) {
+        return accountRepository.existsByUsernameOrEmail(username, email);
     }
 
 }

@@ -1,88 +1,85 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en" > <!--  xmlns="http://www.w3.org/1999/html"-->
-
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-
-<body>
-<!-- Sử dụng layout -->
 <div th:fragment="headerAdmin">
     <div class="header">
-    <!--    logo    -->
-    <div class="header-left active">
-        <a th:href="@{/Admin/Home}" class="logo">
-            <img src="/admin/img/logo.jpg" alt="img">
-        </a>
-        <a th:href="@{/Admin/Home}" class="logo-small">
-            <img src="/admin/img/logo.jpg" alt="img">
-        </a>
-        <a id="toggle_btn" href="javascript:void(0);"> </a>
-    </div>
-
-    <a id="mobile_btn" class="mobile_btn" href="#sidebar">
-            <span class="bar-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </span>
-    </a>
-
-    <ul class="nav user-menu">
-
-        <li class="nav-item">
-            <div class="top-nav-search">
-                <a href="javascript:void(0);" class="responsive-search">
-                    <i class="fa fa-search"></i>
-                </a>
-                <form action="#">
-                    <div class="searchinputs">
-                        <label>
-                            <input type="text" placeholder="Bạn đang tìm gì...?">
-                        </label>
-                        <div class="search-addon">
-                            <span><img src="/admin/img/icons/closes.svg" alt="img"></span>
-                        </div>
-                    </div>
-                    <a class="btn" id="searchdiv"><img src="/admin/img/icons/search.svg" alt="img"></a>
-                </form>
-            </div>
-        </li>
-
-        <li class="nav-item dropdown has-arrow main-drop">
-            <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
-                    <span class="user-img"><img src="/Image/imageProfile/User.png" alt="">
-                    <span class="status online"></span></span>
+        <!-- logo -->
+        <div class="header-left active">
+            <a th:href="@{/Admin/Home}" class="logo">
+                <img src="/admin/img/logo.jpg" alt="img">
             </a>
-            <div class="dropdown-menu menu-drop-user">
-                <div class="profilename">
-                    <div class="profileset">
-                            <span class="user-img"><img src="/Image/imageProfile/User.png" alt="">
-                            <span class="status online"></span></span>
-                        <div class="profilesets">
-                            <h6>John Doe</h6>
-                            <h5>Admin</h5>
+            <a th:href="@{/Admin/Home}" class="logo-small">
+                <img src="/admin/img/logo.jpg" alt="img">
+            </a>
+            <a id="toggle_btn" href="javascript:void(0);"> </a>
+        </div>
+
+        <a id="mobile_btn" class="mobile_btn" href="#sidebar">
+                <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+        </a>
+
+        <ul class="nav user-menu">
+            <li class="nav-item">
+                <div class="top-nav-search">
+                    <a href="javascript:void(0);" class="responsive-search">
+                        <i class="fa fa-search"></i>
+                    </a>
+                    <form action="#">
+                        <div class="searchinputs">
+                            <label>
+                                <input type="text" placeholder="Bạn đang tìm gì...?">
+                            </label>
+                            <div class="search-addon">
+                                <span><img src="/admin/img/icons/closes.svg" alt="img"></span>
+                            </div>
                         </div>
-                    </div>
-                    <hr class="m-0">
-                    <a class="dropdown-item" th:href="@{/Admin/MyProfile}">
-                        <i class="me-2" data-feather="user"></i> My Profile
-                    </a>
-                    <hr class="m-0">
-                    <a class="dropdown-item" th:href="@{/Admin/Generalsettings}">
-                        <i class="me-2" data-feather="settings"></i>Settings
-                    </a>
-                    <hr class="m-0">
-                    <a class="dropdown-item logout pb-0" href="signin.html">
-                        <img src="/admin/img/icons/log-out.svg" class="me-2" alt="img"> Logout
-                    </a>
+                        <a class="btn" id="searchdiv"><img src="/admin/img/icons/search.svg" alt="img"></a>
+                    </form>
                 </div>
-            </div>
-        </li>
-    </ul>
+            </li>
+
+            <li class="nav-item dropdown has-arrow main-drop">
+                <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
+                    <!-- Hiển thị ảnh đại diện và tên người dùng -->
+                    <span class="user-img">
+                        <!-- Nếu account không null, hiển thị ảnh và tên người dùng -->
+                        <img th:src="@{'/Image/imageProfile/' + ${account.imageUrl}}" alt="User Image">
+                        <span class="status online"></span>
+                    </span>
+                    <span class="user-name" th:text="${account.username}">John Doe</span>
+                </a>
+                <div class="dropdown-menu menu-drop-user">
+                    <div class="profilename">
+                        <div class="profileset">
+                            <span class="user-img">
+                                <img th:src="@{'/Image/imageProfile/' + ${account.imageUrl}}" alt="User Image">
+                                <span class="status online"></span>
+                            </span>
+                            <div class="profilesets">
+                                <h6 th:text="${account.username}">John Doe</h6>
+                                <h5>Admin</h5>
+                            </div>
+                        </div>
+                        <hr class="m-0">
+                        <a class="dropdown-item" th:href="@{/Admin/MyProfile}">
+                            <i class="me-2" data-feather="user"></i> My Profile
+                        </a>
+                        <hr class="m-0">
+                        <a class="dropdown-item" th:href="@{/layout/Home}">
+                            <i class="me-2" data-feather="globe"></i> Website
+                        </a>
+                        <hr class="m-0">
+                        <a class="dropdown-item" th:href="@{/Admin/Generalsettings}">
+                            <i class="me-2" data-feather="settings"></i> Settings
+                        </a>
+                        <hr class="m-0">
+                        <a class="dropdown-item logout pb-0" th:href="@{/user/logout}">
+                            <img src="/admin/img/icons/log-out.svg" class="me-2" alt="img"> Logout
+                        </a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
 </div>
-</div>
-</body>
-</html>
