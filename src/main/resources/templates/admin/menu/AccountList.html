@@ -86,10 +86,8 @@
                             <tbody th:each="account : ${accounts}">
                             <tr>
                                 <td>
-                                    <!-- Hiển thị ảnh người dùng nếu có -->
-                                    <img th:if="${account.imageUrl != null}" th:src="@{'/Image/imageProfile/' +${account.imageUrl}}" style="width: 50px" alt="User Image">
-                                    <!-- Hiển thị ảnh mặc định nếu không có ảnh người dùng -->
-                                    <img th:unless="${account.imageUrl != null}" th:src="@{/Image/imageProfile/User.png}" style="width: 50px" alt="Default User Image">
+                                    <img th:src="@{'/Image/imageProfile/' + ${account.imageUrl}}" style="width: 50px" alt="User Image">
+                                    <img th:src="@{/Image/imageProfile/User.png}" style="width: 50px" alt="Default User Image">
                                 </td>
                                 <td th:text="${account.username}"></td>
                                 <td>*****</td>
@@ -100,7 +98,7 @@
                                 <td>
                                     <a class="bg-info btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Sửa</a>
                                     <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
-                                        <button class="bg-danger btn" type="submit" >Xóa</button>
+                                        <button class="bg-danger btn" type="submit">Xóa</button>
                                     </form>
                                 </td>
                             </tr>
