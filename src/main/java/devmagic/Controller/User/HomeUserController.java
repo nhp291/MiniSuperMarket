@@ -141,10 +141,9 @@ public class HomeUserController {
     public String register(Model model) {
         return "user/register";
     }
-
-//    @GetMapping("user/info")
-//    public String info(Model model) {
-//        return "user/info";
-//    }
+    @GetMapping("ForgotPassword")
+    public String ForgotPassword(Model model) {
+        return "ForgotPassword";
+    }
 }
 

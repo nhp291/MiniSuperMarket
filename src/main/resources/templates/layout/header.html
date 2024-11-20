@@ -414,6 +414,7 @@
 <header id="site-header">
   <div id="site-header-container">
     <a><img src="/Image/logo.png" width="90px" alt=""></a>
+
     <div id="site-header-logo">
 
     </div>
@@ -458,7 +459,7 @@
         <!-- Hiển thị nút dropdown -->
         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <span th:if="${username != null}" th:text="${username}"></span>
-          <span th:if="${username == null}"><i class="bi bi-person-circle"></i> Tài khoản</span>
+          <span th:if="${username == null}">Tài khoản</span>
         </button>
 
         <!-- Hiển thị menu dropdown -->
@@ -470,7 +471,7 @@
             </a>
           </li>
           <li th:if="${username != null}">
-            <a th:href="@{/user/logout}" class="dropdown-item">
+            <a th:href="@{/user/login}" class="dropdown-item">
               <i class="bi bi-box-arrow-right"></i> Đăng Xuất
             </a>
           </li>
@@ -487,13 +488,14 @@
             </a>
           </li>
           <li>
-            <a th:href="@{/user/forgotPassword}" class="dropdown-item">
+            <a th:href="@{/ForgotPassword}" class="dropdown-item">
               <i class="bi bi-person-exclamation"></i> Quên Mật Khẩu
             </a>
           </li>
         </ul>
       </div>
     </div>
+
 
 
     <a  th:href="@{/cart/shoppingcart}"><button  type="button" class="btn btn-light"><i class="bi bi-cart"></i><span> Giỏ Hàng</span></button></a>
