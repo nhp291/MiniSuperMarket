@@ -181,6 +181,26 @@
                 opacity: 1;
             }
         }
+        @media (max-width: 768px) {
+            .text {
+                font-size: calc(12px + 1vw); /* Kích thước chữ nhỏ hơn trên màn hình nhỏ */
+            }
+
+            .text-container {
+                top: 40%; /* Điều chỉnh vị trí chữ */
+                padding: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .text {
+                font-size: calc(10px + 1vw); /* Kích thước chữ rất nhỏ trên thiết bị nhỏ */
+            }
+
+            .text-container {
+                top: 50%; /* Căn chỉnh tốt hơn trên màn hình nhỏ */
+            }
+        }
         .category-carousel {
             display: flex;
             overflow-x: auto;  /* Đảm bảo nội dung có thể cuộn ngang */
@@ -197,13 +217,51 @@
         .category-carousel::-webkit-scrollbar {
             display: none;  /* Ẩn thanh cuộn trong Webkit (Chrome, Safari, Edge) */
         }
+
+        /* Căn chỉnh card */
+        .card {
+            border: none; /* Loại bỏ viền mặc định */
+            overflow: hidden; /* Đảm bảo nội dung nằm trong card */
+            border-radius: 10px; /* Bo góc card */
+        }
+
+        .card-img {
+            object-fit: cover; /* Giữ tỷ lệ hình ảnh */
+            height: 100%; /* Chiều cao phủ toàn bộ card */
+        }
+
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .card-text {
+            font-size: 19px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) { /* Tablet và Mobile */
+            .card-img-overlay {
+                padding: 10px;
+            }
+
+            .card-title {
+                font-size: 16px;
+            }
+
+            .card-text {
+                font-size: 14px;
+            }
+        }
+
     </style>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-8">
+            <div class="col-8 col-md-8">
                 <div class="image-container">
                     <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-slider1.jpg"
-                         class="img-fluid" alt="...">
+                         class="img-fluid"  style="position: relative; z-index: -1" alt="...">
                     <div class="text-container">
                         <h1>
                             <div class="text moving-from-top ">Trang trại</div>
@@ -221,55 +279,52 @@
                 </div>
 
             </div>
-            <div class="col-4">
+            <div class="col-4 col-md-4">
+
                 <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic22-banner-1.jpg"
-                     class="img-fluid" alt="...">
+                     class="img-fluid w=100" alt="...">
             </div>
         </div>
     </div>
     <div class="container my-5">
-        <div class="row">
-            <div class="col-3">
-                <div class="row">
-                    <div class="col-5"><img
-                            src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic4-icon1.png"
-                            width="100"></div>
-                    <div class="col-7 my-auto">
-                        <h5>Tươi Sạch</h5>
-                        <h6>Luôn mang đến đến cho bạn sự hài lòng</h6>
+        <div class="row text-center text-md-start my-4">
+            <!-- Tươi Sạch -->
+            <div class="col-6 col-sm-6 col-md-3 mb-4 mb-md-0 ">
+                <div class="d-flex align-items-center">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic4-icon1.png" width="80" alt="Tươi Sạch">
+                    <div class="ms-3">
+                        <h5 class="mb-1">Tươi Sạch</h5>
+                        <p class="mb-0">Luôn mang đến cho bạn sự hài lòng nhất về tôi</p>
                     </div>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="row">
-                    <div class="col-5"><img
-                            src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon2.png"
-                            width="100"></div>
-                    <div class="col-7 my-auto">
-                        <h5>Hữu Cơ</h5>
-                        <h6>Lựa chọn những mặt hàng tốt nhất</h6>
+            <!-- Hữu Cơ -->
+            <div class="col-6 col-sm-6 col-md-3 mb-4 mb-md-0">
+                <div class="d-flex align-items-center">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon2.png" width="80" alt="Hữu Cơ">
+                    <div class="ms-3">
+                        <h5 class="mb-1">Hữu Cơ</h5>
+                        <p class="mb-0">Lựa chọn những mặt hàng tốt nhất và hoàn hảo</p>
                     </div>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="row">
-                    <div class="col-4"><img
-                            src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon3.png"
-                            width="100"></div>
-                    <div class="col-8 my-auto">
-                        <h5>Chất Lượng </h5>
-                        <h6>Đảm bảo chất lượng tuyệt đối cho khách hàng</h6>
+            <!-- Chất Lượng -->
+            <div class="col-6 col-sm-6 col-md-3 mb-4 mb-md-0">
+                <div class="d-flex align-items-center">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon3.png" width="80" alt="Chất Lượng">
+                    <div class="ms-3">
+                        <h5 class="mb-1">Chất Lượng</h5>
+                        <p class="mb-0">Đảm bảo chất lượng tuyệt đối cho khách hàng</p>
                     </div>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="row">
-                    <div class="col-4"><img
-                            src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon4.png"
-                            width="100"></div>
-                    <div class="col-8 my-auto">
-                        <h5>Tự Nhiên</h5>
-                        <h6>Sản phẩm được lấy từ môi trường thiên nhiên</h6>
+            <!-- Tự Nhiên -->
+            <div class="col-6 col-sm-6 col-md-3 mb-3">
+                <div class="d-flex align-items-center">
+                    <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-icon4.png" width="80" alt="Tự Nhiên">
+                    <div class="ms-3">
+                        <h5 class="mb-1">Tự Nhiên</h5>
+                        <p class="mb-0">Sản phẩm được lấy từ môi trường thiên nhiên</p>
                     </div>
                 </div>
             </div>
@@ -291,17 +346,17 @@
                     <div class="col-10">
                         <div class="category-carousel overflow-auto d-flex" style="scroll-snap-type: x mandatory;">
                             <!-- Hiển thị chỉ 8 mục đầu tiên -->
-                            <div th:each="c, iterStat : ${cate}" class="category-item col-6 col-sm-4 col-md-2 col-lg-1 p-2" style="scroll-snap-align: start;">
+                            <div th:each="c, iterStat : ${cate}" class="category-item col-2 col-sm-2 col-md-2 col-lg-1 p-2" style="scroll-snap-align: start;">
                                 <a th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="text-decoration-none text-dark">
-                                    <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" alt="...">
+                                    <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid"  style="position: relative; z-index: -1" alt="...">
                                     <h6>[[${c.categoryName}]]</h6>
                                 </a>
                             </div>
 
                             <!-- Các mục còn lại, ẩn cho đến khi có sự kiện -->
-                            <div th:each="c, iterStat : ${cate}" th:if="${iterStat.index} >= 8" class="category-item col-6 col-sm-4 col-md-2 col-lg-1 p-2 d-none" style="scroll-snap-align: start;">
+                            <div th:each="c, iterStat : ${cate}" th:if="${iterStat.index} >= 8" class="category-item col-2 col-sm-2 col-md-2 col-lg-1 p-2 d-none" style="scroll-snap-align: start;">
                                 <a th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="text-decoration-none text-dark">
-                                    <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" alt="...">
+                                    <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl} + '.webp'}" class="img-fluid" style="position: relative; z-index: -1" alt="...">
                                     <h6>[[${c.categoryName}]]</h6>
                                 </a>
                             </div>
@@ -326,10 +381,8 @@
                     <form th:action="@{/layout/Home}" method="get" class="filter-form mb-4">
                         <div class="row">
                             <div class="col-12 col-sm-5 mb-2">
-
                             </div>
                             <div class="col-12 col-sm-2 mb-2">
-
                             </div>
                             <div class="col-12 col-sm-5 d-flex align-items-end">
                                 <div class="mx-2">
@@ -344,30 +397,24 @@
                             </div>
                         </div>
                     </form>
-                    <div th:each="p : ${product}"
-                         class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center ">
+                    <div th:each="p : ${product}" class="col-4 col-sm-4 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center">
                         <div class="con">
-                            <div class="card_box ">
+                            <div class="card_box">
                                 <div>
                                     <a th:href="@{|/product/detail/${p.productId}|}">
                                         <div th:if="${p.images != null and p.images.size() > 0}">
-                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}"
-                                                 class="card-img-top "/>
+                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top" style="position: relative; z-index: -1"/>
                                         </div>
                                     </a>
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
                                                 <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-
-                                                <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
-                                                    [[${p.price}]].đ</h6>
-                                            </div>
-                                            <div th:unless="${p.sale != null}">
-                                                <h5 class="text-danger mb-0 ">[[${p.price}]].đ</h5>
-                                            </div>
+                                                <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6></div>
+                                            <div th:unless="${p.sale != null}"><h5 class="text-danger mb-0 ">[[${p.price}]].đ</h5></div>
                                         </div>
                                         <h5 th:text="${p.description}" class="card-text"></h5>
+
                                         <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
                                         <div class="d-grid gap-2 d-md-block">
                                             <button type="button" class="btn btn-primary add-to-cart"
@@ -378,12 +425,9 @@
                                                     data-product-price=${p.price},
                                                     data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
                                                     data-accountId=${accountId}">
-                                               Mua Ngay
+                                                Mua Ngay
                                             </button>
-
-                                            <button type="button" class="btn btn-secondary"
-                                                    th:if="${username == null}" disabled>Đăng nhập
-                                            </button>
+                                            <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>
                                         </div>
                                     </div>
                                 </div>
@@ -391,22 +435,13 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="container-fluid mt-5">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination d-flex justify-content-center">
-                            <li th:if="${currenPage > 1}" class="page-item disabled"><a class="page-link"
-                                                                                        th:href="@{'?pageNo='+${currenPage -1}}">Previous</a>
-                            </li>
-                            <li th:each="i:${#numbers.sequence(1,totalPage)}"
-                                th:classappend="${currenPage == i ? 'active' : ''}" class="page-item">
-                                <a th:href="@{${keyword != null && keyword!='' ? '?keyword='+keyword+'&':'?'}+'pageNo='+${i}}"
-                                   class="page-link" th:text="${i}"></a>
-                            </li>
-                            <li th:if="${currenPage < totalPage}" class="page-item">
-                                <a class="page-link" th:href="@{'?pageNo='+${currenPage +1}}">Next</a>
-                            </li>
+                            <li th:if="${currenPage > 1}" class="page-item disabled"><a class="page-link" th:href="@{'?pageNo='+${currenPage -1}}">Previous</a></li>
+                            <li th:each="i:${#numbers.sequence(1,totalPage)}" th:classappend="${currenPage == i ? 'active' : ''}" class="page-item"><a th:href="@{${keyword != null && keyword!='' ? '?keyword='+keyword+'&':'?'}+'pageNo='+${i}}" class="page-link" th:text="${i}"></a></li>
+                            <li th:if="${currenPage < totalPage}" class="page-item"><a class="page-link" th:href="@{'?pageNo='+${currenPage +1}}">Next</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -417,46 +452,48 @@
                 <div class="container-fluid">
                     <h2 class="mb-3">Bán Chạy</h2>
                     <div class="row mt-2">
-                        <div class="col-3">
+                        <!-- Sidebar Hình Ảnh -->
+                        <div class="col-12 col-md-3 mb-3 d-flex justify-content-center">
                             <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner2.jpg"
-                                 style="height: 830px" class="img-fluid " alt="...">
+                                 class="img-fluid rounded " style="height: 900px" alt="Banner">
                         </div>
-                        <div class="col-9">
-                            <div class="row ms-1 mt-4">
-                                <div th:each="p : ${product1}"
-                                     class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center ">
+
+                        <!-- Danh sách sản phẩm -->
+                        <div class="col-12 col-md-9">
+                            <div class="row "> <!-- Gutter tự động bằng Bootstrap -->
+                                <!-- Card sản phẩm -->
+                                <div th:each="p : ${product1}" class="col-4 col-sm-4 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center">
                                     <div class="con">
-                                        <div class="card_box ">
+                                        <div class="card_box">
                                             <div>
                                                 <a th:href="@{|/product/detail/${p.productId}|}">
                                                     <div th:if="${p.images != null and p.images.size() > 0}">
                                                         <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}"
-                                                             class="card-img-top "/>
+                                                             class="card-img-top" alt="Product Image"/>
                                                     </div>
                                                 </a>
                                                 <div class="card-body">
                                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                                         <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
                                                             <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-
                                                             <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
                                                                 [[${p.price}]].đ</h6>
                                                         </div>
                                                         <div th:unless="${p.sale != null}">
-                                                            <h5 class="text-danger mb-0 ">[[${p.price}]].đ</h5>
+                                                            <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
                                                         </div>
                                                     </div>
                                                     <h5 th:text="${p.description}" class="card-text"></h5>
-                                                    <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
+                                                    <h6 class="text-success">Sản phẩm bán trong ngày</h6>
                                                     <div class="d-grid gap-2 d-md-block">
                                                         <button type="button" class="btn btn-primary add-to-cart"
                                                                 th:if="${username != null}"
                                                                 th:attr="
-                                                    data-product-id=${p.productId},
-                                                    data-product-name=${p.name},
-                                                    data-product-price=${p.price},
-                                                    data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
-                                                    data-accountId=${accountId}">
+                                            data-product-id=${p.productId},
+                                            data-product-name=${p.name},
+                                            data-product-price=${p.price},
+                                            data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
+                                            data-accountId=${accountId}">
                                                             Mua Ngay
                                                         </button>
 
@@ -471,70 +508,73 @@
                                     </div>
                                 </div>
                             </div>
-                            <h5 class="text-center text-primary mt-3">Xem tất cả</h5>
+                            <!-- Xem tất cả -->
+                            <div class="text-center mt-4">
+                                <a href="#" class="btn btn-outline-primary">Xem tất cả</a>
+                            </div>
                         </div>
                     </div>
 
+
                     <div class="container-fluid my-5">
-                        <div class="row">
-                            <div class=" col-12 col-sm-8 col-md-6 col-lg-4">
+                        <div class="row gy-4">
+                            <!-- Card 1 -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-center">
                                 <div class="card text-dark">
                                     <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner2-1.jpg"
-                                         class="card-img" alt="...">
-                                    <div class="card-img-overlay ms-2">
+                                         class="card-img" alt="Rau Củ Tươi Sạch">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-end ms-2">
                                         <h5 class="card-title mb-2">Rau Củ Tươi Sạch</h5>
                                         <p class="card-text text-danger">Sale off 25%</p>
                                         <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
-                                        <p class="card-text mt-4">
-                                            <button type="button" class="btn btn-primary">Mua ngay</button>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4 col-12 col-sm-8 col-md-6 col-lg-4">
+
+                            <!-- Card 2 -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-center">
                                 <div class="card text-dark">
                                     <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner3-1.jpg"
-                                         class="card-img" alt="...">
-                                    <div class="card-img-overlay ms-2">
-                                        <h5 class="card-title mb-2">Dầu thực vật</h5>
-                                        <p class="card-text text-danger">Giảm giá</p>
-                                        <h5 class="card-text mx-auto mt-5 ">Chỉ với</h5>
-                                        <h3 class="card-text text-danger ">99.000đ</h3>
+                                         class="card-img" alt="Dầu thực vật">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-md-start ms-2">
+                                        <h5 class="card-title mb-2 mt-2">Dinh Dưỡng cao</h5>
+                                        <p class="card-text text-danger">Sale off 99%</p>
+                                        <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4 col-12 col-sm-8 col-md-4 col-lg-">
+
+                            <!-- Card 3 -->
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-4 d-flex justify-content-center">
                                 <div class="card text-dark">
                                     <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-h-banner4-1.jpg"
-                                         class="card-img" alt="...">
-                                    <div class="card-img-overlay ms-2">
-                                        <h5 class="card-title mb-2">Trái cây
-                                            chất lượng</h5>
+                                         class="card-img" alt="Trái cây chất lượng">
+                                    <div class="card-img-overlay d-flex flex-column justify-content-end ms-2">
+                                        <h5 class="card-title mb-2 mt-2">Trái cây chất lượng</h5>
                                         <p class="card-text text-danger">Sale off 40%</p>
                                         <p class="card-text">Giúp bạn tiết kiệm chi <br> phí cho gia đình</p>
-                                        <p class="card-text mt-4">
-                                            <button type="button" class="btn btn-primary">Mua ngay</button>
-                                        </p>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
 
                     <div class="container-fluid">
                         <h2 class="my-3">Khuyến Mãi</h2>
                         <div class="row">
                             <!-- Banner Image Section -->
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-md-3 d-flex justify-content-center">
                                 <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/organic2-v-banner1.jpg"
-                                     class="img-fluid w-100" alt="Khuyến Mãi">
+                                     class="img-fluid " style="height: 900px"  alt="Khuyến Mãi">
                             </div>
 
                             <!-- Product Section -->
                             <div class="col-12 col-md-9">
-                                <div class="row ms-1 mt-3">
+                                <div class="row ">
                                     <div th:each="p : ${product1}"
-                                         class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center">
+                                         class="col-4 col-sm-4 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center">
                                         <div class="con">
                                             <div class="card_box">
                                                 <div>
@@ -603,7 +643,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div th:each="p : ${product2}"
-                                 class="col-12 col-sm-6 col-md-4 col-lg-2 mt-5 mb-5 d-flex justify-content-center ">
+                                 class="col-4 col-sm-4 col-md-4 col-lg-2 mt-5 mb-5 d-flex justify-content-center ">
                                 <div class="con">
                                     <div class="card_box ">
                                         <div>
@@ -649,6 +689,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         <h5 class="text-center text-primary mt-5"><a th:href="@{/layout/Product}">Xem tất cả</a></h5>
@@ -661,25 +702,25 @@
                 <div class="container mt-4">
                     <div class="row">
                         <!-- Bài đăng blog 1 -->
-                        <div class="col-12 col-sm-6 col-md-3 mb-4">
+                        <div class="col-6 col-sm-6 col-md-3 mb-4 ">
                             <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-2-380x380.jpg" class="img-fluid" alt="Bài đăng blog 1">
                             <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
                             <h6 class="mt-4 text-secondary">Cập nhật ngày : 10/06/2024</h6>
                         </div>
                         <!-- Bài đăng blog 2 -->
-                        <div class="col-12 col-sm-6 col-md-3 mb-4">
+                        <div class="col-6 col-sm-6 col-md-3 mb-4 ">
                             <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-1-380x380.jpg" class="img-fluid" alt="Bài đăng blog 2">
                             <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
                             <h6 class="mt-4 text-secondary">Cập nhật ngày : 10/06/2024</h6>
                         </div>
                         <!-- Bài đăng blog 3 -->
-                        <div class="col-12 col-sm-6 col-md-3 mb-4">
+                        <div class="col-6 col-sm-6 col-md-3 mb-4 -flex justify-content-center">
                             <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-3-380x380.jpg" class="img-fluid" alt="Bài đăng blog 3">
                             <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
                             <h6 class="mt-4 text-secondary">Cập nhật ngày : 10/06/2024</h6>
                         </div>
                         <!-- Bài đăng blog 4 -->
-                        <div class="col-12 col-sm-6 col-md-3 mb-4">
+                        <div class="col-6 col-sm-6 col-md-3 mb-4">
                             <img src="https://fruitio.monamedia.net/wp-content/uploads/2024/04/blog-3-380x380.jpg" class="img-fluid" alt="Bài đăng blog 4">
                             <h5 class="mt-2">Trái cây chất lượng chỉ có tại Siêu thị DevMagic an toàn thực phẩm</h5>
                             <h6 class="mt-4 text-secondary">Cập nhật ngày : 10/06/2024</h6>

@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
 
@@ -31,11 +33,26 @@ public class AccountController {
 
     @GetMapping("/AccountList")
     public String accountList(Model model) {
-        List<Account> accounts = accountService.getAllAccounts();
+        List<Account> accounts = accountService.getAllAccounts()
+                .stream()
+                .filter(Objects::nonNull) // Loại bỏ các tài khoản null
+                .collect(Collectors.toList());
+
+        for (Account account : accounts) {
+            if (account == null) {
+                System.out.println("Found null account in the list!");
+            } else {
+                System.out.println("Account: " + account);
+            }
+
+            if (account.getImageUrl() == null) {
+                account.setImageUrl("/Image/imageProfile/User.png"); // Default image
+            }
+        }
+
         model.addAttribute("accounts", accounts);
         model.addAttribute("pageTitle", "Account List");
         model.addAttribute("viewName", "admin/menu/AccountList");
-        System.out.println("Accounts nè: " + accounts);
         return "admin/layout";
     }
 

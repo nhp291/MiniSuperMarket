@@ -142,9 +142,9 @@ public class HomeUserController {
         return "user/register";
     }
 
-    @GetMapping("user/info")
-    public String info(Model model) {
-        return "user/info";
-    }
+//    @GetMapping("user/info")
+//    public String info(Model model) {
+//        return "user/info";
+//    }
 }
 
