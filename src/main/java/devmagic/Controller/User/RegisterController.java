@@ -41,6 +41,26 @@ public class RegisterController {
             redirectAttributes.addFlashAttribute("errorMessage", "Tên đăng nhập hoặc email đã tồn tại!");
             return "redirect:/register";
         }
+        // Kiểm tra mật khẩu định dạng đúng
+        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{7,15}$";
+        if (!account.getPassword().matches(passwordPattern)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Mật khẩu phải có  chữ thường, chữ hoa, ký tự đặc biệt,  số, tối đa 15 ký tự.");
+            return "redirect:/register";
+        }
+
+    // Kiểm tra số điện thoại
+        String phonePattern = "^\\d{10}$";
+        if (!account.getPhoneNumber().matches(phonePattern)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Số điện thoại phải có đúng 10 chữ số.");
+            return "redirect:/register";
+        }
+
+    // Kiểm tra định dạng email
+        String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+        if (!account.getEmail().matches(emailPattern)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Email không đúng định dạng!");
+            return "redirect:/register";
+        }
 
         try {
             accountService.saveAccountUser(account); // Lưu tài khoản vào cơ sở dữ liệu

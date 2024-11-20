@@ -196,7 +196,9 @@
         // Kiểm tra mật khẩu
         const password = document.getElementById('password');
         const passwordError = document.getElementById('passwordError');
-        if (!password.value.trim()) {
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,15}$/;
+        if (!passwordPattern.test(password.value)) {
+            passwordError.textContent = 'Mật khẩu phải có chữ thường, chữ hoa,  ký tự đặc biệt,  số, mật khẩu phải từ 6 kí tự trở lên.';
             passwordError.style.display = 'block';
             isValid = false;
         } else {
@@ -216,42 +218,36 @@
         // Kiểm tra email
         const email = document.getElementById('email');
         const emailError = document.getElementById('emailError');
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(email.value.trim())) {
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailPattern.test(email.value)) {
             emailError.style.display = 'block';
             isValid = false;
         } else {
             emailError.style.display = 'none';
         }
 
-        // Hiển thị lỗi chung nếu có
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
-        if (!isValid) {
-            errorMessage.style.display = 'block';
-            successMessage.style.display = 'none';
-            event.preventDefault();
+        if (isValid) {
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
         } else {
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
         }
+
+        event.preventDefault();
     });
 
-    // Hiển thị/ẩn mật khẩu
+    // Toggle mật khẩu
     document.getElementById('togglePassword').addEventListener('click', function () {
-        const passwordField = document.getElementById('password');
-        const type = passwordField.type === 'password' ? 'text' : 'password';
-        passwordField.type = type;
-        this.classList.toggle('fa-eye-slash');
+        const password = document.getElementById('password');
+        password.type = password.type === 'password' ? 'text' : 'password';
     });
 
-    // Hiển thị/ẩn xác nhận mật khẩu
     document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
-        const confirmPasswordField = document.getElementById('confirmPassword');
-        const type = confirmPasswordField.type === 'password' ? 'text' : 'password';
-        confirmPasswordField.type = type;
-        this.classList.toggle('fa-eye-slash');
+        const confirmPassword = document.getElementById('confirmPassword');
+        confirmPassword.type = confirmPassword.type === 'password' ? 'text' : 'password';
     });
 </script>
+
 </body>
 </html>

@@ -20,8 +20,8 @@ public class LogoutController {
         deleteCookie("username", response);
         deleteCookie("accountId", response);
 
-        // Chuyển hướng về trang đăng nhập mà không có tham số trên URL
-        return "redirect:/user/login";
+        // Chuyển hướng về trang chu mà không có tham số trên URL
+        return "redirect:/layout/Home";
     }
 
     private void deleteCookie(String name, HttpServletResponse response) {
