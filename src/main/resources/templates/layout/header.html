@@ -471,7 +471,7 @@
             </a>
           </li>
           <li th:if="${username != null}">
-            <a th:href="@{/user/login}" class="dropdown-item">
+            <a th:href="@{/user/logout}" class="dropdown-item">
               <i class="bi bi-box-arrow-right"></i> Đăng Xuất
             </a>
           </li>
@@ -500,6 +500,12 @@
 
     <a  th:href="@{/cart/shoppingcart}"><button  type="button" class="btn btn-light"><i class="bi bi-cart"></i><span> Giỏ Hàng</span></button></a>
 
+    <script>
+      // Loại bỏ query string nếu có
+      if (window.location.search) {
+        window.history.replaceState(null, null, window.location.pathname);
+      }
+    </script>
   </div>
 </header>
 
