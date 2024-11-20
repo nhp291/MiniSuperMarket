@@ -82,7 +82,7 @@ public class HomeController {
             model.addAttribute("viewName", "admin/menu/MyProfile");
         } else {
             model.addAttribute("error", "Chưa đăng nhập");
-            return "user/login";  // Nếu chưa đăng nhập, chuyển hướng tới trang login
+            return "user/login";
         }
 
         return "admin/layout";

@@ -99,9 +99,9 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 <!--        <dependency>-->
-<!--            <groupId>com.squareup.okhttp3</groupId>-->
-<!--            <artifactId>okhttp</artifactId>-->
-<!--            <version>4.10.0</version> -->
+<!--            <groupId>com.twilio</groupId>-->
+<!--            <artifactId>twilio</artifactId>-->
+<!--            <version>8.21.0</version>-->
 <!--        </dependency>-->
     </dependencies>
     <dependencyManagement>

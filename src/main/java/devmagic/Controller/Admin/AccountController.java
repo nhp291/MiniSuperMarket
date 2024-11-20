@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
 
@@ -31,7 +33,23 @@ public class AccountController {
 
     @GetMapping("/AccountList")
     public String accountList(Model model) {
-        List<Account> accounts = accountService.getAllAccounts();
+        List<Account> accounts = accountService.getAllAccounts()
+                .stream()
+                .filter(Objects::nonNull) // Loại bỏ các tài khoản null
+                .collect(Collectors.toList());
+
+        for (Account account : accounts) {
+            if (account == null) {
+                System.out.println("Found null account in the list!");
+            } else {
+                System.out.println("Account: " + account);
+            }
+
+            if (account.getImageUrl() == null) {
+                account.setImageUrl("/Image/imageProfile/User.png"); // Default image
+            }
+        }
+
         model.addAttribute("accounts", accounts);
         model.addAttribute("pageTitle", "Account List");
         model.addAttribute("viewName", "admin/menu/AccountList");
@@ -40,7 +58,7 @@ public class AccountController {
 
     @GetMapping("/AddAccount")
     public String addAccountForm(Model model) {
-        model.addAttribute("account", new Account());
+        model.addAttribute("account", new Account());  // Khởi tạo một đối tượng Account mới
         model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("pageTitle", "Add Account");
         model.addAttribute("viewName", "admin/menu/AddAccount");
@@ -75,7 +93,7 @@ public class AccountController {
                 throw new IOException("Không thể lưu tệp hình ảnh: " + fileName, e);
             }
 
-            account.setImageUrl(    fileName); // URL để truy cập hình ảnh
+            account.setImageUrl(fileName); // URL để truy cập hình ảnh
         } else {
             account.setImageUrl("/Image/imageProfile/User.jpg"); // Hình ảnh mặc định
         }
@@ -88,11 +106,13 @@ public class AccountController {
 
     @GetMapping("/edit/{id}")
     public String editAccountForm(@PathVariable("id") Integer id, Model model) {
+        // Lấy account từ database
         Account account = accountService.getAccountById(id);
         if (account == null) {
             model.addAttribute("error", "Account not found!");
             return "redirect:/Accounts/AccountList";
         }
+        // Truyền account vào model
         model.addAttribute("account", account);
         model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("pageTitle", "Edit Account");
@@ -131,15 +151,15 @@ public class AccountController {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
-                throw new IOException("Could not save image file: " + fileName, e);
+                throw new IOException("Không thể lưu hình ảnh: " + fileName, e);
             }
-            account.setImageUrl("/Image/imageProfile/" + fileName);
+            account.setImageUrl( fileName);
         } else {
             Account existingAccount = accountService.getAccountById(account.getAccountId());
             if (existingAccount.getImageUrl() == null || existingAccount.getImageUrl().isEmpty()) {
-                account.setImageUrl("/Image/imageProfile/User.png");
+                account.setImageUrl("/Image/imageProfile/User.png"); // Hình ảnh mặc định nếu không có
             } else {
-                account.setImageUrl(existingAccount.getImageUrl());
+                account.setImageUrl(existingAccount.getImageUrl()); // Giữ nguyên hình ảnh cũ
             }
         }
 

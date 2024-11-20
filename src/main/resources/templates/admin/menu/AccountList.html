@@ -83,24 +83,22 @@
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody th:each="account : ${accounts}">
+                            <tbody th:if="${accounts != null}" th:each="account : ${accounts}">
                             <tr>
                                 <td>
-                                    <!-- Hiển thị ảnh người dùng nếu có -->
-                                    <img th:if="${account.imageUrl != null}" th:src="@{'/Image/imageProfile/' +${account.imageUrl}}" style="width: 50px" alt="User Image">
-                                    <!-- Hiển thị ảnh mặc định nếu không có ảnh người dùng -->
-                                    <img th:unless="${account.imageUrl != null}" th:src="@{/Image/imageProfile/User.png}" style="width: 50px" alt="Default User Image">
+                                    <img th:src="@{'/Image/imageProfile/' + (${account.imageUrl} != null ? ${account.imageUrl} : 'User.png')}"
+                                         style="width: 50px" alt="User Image">
                                 </td>
-                                <td th:text="${account.username}"></td>
+                                <td th:text="${account.username != null ? account.username : 'N/A'}"></td>
                                 <td>*****</td>
-                                <td th:text="${account.email}"></td>
-                                <td th:text="${account.phoneNumber}"></td>
-                                <td th:text="${account.address}"></td>
-                                <td th:text="${account.role.roleName}"></td>
+                                <td th:text="${account.email != null ? account.email : 'N/A'}"></td>
+                                <td th:text="${account.phoneNumber != null ? account.phoneNumber : 'N/A'}"></td>
+                                <td th:text="${account.address != null ? account.address : 'N/A'}"></td>
+                                <td th:text="${account.role != null ? account.role.roleName : 'N/A'}"></td>
                                 <td>
                                     <a class="bg-info btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Sửa</a>
                                     <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
-                                        <button class="bg-danger btn" type="submit" >Xóa</button>
+                                        <button class="bg-danger btn" type="submit">Xóa</button>
                                     </form>
                                 </td>
                             </tr>

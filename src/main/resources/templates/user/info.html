@@ -21,7 +21,7 @@
     }
 
     .profile-header {
-        background: linear-gradient(to right, #ff7e5f, #feb47b); /* Màu gradient cam */
+        background: linear-gradient(to right, #ff7e5f, #feb47b);
         padding: 30px;
         text-align: center;
         color: white;
@@ -29,9 +29,10 @@
 
     .profile-header img {
         border-radius: 50%;
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
         border: 3px solid white;
+        object-fit: cover;
     }
 
     .profile-header h2 {
@@ -88,38 +89,42 @@
     <div class="profile-container">
         <!-- Header -->
         <div class="profile-header">
-            <!-- Hiển thị ảnh hồ sơ của người dùng, nếu có -->
-            <img th:src="${user != null ? user.profileImage : '/images/default-avatar.png'}" alt="Profile Image"/>
-            <h2 th:text="${user != null ? user.username : 'Khách'}">User Name</h2> <!-- Hiển thị tên người dùng -->
+            <img th:src="${account != null && account.imageUrl != null ? '/Image/imageProfile/' + account.imageUrl : '/Image/imageProfile/User.png'}" alt="Profile Image"/>
+            <h2 th:text="${account != null ? account.username : 'Khách'}">User Name</h2>
             <p>Thông tin người dùng</p>
         </div>
 
         <!-- Form -->
         <div class="p-4">
-            <form method="POST" th:action="@{/user/update}">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="username" class="form-label">Tên tài khoản</label>
-                        <input type="text" id="username" class="form-control" th:value="${user != null ? user.username : ''}" placeholder="Tên tài khoản" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="phone_number" class="form-label">Số điện thoại</label>
-                        <input type="tel" id="phone_number" class="form-control" th:value="${user != null ? user.phoneNumber : ''}" placeholder="+1234567890" required>
-                    </div>
+            <form method="POST" th:action="@{/user/updateInfo}" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Tên tài khoản</label>
+                    <input type="text" name="username" id="username" class="form-control"
+                           th:value="${account != null ? account.username : ''}" placeholder="Tên tài khoản" required>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" class="form-control" th:value="${user != null ? user.email : ''}" placeholder="example@example.com" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="address" class="form-label">Địa chỉ</label>
-                        <input type="text" id="address" class="form-control" th:value="${user != null ? user.address : ''}" placeholder="Địa chỉ" required>
-                    </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="email" id="email" class="form-control"
+                           th:value="${account != null ? account.email : ''}" placeholder="example@example.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone_number" class="form-label">Số điện thoại</label>
+                    <input type="tel" name="phoneNumber" id="phone_number" class="form-control"
+                           th:value="${account != null ? account.phoneNumber : ''}" placeholder="+1234567890" required>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Địa chỉ</label>
+                    <input type="text" name="address" id="address" class="form-control"
+                           th:value="${account != null ? account.address : ''}" placeholder="Địa chỉ" required>
+                </div>
+                <div class="mb-3">
+                    <label for="imageFile" class="form-label">Ảnh đại diện</label>
+                    <input type="file" name="imageFile" id="imageFile" class="form-control">
                 </div>
                 <div class="d-flex justify-content-end mt-3">
                     <button type="submit" class="btn btn-save">Lưu</button>
-                    <button type="button" class="btn btn-cancel ms-2" onclick="window.location.href='/info'">Hủy</button>
+                    <button type="button" class="btn btn-cancel ms-2" onclick="window.location.href='/user/info'">Hủy</button>
+                    <a th:href="@{/Password/ChangePassword(username=${username})}" class="btn btn-danger ms-2">mật khẩu</a>
                 </div>
             </form>
         </div>
