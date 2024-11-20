@@ -10,31 +10,31 @@
     <title>Title</title>
 </head>
 <script>
-    const app = angular.module('shoppingCartApp', []);
-    app.controller('MainController', function ($scope, $http) {
-        $scope.cart = {
-            items: [],
-            add(id) {
-                alert(id);
-                var item = this.items.find(item => item.id == id);
-                if (item) {
-                    item.qty++;
-                    this.saveToLocalStorage();
-                } else {
-                    $http.get(`/product/detail/${id}`).then(resp => {
-                        let product = resp.data;
-                        product.qty = 1; // Thêm số lượng ban đầu là 1
-                        this.items.push(product);
-                        this.saveToLocalStorage();
-                    });
-                }
-            },
-            saveToLocalStorage() {
-                var json = JSON.stringify(angular.copy(this.items));
-                localStorage.setItem("cart", json);
-            },
-        };
-    });
+    // const app = angular.module('shoppingCartApp', []);
+    // app.controller('MainController', function ($scope, $http) {
+    //     $scope.cart = {
+    //         items: [],
+    //         add(id) {
+    //             alert(id);
+    //             var item = this.items.find(item => item.id == id);
+    //             if (item) {
+    //                 item.qty++;
+    //                 this.saveToLocalStorage();
+    //             } else {
+    //                 $http.get(`/product/detail/${id}`).then(resp => {
+    //                     let product = resp.data;
+    //                     product.qty = 1; // Thêm số lượng ban đầu là 1
+    //                     this.items.push(product);
+    //                     this.saveToLocalStorage();
+    //                 });
+    //             }
+    //         },
+    //         saveToLocalStorage() {
+    //             var json = JSON.stringify(angular.copy(this.items));
+    //             localStorage.setItem("cart", json);
+    //         },
+    //     };
+    // });
 
     document.addEventListener("DOMContentLoaded", function () {
         // Hàm hiển thị giỏ hàng
@@ -46,7 +46,6 @@
                 console.error('Lỗi khi đọc dữ liệu giỏ hàng:', e);
                 cart = [];
             }
-
             const cartContainer = document.getElementById("cart-container");
             cartContainer.innerHTML = ''; // Xóa nội dung cũ
 
@@ -56,6 +55,8 @@
             }
 
             let totalAmount = 0;
+
+            // Xóa toàn bộ dữ liệu giỏ hàng khi rời trang
 
             // Hiển thị từng sản phẩm trong giỏ hàng
             cart.forEach(item => {
@@ -105,6 +106,12 @@
                 const productName = event.target.getAttribute('data-product-name');
                 const productPrice = Number(event.target.getAttribute('data-product-price'));
                 const productImage = event.target.getAttribute('data-product-image');
+
+                console.log('Product ID:', productId);
+                console.log('Product Name:', productName);
+                console.log('Product Price:', productPrice);
+                console.log('Product Image:', productImage);
+                console.log('Account ID:', productUserId);
 
                 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -297,7 +304,7 @@
         }
 
         .contact-info, .form-section {
-            padding: 30px;
+            padding: 50px;
         }
 
         .contact-info h2, .form-section h2 {
