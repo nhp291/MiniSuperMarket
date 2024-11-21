@@ -18,6 +18,8 @@ public class OrderController {
 
     @GetMapping("/OrderList")
     public String OrderList(Model model) {
+        List<Order> orders = ordersService.getAllOrders();
+        model.addAttribute("orders", orders);
         model.addAttribute("pageTitle", "Order List Page");
         model.addAttribute("viewName", "admin/menu/OrderList");
         return "admin/layout";

@@ -108,31 +108,31 @@
                             </tr>
                             </thead>
                             <tbody>
-<!--                            <tr>-->
-<!--                                <td class="">-->
-<!--                                    <a  class=" ">-->
-<!--                                        <img src="" alt="product">-->
-<!--                                    </a>-->
-<!--                                    <a href="">Macbook pro</a>-->
-<!--                                </td>-->
-<!--                                <td>PT001</td>-->
-<!--                                <td>Computers</td>-->
-<!--                                <td>1500.00</td>-->
-<!--                                <td>pc</td>-->
-<!--                                <td>100.00</td>-->
-<!--                                <td>Admin</td>-->
-<!--                                <td>-->
-<!--                                    <a class="me-3" th:href="@{/Admin/ProductDetail}">-->
-<!--                                        <img src="/admin/img/icons/eye.svg" alt="img">-->
-<!--                                    </a>-->
-<!--                                    <a class="me-3" th:href="@{/Admin/EditProduct}">-->
-<!--                                        <img src="/admin/img/icons/edit.svg" alt="img">-->
-<!--                                    </a>-->
-<!--                                    <a class="confirm-text" href="">-->
-<!--                                        <img src="/admin/img/icons/delete.svg" alt="img">-->
-<!--                                    </a>-->
-<!--                                </td>-->
-<!--                            </tr>-->
+                            <!-- Hiển thị danh sách đơn hàng từ Model -->
+                            <tr th:each="order : ${orders}">
+                                <td th:text="${order.account.username}">Product Name</td>
+                                <td th:text="${order.account.username}">UserName</td>
+                                <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}">Order Date</td>
+                                <td th:text="${order.orderDetails[0].price}">Price</td>
+                                <td th:text="${order.account.phone}">Phone</td>
+                                <td th:text="${order.orderDetails[0].quantity}">Qty</td>
+                                <td th:text="${order.paymentStatus}">Payment Status</td>
+                                <td th:text="${order.paymentMethod}">Payment Method</td>
+                                <td th:text="${order.account.address}">Address</td>
+                                <td th:text="${order.account.username}">Created By</td>
+                                <td>
+                                    <!-- Action buttons -->
+                                    <a th:href="@{/Admin/OrderDetail/{id}(id=${order.orderId})}" class="me-3">
+                                        <img src="/admin/img/icons/eye.svg" alt="View">
+                                    </a>
+                                    <a th:href="@{/Admin/EditOrder/{id}(id=${order.orderId})}" class="me-3">
+                                        <img src="/admin/img/icons/edit.svg" alt="Edit">
+                                    </a>
+                                    <a th:href="@{/Admin/DeleteOrder/{id}(id=${order.orderId})}" class="confirm-text">
+                                        <img src="/admin/img/icons/delete.svg" alt="Delete">
+                                    </a>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
