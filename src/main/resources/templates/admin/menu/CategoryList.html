@@ -25,7 +25,7 @@
                                 <th>Hình</th>
                                 <th>Tên loại hàng</th>
                                 <th>Mô tả</th>
-                                <th>Thao tác</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody th:each="category : ${categories}">
@@ -37,9 +37,13 @@
                                 <td th:text="${category.categoryName}"></td>
                                 <td th:text="${category.description}"></td>
                                 <td>
-                                    <a th:href="@{/Categories/edit/{id}(id=${category.categoryId})}" class=" btn bg-info">Sửa</a>
+                                    <a th:href="@{/Categories/edit/{id}(id=${category.categoryId})}" class=" btn ">
+                                        <img src="/admin/img/icons/edit.svg" alt="img">
+                                    </a>
                                     <form th:action="@{/Categories/DeleteCategory/{id}(id=${category.categoryId})}" method="post" style="display:inline;">
-                                        <button class="bg-danger btn" type="submit"  onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
+                                        <button class=" btn" type="submit"  onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                            <img src="/admin/img/icons/delete.svg" alt="img">
+                                        </button>
                                     </form>
                                 </td>
                             </tr>

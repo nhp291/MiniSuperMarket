@@ -13,7 +13,7 @@
                     <h6>Manage your Brand</h6>
                 </div>
                 <div class="page-btn">
-                    <a th:href="@{/Admin/AddBrand}" class="btn btn-added">
+                    <a th:href="@{/Brand/AddBrand}" class="btn btn-added">
                         <img src="/admin/img/icons/plus.svg" class="me-2" alt="img">Add Brand
                     </a>
                 </div>
@@ -21,63 +21,6 @@
 
             <div class="card">
                 <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-path">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <img src="/admin/img/icons/filter.svg" alt="img">
-                                    <span><img src="/admin/img/icons/closes.svg" alt="img"></span>
-                                </a>
-                            </div>
-                            <div class="search-input">
-                                <a class="btn btn-searchset"><img src="/admin/img/icons/search-white.svg" alt="img"></a>
-                            </div>
-                        </div>
-                        <div class="wordset">
-                            <ul>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                            src="/admin/img/icons/pdf.svg" alt="img"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                            src="/admin/img/icons/excel.svg" alt="img"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                            src="/admin/img/icons/printer.svg" alt="img"></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="text" placeholder="Enter Brand Name">
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="text" placeholder="Enter Brand Description">
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                    <div class="form-group">
-                                        <a class="btn btn-filters ms-auto"><img src="/admin/img/icons/search-whites.svg"
-                                                                                alt="img"></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="table-responsive">
                         <table class="table datanew">
                             <thead>
@@ -95,71 +38,26 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
+                            <!-- Loop through each brand and display -->
+                            <tr th:each="brand : ${brands}">
                                 <td>
                                     <label class="checkboxs">
-                                        <input type="checkbox">
+                                        <input type="checkbox" th:value="${brand.brandId}">
                                         <span class="checkmarks"></span>
                                     </label>
                                 </td>
                                 <td>
                                     <a class="product-img">
-                                        <img src="/admin/img/brand/adidas.png" alt="product">
+                                        <img th:src="@{'/Image/imageUrl/'+${brand.imageUrl}}" alt="product">
                                     </a>
                                 </td>
-                                <td>Adidas</td>
-                                <td>Shoes, sportswear</td>
+                                <td th:text="${brand.brandName}"></td>
+                                <td th:text="${brand.description}"></td>
                                 <td>
-                                    <a class="me-3" href="editbrand.html">
+                                    <a class="me-3" th:href="@{/Brand/EditBrand/{id}(id=${brand.brandId})}">
                                         <img src="/admin/img/icons/edit.svg" alt="img">
                                     </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="/admin/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>
-                                    <a class="product-img">
-                                        <img src="/admin/img/brand/colgate.png" alt="product">
-                                    </a>
-                                </td>
-                                <td>Colgate</td>
-                                <td>Oral hygiene. Toothbrushes</td>
-                                <td>
-                                    <a class="me-3" href="editbrand.html">
-                                        <img src="/admin/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="/admin/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>
-                                    <a class="product-img">
-                                        <img src="/admin/img/brand/samsung.png" alt="product">
-                                    </a>
-                                </td>
-                                <td>samsung</td>
-                                <td>Electronics</td>
-                                <td>
-                                    <a class="me-3" href="editbrand.html">
-                                        <img src="/admin/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
+                                    <a class="me-3 confirm-text" th:href="@{/Brand/DeleteBrand/{id}(id=${brand.brandId})}">
                                         <img src="/admin/img/icons/delete.svg" alt="img">
                                     </a>
                                 </td>
