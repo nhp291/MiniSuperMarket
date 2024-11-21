@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OrderDetail")
-public class OrderDetail {
+@Table(name = "Cart")
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderDetailId;
+    private int cartId;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
