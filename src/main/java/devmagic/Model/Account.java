@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int accountId;
+    private Integer accountId;
 
     @Column(name = "username", nullable = false)
     @NotEmpty(message = "Tên người dùng không được để trống")

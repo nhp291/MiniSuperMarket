@@ -28,4 +28,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     // Tìm tài khoản qua username hoặc email
     Optional<Account> findByUsernameOrEmail(String username, String email);
 
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+
+
+
 }

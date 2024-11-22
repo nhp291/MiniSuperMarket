@@ -1,6 +1,8 @@
 package devmagic.Controller.Admin;
 
 import devmagic.Model.Account;
+import devmagic.Model.Role;
+import devmagic.Reponsitory.AccountRepository;
 import devmagic.Service.AccountService;
 import devmagic.Reponsitory.RoleRepository;
 
@@ -17,6 +19,7 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
@@ -27,6 +30,9 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -46,7 +52,7 @@ public class AccountController {
             }
 
             if (account.getImageUrl() == null) {
-                account.setImageUrl("/Image/imageProfile/User.png"); // Default image
+                account.setImageUrl("User.png"); // Default image
             }
         }
 
@@ -56,7 +62,7 @@ public class AccountController {
         return "admin/layout";
     }
 
-    @GetMapping("/AddAccount")
+    @GetMapping("/AccountForm")
     public String addAccountForm(Model model) {
         model.addAttribute("account", new Account());  // Khởi tạo một đối tượng Account mới
         model.addAttribute("roles", roleRepository.findAll());
@@ -67,20 +73,23 @@ public class AccountController {
 
     @PostMapping("/AddAccount")
     public String addAccount(@Valid @ModelAttribute("account") Account account, BindingResult result,
-                             @RequestParam("imageFile") MultipartFile imageFile, Model model) throws IOException {
-        if (result.hasErrors()) {
+                             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile, Model model) throws IOException {
+
+        // Kiểm tra lỗi từ các annotation @Valid
+        if (validateAccount(account, result)) {
             model.addAttribute("roles", roleRepository.findAll());
-            model.addAttribute("pageTitle", "Thêm tài khoản");
+            model.addAttribute("pageTitle", "Add Account");
             model.addAttribute("viewName", "admin/menu/AddAccount");
             return "admin/layout";
         }
 
-        // Đường dẫn trong project để lưu hình ảnh
-        String projectImageDir = "src/main/resources/static/Image/imageProfile/";
+        String defaultImage = "User.png";
+        account.setImageUrl(defaultImage);
 
-        if (!imageFile.isEmpty()) {
+        if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            Path uploadPath = Paths.get(projectImageDir);
+            String uploadDir = "src/main/resources/static/Image/imageProfile/";
+            Path uploadPath = Paths.get(uploadDir);
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
@@ -89,30 +98,26 @@ public class AccountController {
             try (InputStream inputStream = imageFile.getInputStream()) {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                account.setImageUrl(fileName);
             } catch (IOException e) {
                 throw new IOException("Không thể lưu tệp hình ảnh: " + fileName, e);
             }
-
-            account.setImageUrl(fileName); // URL để truy cập hình ảnh
-        } else {
-            account.setImageUrl("/Image/imageProfile/User.jpg"); // Hình ảnh mặc định
         }
 
-        // Lưu tài khoản
         accountService.saveAccount(account);
         return "redirect:/Accounts/AccountList";
     }
 
-
     @GetMapping("/edit/{id}")
     public String editAccountForm(@PathVariable("id") Integer id, Model model) {
-        // Lấy account từ database
-        Account account = accountService.getAccountById(id);
-        if (account == null) {
-            model.addAttribute("error", "Account not found!");
+        Optional<Account> optionalAccount = accountService.getAccountById(id);
+
+        if (optionalAccount.isEmpty()) {
+            model.addAttribute("errorMessage", "Tài khoản không tồn tại.");
             return "redirect:/Accounts/AccountList";
         }
-        // Truyền account vào model
+
+        Account account = optionalAccount.get();
         model.addAttribute("account", account);
         model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("pageTitle", "Edit Account");
@@ -122,23 +127,36 @@ public class AccountController {
 
     @PostMapping("/update")
     public String updateAccount(@Valid @ModelAttribute("account") Account account, BindingResult result,
-                                @RequestParam("imageUrl") MultipartFile imageFile, @RequestParam("password") String password,
-                                @RequestParam("confirmPassword") String confirmPassword, Model model) throws IOException {
+                                @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                Model model) throws IOException {
 
-        if (result.hasErrors()) {
+        if (validateAccount(account, result)) {
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("pageTitle", "Edit Account");
+            model.addAttribute("viewName", "admin/menu/AddAccount");
             return "admin/layout";
         }
 
-        if (!password.equals("*****") && !password.isEmpty() && password.equals(confirmPassword)) {
-            account.setPassword(password);
-        } else {
-            Account existingAccount = accountService.getAccountById(account.getAccountId());
-            account.setPassword(existingAccount.getPassword());
+        Optional<Account> existingAccountOptional = accountService.getAccountById(account.getAccountId());
+        if (existingAccountOptional.isEmpty()) {
+            result.rejectValue("accountId", "error.account", "Account không tồn tại.");
+            return "admin/layout";
         }
 
-        if (!imageFile.isEmpty()) {
+        Account existingAccount = existingAccountOptional.get();
+
+
+        if (account.getPassword() == null || account.getPassword().isEmpty()) {
+            account.setPassword(existingAccount.getPassword());
+        } else if (account.getPassword().equals("*****")) {
+            account.setPassword(existingAccount.getPassword());
+        } else {
+            if (!account.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{6,}$")) {
+                result.rejectValue("password", "error.account", "Mật khẩu phải có ít nhất 6 ký tự, gồm chữ thường, chữ hoa và ký tự đặc biệt.");
+            }
+        }
+
+        if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
             String uploadDir = "Image/imageProfile/";
             Path uploadPath = Paths.get(uploadDir);
@@ -150,17 +168,25 @@ public class AccountController {
             try (InputStream inputStream = imageFile.getInputStream()) {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                account.setImageUrl(fileName);
             } catch (IOException e) {
-                throw new IOException("Không thể lưu hình ảnh: " + fileName, e);
+                throw new IOException("Không thể lưu tệp hình ảnh: " + fileName, e);
             }
-            account.setImageUrl( fileName);
         } else {
-            Account existingAccount = accountService.getAccountById(account.getAccountId());
-            if (existingAccount.getImageUrl() == null || existingAccount.getImageUrl().isEmpty()) {
-                account.setImageUrl("/Image/imageProfile/User.png"); // Hình ảnh mặc định nếu không có
-            } else {
-                account.setImageUrl(existingAccount.getImageUrl()); // Giữ nguyên hình ảnh cũ
-            }
+            account.setImageUrl(existingAccount.getImageUrl()); // Giữ nguyên hình ảnh cũ nếu không upload hình mới
+        }
+
+        Role currentRole = account.getRole();
+        Role originalRole = existingAccount.getRole();
+
+        if (!currentRole.equals(originalRole)) {
+            account.setRole(currentRole);
+        } else {
+            account.setRole(originalRole);
+        }
+
+        if (account.getAccountId() == null) {
+            throw new IllegalArgumentException("Account ID must not be null");
         }
 
         accountService.saveAccount(account);
@@ -171,5 +197,37 @@ public class AccountController {
     public String deleteAccount(@PathVariable("id") Integer id) {
         accountService.deleteAccount(id);
         return "redirect:/Accounts/AccountList";
+    }
+
+    private boolean validateAccount(Account account, BindingResult result) {
+        boolean hasErrors = false;
+
+        if (accountService.isUsernameExist(account.getUsername())) {
+            result.rejectValue("username", "error.account", "Username đã tồn tại.");
+            hasErrors = true;
+        } else if (!account.getUsername().matches("^[a-zA-Z0-9._-]{3,}$")) {
+            result.rejectValue("username", "error.account", "Username phải chứa ít nhất 3 ký tự, không bao gồm ký tự đặc biệt.");
+            hasErrors = true;
+        }
+
+        if (accountService.isEmailExist(account.getEmail())) {
+            result.rejectValue("email", "error.account", "Email đã tồn tại.");
+            hasErrors = true;
+        } else if (!account.getEmail().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
+            result.rejectValue("email", "error.account", "Email không đúng định dạng.");
+            hasErrors = true;
+        }
+
+        if (account.getPhoneNumber() == null || !account.getPhoneNumber().matches("^\\d{10,15}$")) {
+            result.rejectValue("phoneNumber", "error.account", "Số điện thoại phải là số, từ 10 đến 15 ký tự.");
+            hasErrors = true;
+        }
+
+        if (account.getPassword() == null || !account.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{6,}$")) {
+            result.rejectValue("password", "error.account", "Mật khẩu phải có ít nhất 6 ký tự, gồm chữ thường, chữ hoa và ký tự đặc biệt.");
+            hasErrors = true;
+        }
+
+        return hasErrors;
     }
 }

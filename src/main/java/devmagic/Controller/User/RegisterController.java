@@ -64,6 +64,7 @@ public class RegisterController {
 
         try {
             accountService.saveAccountUser(account); // Lưu tài khoản vào cơ sở dữ liệu
+            System.out.println("register nè:" + account);
             redirectAttributes.addFlashAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
             return "redirect:/user/login"; // Chuyển hướng đến trang đăng nhập
         } catch (IllegalArgumentException e) {
