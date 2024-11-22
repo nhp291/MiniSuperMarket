@@ -1,6 +1,6 @@
     <!DOCTYPE html>
 <!--<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">-->
-<html lang="vi">
+<html lang="en">
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
@@ -403,35 +403,20 @@
                                 <div>
                                     <a th:href="@{|/product/detail/${p.productId}|}">
                                         <div th:if="${p.images != null and p.images.size() > 0}">
-                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top" style="position: relative; z-index: -1"/>
+                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top" />
                                         </div>
                                     </a>
                                     <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
-                                                <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-                                                <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">[[${p.price}]].đ</h6></div>
-                                            <div th:unless="${p.sale != null}"><h5 class="text-danger mb-0 ">[[${p.price}]].đ</h5></div>
-                                        </div>
                                         <h5 th:text="${p.description}" class="card-text"></h5>
-
-                                        <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
-                                        <div class="d-grid gap-2 d-md-block">
-                                            <button type="button" class="btn btn-primary add-to-cart"
-                                                    th:if="${username != null}"
-                                                    th:attr="
-                                                    data-product-id=${p.productId},
-                                                    data-product-name=${p.name},
-                                                    data-product-price=${p.price},
-                                                    data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
-                                                    data-accountId=${accountId}">
-                                                Mua Ngay
-                                            </button>
+                                        <h6 class="text-danger" th:text="${p.price} + 'đ'"></h6>
+                                        <form action="/add-to-cart" method="post">
+                                            <input type="hidden" name="productId" th:value="${p.productId}" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button type="submit" class="btn btn-primary" th:if="${username != null}">Thêm vào giỏ hàng</button>
                                             <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
-                                <span th:if="${p.sale != null}"></span>
                             </div>
                         </div>
                     </div>
@@ -487,14 +472,7 @@
                                                     <h6 class="text-success">Sản phẩm bán trong ngày</h6>
                                                     <div class="d-grid gap-2 d-md-block">
                                                         <button type="button" class="btn btn-primary add-to-cart"
-                                                                th:if="${username != null}"
-                                                                th:attr="
-                                            data-product-id=${p.productId},
-                                            data-product-name=${p.name},
-                                            data-product-price=${p.price},
-                                            data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
-                                            data-accountId=${accountId}">
-                                                            Mua Ngay
+                                                                th:if="${username != null}">Mua Ngay
                                                         </button>
 
                                                         <button type="button" class="btn btn-secondary"
@@ -599,14 +577,7 @@
                                                         <h6 class="text-success">Sản phẩm bán trong ngày</h6>
                                                         <div class="d-grid gap-2 d-md-block">
                                                             <button type="button" class="btn btn-primary add-to-cart"
-                                                                    th:if="${username != null}"
-                                                                    th:attr="
-                                            data-product-id=${p.productId},
-                                            data-product-name=${p.name},
-                                            data-product-price=${p.price},
-                                            data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
-                                            data-accountId=${accountId}">
-                                                                Mua Ngay
+                                                                    th:if="${username != null}">Mua Ngay
                                                             </button>
 
                                                             <button type="button" class="btn btn-secondary"
@@ -669,14 +640,7 @@
                                                 <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
                                                 <div class="d-grid gap-2 d-md-block">
                                                     <button type="button" class="btn btn-primary add-to-cart"
-                                                            th:if="${username != null}"
-                                                            th:attr="
-                                                    data-product-id=${p.productId},
-                                                    data-product-name=${p.name},
-                                                    data-product-price=${p.price},
-                                                    data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
-                                                    data-accountId=${accountId}">
-                                                        Mua Ngay
+                                                            th:if="${username != null}">Mua Ngay
                                                     </button>
 
                                                     <button type="button" class="btn btn-secondary"

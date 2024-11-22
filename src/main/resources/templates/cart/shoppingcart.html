@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
@@ -7,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
-
 <body>
 <main>
     <style>
@@ -25,7 +21,6 @@
             font-size: 1rem;
             font-weight: bold;
         }
-
         .card {
             width: 100%;
             max-width: 1200px;
@@ -34,25 +29,22 @@
             background-color: #ffffff;
             border: none;
         }
-
         .cart {
             background-color: #ffffff;
             padding: 5vh 6vh;
             border-bottom-left-radius: 1rem;
             border-top-left-radius: 1rem;
             display: flex;
-            flex-direction: column; /* Thêm thuộc tính này */
+            flex-direction: column;
             position: relative;
         }
-
         .cart-items {
             margin-top: 2vh;
             max-height: 450px;
             overflow-y: auto;
             padding-right: 10px;
-            flex-grow: 1; /* Thêm thuộc tính này */
+            flex-grow: 1;
         }
-
         .summary {
             background-color: #333333;
             border-top-right-radius: 1rem;
@@ -60,16 +52,13 @@
             padding: 5vh;
             color: white;
         }
-
         .title b {
             font-size: 1.8rem;
         }
-
         .back-to-shop {
-            align-self: flex-start; /* Thêm thuộc tính này */
-            margin-top: 20px; /* Điều chỉnh khoảng cách nếu cần */
+            align-self: flex-start;
+            margin-top: 20px;
         }
-
         .cart-item {
             padding: 15px 0;
             border-top: 1px solid #ddd;
@@ -77,38 +66,31 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .product-image {
             width: 80px;
             height: 80px;
             object-fit: cover;
         }
-
         .product-name {
             margin-left: 10px;
         }
-
         .quantity-controls a {
             text-decoration: none;
             font-size: 1.2rem;
             color: #007bff;
         }
-
         .quantity-controls a:hover {
             color: #0056b3;
         }
-
         .remove-item {
             color: red;
             margin-left: 25px;
         }
-
         .radio-input {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-
         .radio-input label {
             display: flex;
             align-items: center;
@@ -120,11 +102,9 @@
             transition: background 0.3s;
             background-color: #505050;
         }
-
         .radio-input label:hover, .radio-input label:has(input:checked) {
             background-color: #3d3d3d;
         }
-
         .radio-input .text {
             color: #ffffff;
         }
@@ -136,51 +116,7 @@
             text-align: center;
             width: 100%;
         }
-
         /* New button styles */
-        .btn-unique,
-        .btn-unique *,
-        .btn-unique :after,
-        .btn-unique :before,
-        .btn-unique:after,
-        .btn-unique:before {
-            border: 0 solid;
-            box-sizing: border-box;
-        }
-
-        .btn-unique {
-            -webkit-tap-highlight-color: transparent;
-            -webkit-appearance: button;
-            background-color: #000;
-            background-image: none;
-            color: #fff;
-            cursor: pointer;
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-            Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
-            Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-            font-size: 100%;
-            line-height: 1.5;
-            margin: 0;
-            padding: 0;
-        }
-
-        .btn-unique:disabled {
-            cursor: default;
-        }
-
-        .btn-unique:-moz-focusring {
-            outline: auto;
-        }
-
-        .btn-unique svg {
-            display: block;
-            vertical-align: middle;
-        }
-
-        .btn-unique [hidden] {
-            display: none;
-        }
-
         .btn-unique {
             border: 1px solid;
             border-radius: 999px;
@@ -191,8 +127,9 @@
             padding: 1.2rem 3rem;
             position: relative;
             text-transform: uppercase;
+            background-color: #000;
+            color: #fff;
         }
-
         .btn-unique .original {
             background: #fff;
             color: #000;
@@ -202,53 +139,10 @@
             position: absolute;
             transition: transform 0.2s cubic-bezier(0.87, 0, 0.13, 1);
         }
-
         .btn-unique:hover .original {
             transform: translateY(100%);
         }
-
-        .btn-unique .letters {
-            display: inline-flex;
-        }
-
-        .btn-unique span {
-            opacity: 0;
-            transform: translateY(-15px);
-            transition: transform 0.2s cubic-bezier(0.87, 0, 0.13, 1), opacity 0.2s;
-        }
-
-        .btn-unique span:nth-child(2n) {
-            transform: translateY(15px);
-        }
-
-        .btn-unique:hover span {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .btn-unique:hover span:nth-child(2) {
-            transition-delay: 0.1s;
-        }
-
-        .btn-unique:hover span:nth-child(3) {
-            transition-delay: 0.2s;
-        }
-
-        .btn-unique:hover span:nth-child(4) {
-            transition-delay: 0.3s;
-        }
-
-        .btn-unique:hover span:nth-child(5) {
-            transition-delay: 0.4s;
-        }
-
-        .btn-unique:hover span:nth-child(6) {
-            transition-delay: 0.5s;
-        }
-
     </style>
-
-
     <div class="shopping-body">
         <div class="card">
             <div class="row">
@@ -258,11 +152,29 @@
                             <div class="col">
                                 <h4><b>Shopping Cart</b></h4>
                             </div>
-                            <div class="col text-end text-muted" id="cart-item-count"></div>
+                            <div class="col text-end text-muted" th:text="${cart.size()} + ' sản phẩm'"></div>
                         </div>
                     </div>
-                    <div class="cart-items" id="cart-container">
-                        <!-- Cart items will be dynamically loaded here -->
+                    <div class="cart-items">
+                        <div th:each="item : ${cart}">
+                            <div class="cart-item">
+                                <div class="col-2">
+                                    <img class="img-fluid product-image" th:src="@{${item.image}}" th:alt="${item.name}">
+                                </div>
+                                <div class="col">
+                                    <div class="row text-muted product-name" th:text="${item.name}"></div>
+                                </div>
+                                <div class="col quantity-controls text-center">
+                                    <a href="#" class="decrease" th:href="@{/cart/updateQuantity(id=${item.id},change=-1)}">-</a>
+                                    <span class="border px-2 quantity" th:text="${item.quantity}"></span>
+                                    <a href="#" class="increase" th:href="@{/cart/updateQuantity(id=${item.id},change=1)}">+</a>
+                                </div>
+                                <div class="col text-end">
+                                    $ <span class="item-total" th:text="${#numbers.formatDecimal(item.price * item.quantity, 2)}"></span>
+                                    <span class="close text-muted remove-item" th:href="@{/cart/removeItem(id=${item.id})}">✕</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="back-to-shop">
                         <!-- New button design with unique class name -->
@@ -285,137 +197,32 @@
                     <div class="row">
                         <div class="col">Total</div>
                         <div class="col text-end">
-                            $ <span id="total-price"></span>
+                            $ <span th:text="${totalPrice}"></span>
                         </div>
                     </div>
                     <div class="radio-input mt-4">
                         <label>
-                            <input type="radio" name="paymentMethod" value="cash" onclick="updatePaymentMethod('cash')">
+                            <input type="radio" name="paymentMethod" value="cash" th:checked="${paymentMethod == 'cash'}">
                             <span class="text">Cash</span>
                         </label>
                         <label>
-                            <input type="radio" name="paymentMethod" value="bank_transfer" onclick="updatePaymentMethod('bank_transfer')">
+                            <input type="radio" name="paymentMethod" value="bank_transfer" th:checked="${paymentMethod == 'bank_transfer'}">
                             <span class="text">Bank Transfer</span>
                         </label>
                         <label>
-                            <input type="radio" name="paymentMethod" value="vn_pay" onclick="updatePaymentMethod('vn_pay')">
+                            <input type="radio" name="paymentMethod" value="vn_pay" th:checked="${paymentMethod == 'vn_pay'}">
                             <span class="text">VN Pay</span>
                         </label>
                     </div>
-                    <button class="btn btn-primary w-100 mt-4" onclick="checkout()">Checkout</button>
+                    <form th:action="@{/checkout}" method="POST">
+                        <input type="hidden" name="paymentMethod" th:value="${paymentMethod}">
+                        <button class="btn btn-primary w-100 mt-4" type="submit">Checkout</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Hàm hiển thị giỏ hàng
-            function displayCart() {
-                let cart;
-                try {
-                    // Lấy giỏ hàng từ localStorage hoặc khởi tạo giỏ hàng rỗng
-                    cart = JSON.parse(localStorage.getItem('cart')) || [];
-                } catch (e) {
-                    console.error('Lỗi khi đọc giỏ hàng', e);
-                    cart = [];
-                }
-
-                const cartContainer = document.getElementById("cart-container");
-                const itemCountElement = document.getElementById("cart-item-count");
-                const totalPriceElement = document.getElementById("total-price");
-
-                cartContainer.innerHTML = ''; // Xóa nội dung cũ
-
-                if (cart.length === 0) {
-                    cartContainer.innerHTML = "<p>Giỏ hàng đang trống</p>";
-                    itemCountElement.textContent = "0 sản phẩm";
-                    totalPriceElement.textContent = "$0.00";
-                    return;
-                }
-
-                let totalPrice = 0;
-                let totalItems = cart.length; // Số lượng sản phẩm trong giỏ hàng
-                cart.forEach(item => {
-                    const itemId = item.id;
-                    const itemName = item.name;
-                    const itemPrice = item.price;
-                    const itemQuantity = item.quantity;
-                    const itemTotal = itemPrice * itemQuantity;
-
-                    // Tạo phần tử giỏ hàng
-                    const cartItem = document.createElement("div");
-                    cartItem.classList.add("cart-item");
-                    cartItem.innerHTML = `
-                <div class="col-2">
-                    <img class="img-fluid product-image" src="${item.image}" alt="${itemName}">
-                </div>
-                <div class="col">
-                    <div class="row text-muted product-name">${itemName}</div>
-                </div>
-                <div class="col quantity-controls text-center">
-                    <a href="javascript:void(0)" class="decrease" onclick="updateQuantity('${itemId}', -1)">-</a>
-                    <span class="border px-2 quantity">${itemQuantity}</span>
-                    <a href="javascript:void(0)" class="increase" onclick="updateQuantity('${itemId}', 1)">+</a>
-                </div>
-                <div class="col text-end">
-                    $ <span class="item-total">${itemTotal.toFixed(2)}</span>
-                    <span class="close text-muted remove-item" onclick="removeItem('${itemId}')">✕</span>
-                </div>
-            `;
-                    cartContainer.appendChild(cartItem);
-
-                    totalPrice += itemTotal;
-                });
-
-                // Cập nhật số lượng sản phẩm và tổng giá trị
-                itemCountElement.textContent = `${totalItems} sản phẩm`;
-                totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
-
-                // Điều chỉnh chiều cao giỏ hàng tùy thuộc vào số lượng sản phẩm
-                if (totalItems >= 4) {
-                    cartContainer.style.maxHeight = '450px';
-                    cartContainer.style.overflowY = 'auto';
-                } else {
-                    cartContainer.style.maxHeight = 'none';
-                    cartContainer.style.overflowY = 'visible';
-                }
-            }
-
-            // Hàm cập nhật số lượng sản phẩm trong giỏ
-            window.updateQuantity = function(itemId, change) {
-                let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                const itemIndex = cart.findIndex(item => item.id === itemId);
-                if (itemIndex !== -1) {
-                    cart[itemIndex].quantity += change;
-                    if (cart[itemIndex].quantity <= 0) {
-                        cart[itemIndex].quantity = 1; // Ngăn không cho số lượng âm
-                    }
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    displayCart();
-                }
-            }
-
-            // Hàm xóa sản phẩm khỏi giỏ hàng
-            window.removeItem = function(itemId) {
-                let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                cart = cart.filter(item => item.id !== itemId); // Lọc bỏ sản phẩm có id tương ứng
-                localStorage.setItem('cart', JSON.stringify(cart));
-                displayCart();
-            }
-
-            // Hiển thị giỏ hàng khi trang được tải
-            displayCart();
-        });
-
-
-
-    </script>
-
-
-
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
