@@ -29,7 +29,7 @@
           <div class="row">
             <a th:each="c: ${cate}" th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="d-flex align-items-center justify-content-center text-decoration-none text-dark" >
               <div class="col-2 me-3 mt-3">
-                <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl}} + '.webp' " class="img-fluid mb-3"  alt="...">
+                <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl}}" class="img-fluid mb-3"  alt="...">
               </div>
               <div class="col-6 my-auto "> [[${c.categoryName}]]</div>
             </a>
