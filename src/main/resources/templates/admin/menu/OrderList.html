@@ -94,42 +94,53 @@
                         <table class="table datanew">
                             <thead>
                             <tr>
-                                <th>Product Name</th>
-                                <th>UserName</th>
-                                <th>Order date</th>
-                                <th>Price</th>
-                                <th>Phone</th>
-                                <th>Qty</th>
-                                <th>Payment Status</th>
-                                <th>Payment Method</th>
-                                <th>Address</th>
-                                <th>Created By</th>
-                                <th>Action</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Tên Người Dùng</th>
+                                <th>Ngày Đặt Hàng</th>
+                                <th>Giá</th>
+                                <th>Số Điện Thoại</th>
+                                <th>Số Lượng</th>
+                                <th>Trạng Thái</th>
+                                <th>Phương Thức</th>
+                                <th>Địa Chỉ</th>
+                                <th>Người Tạo</th>
+                                <th>Hành Động</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <!-- Hiển thị danh sách đơn hàng từ Model -->
+                            <!-- Hiển thị thông báo nếu không có đơn hàng -->
+                            <tr th:if="${#lists.isEmpty(orders)}">
+                                <td colspan="11" class="text-center">No orders found</td>
+                            </tr>
+                            <!-- Hiển thị danh sách đơn hàng -->
                             <tr th:each="order : ${orders}">
-                                <td th:text="${order.account.username}">Product Name</td>
-                                <td th:text="${order.account.username}">UserName</td>
+                                <td th:text="${order.orderDetails[0].product.name}">Product Name</td>
+                                <td th:text="${order.account.username}">User Name</td>
                                 <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}">Order Date</td>
                                 <td th:text="${order.orderDetails[0].price}">Price</td>
-                                <td th:text="${order.account.phone}">Phone</td>
+                                <td th:text="${order.account.phoneNumber}">Phone</td>
                                 <td th:text="${order.orderDetails[0].quantity}">Qty</td>
-                                <td th:text="${order.paymentStatus}">Payment Status</td>
+                                <td>
+                                    <select name="paymentStatus" th:value="${order.paymentStatus}"
+                                            onchange="updatePaymentStatus(${order.orderId}, this.value)">
+                                        <option value="0" th:text="#{status.pending}">Pending</option>
+                                        <option value="1" th:text="#{status.processing}">Processing</option>
+                                        <option value="2" th:text="#{status.completed}">Completed</option>
+                                        <option value="3" th:text="#{status.cancelled}">Cancelled</option>
+                                    </select>
+                                </td>
                                 <td th:text="${order.paymentMethod}">Payment Method</td>
                                 <td th:text="${order.account.address}">Address</td>
                                 <td th:text="${order.account.username}">Created By</td>
                                 <td>
-                                    <!-- Action buttons -->
                                     <a th:href="@{/Admin/OrderDetail/{id}(id=${order.orderId})}" class="me-3">
-                                        <img src="/admin/img/icons/eye.svg" alt="View">
+                                        <img th:src="@{/admin/img/icons/eye.svg}" alt="View">
                                     </a>
                                     <a th:href="@{/Admin/EditOrder/{id}(id=${order.orderId})}" class="me-3">
-                                        <img src="/admin/img/icons/edit.svg" alt="Edit">
+                                        <img th:src="@{/admin/img/icons/edit.svg}" alt="Edit">
                                     </a>
                                     <a th:href="@{/Admin/DeleteOrder/{id}(id=${order.orderId})}" class="confirm-text">
-                                        <img src="/admin/img/icons/delete.svg" alt="Delete">
+                                        <img th:src="@{/admin/img/icons/delete.svg}" alt="Delete">
                                     </a>
                                 </td>
                             </tr>
@@ -142,5 +153,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Kết nối tới endpoint SSE
+    const eventSource = new EventSource('/Orders/events');
+
+    // Lắng nghe sự kiện từ server
+    eventSource.onmessage = function(event) {
+        console.log("Received event: " + event.data);
+
+        // Cập nhật UI hoặc làm gì đó khi có sự kiện (ví dụ: cập nhật danh sách đơn hàng)
+        alert("Updated: " + event.data);  // Hiển thị thông báo sự kiện
+
+        // Cập nhật lại phần trạng thái thanh toán trong bảng
+        const statusSelects = document.querySelectorAll('select[name="paymentStatus"]');
+        statusSelects.forEach(function(select) {
+            // Tìm và thay đổi giá trị của trạng thái thanh toán
+            if (select.value === event.data) {
+                select.value = event.data;  // Cập nhật trạng thái
+            }
+        });
+    };
+
+    eventSource.onerror = function(error) {
+        console.error("Error in SSE: " + error);
+    };
+</script>
+
+
 </body>
 </html>
