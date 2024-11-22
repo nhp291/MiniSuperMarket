@@ -86,7 +86,7 @@
                             <tbody th:if="${accounts != null}" th:each="account : ${accounts}">
                             <tr>
                                 <td>
-                                    <img th:src="@{'/Image/imageProfile/' + (${account.imageUrl} != null ? ${account.imageUrl} : 'User.png')}"
+                                    <img th:src="@{'/Image/imageProfile/' + ${account.imageUrl} }"
                                          style="width: 50px" alt="User Image">
                                 </td>
                                 <td th:text="${account.username != null ? account.username : 'N/A'}"></td>
@@ -96,9 +96,13 @@
                                 <td th:text="${account.address != null ? account.address : 'N/A'}"></td>
                                 <td th:text="${account.role != null ? account.role.roleName : 'N/A'}"></td>
                                 <td>
-                                    <a class="bg-info btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">Sửa</a>
+                                    <a class=" btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">
+                                        <img src="/admin/img/icons/edit.svg" alt="img">
+                                    </a>
                                     <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
-                                        <button class="bg-danger btn" type="submit">Xóa</button>
+                                        <button class=" btn" type="submit">
+                                            <img src="/admin/img/icons/delete.svg" alt="img">
+                                        </button>
                                     </form>
                                 </td>
                             </tr>

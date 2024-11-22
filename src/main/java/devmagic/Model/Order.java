@@ -25,6 +25,7 @@ public class Order {
     @Column(name = "order_date", nullable = false)
     private Date orderDate;
 
+//    @Enumerated(EnumType.ORDINAL)
     @Column(name = "payment_status", nullable = false)
     private String paymentStatus;
 
@@ -33,4 +34,8 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetail> orderDetails;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
 }

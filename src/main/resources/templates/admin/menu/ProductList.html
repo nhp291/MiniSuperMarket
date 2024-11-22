@@ -127,8 +127,12 @@
                                     <td th:text="${product.sale != null ? product.sale : 0}">Giảm giá</td>
                                     <td th:text="${product.stockQuantity}">Số lượng</td>
                                     <td>
-                                        <a class="btn bg-info" th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">Sửa</a>
-                                        <a class="btn bg-danger" th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">Xóa</a>
+                                        <a class="btn " th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">
+                                            <img src="/admin/img/icons/edit.svg" alt="img">
+                                        </a>
+                                        <a class="btn " th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">
+                                            <img src="/admin/img/icons/delete.svg" alt="img">
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>

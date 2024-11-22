@@ -10,26 +10,38 @@ import java.util.List;
 @Service
 public class BrandService {
     @Autowired
-    private BrandRepository brandsRepository;
+    private BrandRepository brandRepository;
 
     public List<Brand> getAllBrands() {
-        return brandsRepository.findAll();
+        return brandRepository.findAll();
+    }
+
+    public Brand getBrandById(Integer id) {
+        return brandRepository.findById(id).orElse(null); // Handle null case properly in production
     }
 
     public Brand createBrand(Brand brand) {
-        return brandsRepository.save(brand);
+        return brandRepository.save(brand);
     }
 
     public Brand updateBrand(Integer id, Brand brand) {
-        brand.setBrandId(id);
-        return brandsRepository.save(brand);
+        // Check if the brand exists and update
+        Brand existingBrand = brandRepository.findById(id).orElse(null);
+        if (existingBrand != null) {
+            existingBrand.setBrandName(brand.getBrandName());
+            existingBrand.setDescription(brand.getDescription());
+            existingBrand.setImageUrl(brand.getImageUrl());
+            return brandRepository.save(existingBrand);
+        }
+        return null; // In production, handle the case properly
     }
 
+
     public void deleteBrand(Integer id) {
-        brandsRepository.deleteById(id);
+        brandRepository.deleteById(id);
     }
 
     public long getTotalBrands() {
-        return brandsRepository.count();  // Sử dụng brandsRepository thay vì brandRepository
+        return brandRepository.count();  // Sử dụng brandsRepository thay vì brandRepository
     }
 }

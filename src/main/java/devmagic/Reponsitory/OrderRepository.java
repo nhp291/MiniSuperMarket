@@ -43,4 +43,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "FROM Order o JOIN o.orderDetails od " +
             "GROUP BY FUNCTION('YEAR', o.orderDate)")
     List<Object[]> getRevenueByYear();
+
+    //Tìm đơn hàng không bị xoá
+    @Query("SELECT o FROM Order o WHERE o.isDeleted = false")
+    List<Order> findAllActiveOrders();
+
 }
