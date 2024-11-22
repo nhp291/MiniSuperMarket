@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Add Account</title>
+    <title>Add or Edit Account</title>
     <link rel="stylesheet" href="/admin/css/styles.css"> <!-- Ensure correct path to CSS -->
 </head>
 <body>
@@ -11,8 +11,8 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Account Add</h4>
-                    <h6>Create new Account</h6>
+                    <h4 th:text="${account.accountId != null ? 'Edit Account' : 'Add Account'}"></h4>
+                    <h6 th:text="${account.accountId != null ? 'Update existing Account' : 'Create new Account'}"></h6>
                 </div>
                 <div class="page-btn">
                     <a th:href="@{/Accounts/AccountList}" class="btn btn-added">
@@ -20,70 +20,79 @@
                     </a>
                 </div>
             </div>
-            <form th:action="${#strings.isEmpty(account.accountId) ? '/Accounts/AddAccount' : '/Accounts/update'}"
+
+            <!-- Form to Add or Edit Account -->
+            <form th:action="@{${account.accountId != null ? '/Accounts/update' : '/Accounts/AddAccount'}}"
                   th:object="${account}" method="post" enctype="multipart/form-data">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>User Name</label>
+                                    <label>Username</label>
                                     <input type="text" id="username" th:field="*{username}" required class="form-control">
+                                    <div th:if="${#fields.hasErrors('username')}" class="text-danger">
+                                        <p th:errors="*{username}">Lỗi Username</p>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Email</label>
                                     <input type="email" id="email" th:field="*{email}" required class="form-control">
+                                    <div th:if="${#fields.hasErrors('email')}" class="text-danger">
+                                        <p th:errors="*{email}">Lỗi Email</p>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="role">Role</label>
                                     <select id="role" th:field="*{role}" class="form-select selectpicker" data-live-search="true" required>
-                                        <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"></option>
+                                        <option th:each="role : ${roles}" th:value="${role.roleId}"
+                                                th:text="${role.roleName}"
+                                                th:selected="${role.roleId == account.role.roleId}"></option>
                                     </select>
                                 </div>
                             </div>
+
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Address</label>
                                     <input type="text" id="address" th:field="*{address}" class="form-control">
                                 </div>
                             </div>
+
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Password</label>
-                                    <input type="password" id="password" th:field="*{password}"  class="form-control">
+                                    <input type="password" id="password" th:field="*{password}"
+                                           th:attr="readonly=${account.accountId != null}" class="form-control">
+                                    <div th:if="${#fields.hasErrors('password')}" class="text-danger">
+                                        <p th:errors="*{password}">Lỗi Mật khẩu</p>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Phone</label>
-                                    <input type="text" th:field="*{phoneNumber}" required class="form-control">
+                                    <label>Phone Number</label>
+                                    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required class="form-control">
+                                    <div th:if="${#fields.hasErrors('phoneNumber')}" class="text-danger">
+                                        <p th:errors="*{phoneNumber}">Lỗi Số điện thoại</p>
+                                    </div>
                                 </div>
                             </div>
-<!--                            <div class="col-lg-12">-->
-<!--                                <div class="form-group">-->
-<!--                                    <label>Product Image</label>-->
-<!--                                    <div class="image-upload">-->
-<!--                                        <input type="file" name="imageFile" class="form-control">-->
-<!--                                        <div class="image-uploads">-->
-<!--                                            <img src="/admin/img/icons/upload.svg" alt="img">-->
-<!--                                            <h4>Drag and drop a file to upload</h4>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
+
                             <div class="col-lg-12">
-                                <button type="submit" formaction="/Accounts/AddAccount" class="btn btn-submit me-2">
-                                    <span>Create</span>
+                                <!-- Submit button to Create or Update account -->
+                                <button type="submit" class="btn btn-submit me-2">
+                                    <span th:text="${account.accountId != null ? 'Update' : 'Create'}"></span>
                                 </button>
-<!--                                <button type="submit" class="btn btn-submit bg-danger me-2"-->
-<!--                                        th:formaction="@{/Accounts/delete/{id}(id=${account.accountId})}">-->
-<!--                                    Delete-->
-<!--                                </button>-->
-                                <a th:href="@{/Accounts/AddAccount}" class="btn btn-cancel">Reset</a>
+
+                                <a th:href="@{/Accounts/AccountForm}" class="btn btn-cancel">Reset</a>
                             </div>
                         </div>
                     </div>
@@ -92,5 +101,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    function unlockPassword() {
+        const passwordField = document.getElementById('password');
+        passwordField.removeAttribute('readonly');
+    }
+</script>
 </body>
 </html>

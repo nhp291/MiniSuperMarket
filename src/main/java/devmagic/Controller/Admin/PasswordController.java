@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/Password")
 public class PasswordController {
@@ -39,11 +41,13 @@ public class PasswordController {
         }
 
         // Tìm tài khoản người dùng theo username/email
-        Account account = accountService.getAccountByUsername(username);
-        if (account == null) {
+        Optional<Account> accountOptional = accountService.getAccountByUsername(username);
+        if (accountOptional.isEmpty()) {
             model.addAttribute("errorMessage", "Tài khoản không tồn tại.");
             return "UpdatePassword"; // Trả về trang cập nhật nếu có lỗi
         }
+
+        Account account = accountOptional.get();  // Lấy giá trị thực tế nếu có
 
         // Kiểm tra mật khẩu hiện tại có đúng không
         if (!account.getPassword().equals(currentPassword)) {
@@ -63,15 +67,16 @@ public class PasswordController {
     }
 
 
+
     @GetMapping("/ForgotPassword")
     public String forgotPassword(@RequestParam("username") String username, Model model) {
-        Account account = accountService.getAccountByUsername(username);
-        if (account != null) {
-            // Gửi số điện thoại và email về view
-            model.addAttribute("contactInfo", account.getPhoneNumber());
-            model.addAttribute("email", account.getEmail());
+        Optional<Account> accountOptional = accountService.getAccountByUsername(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get(); // Lấy giá trị thực tế
+            // Tiếp tục xử lý
         } else {
             model.addAttribute("errorMessage", "Tài khoản không tồn tại.");
+            return "UpdatePassword"; // Trả về trang cập nhật nếu không tìm thấy tài khoản
         }
         model.addAttribute("username", username);
         return "ForgotPassword";
