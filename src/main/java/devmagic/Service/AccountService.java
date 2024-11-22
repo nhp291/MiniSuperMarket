@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +58,9 @@ public class AccountService {
     public long getTotalAccounts() {
         return accountRepository.count();  // Trả về số lượng Account
     }
-
+    public Optional<Account> findById(Integer accountId) {
+        return accountRepository.findById(accountId);
+    }
     public void saveAccountUser(Account account) {
         // Kiểm tra username hoặc email đã tồn tại chưa
         if (accountRepository.existsByUsernameOrEmail(account.getUsername(), account.getEmail())) {
