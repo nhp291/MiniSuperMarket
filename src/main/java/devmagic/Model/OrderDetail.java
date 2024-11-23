@@ -29,3 +29,5 @@ public class OrderDetail {
     @Column(name = "price", nullable = false)
     private double price;
 }
+
+

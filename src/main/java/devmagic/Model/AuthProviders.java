@@ -20,3 +20,5 @@ public class AuthProviders {
     @NotEmpty(message = "Tên nhà cung cấp không được để trống")
     private String providerName;
 }
+
+
