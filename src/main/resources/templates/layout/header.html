@@ -15,33 +15,6 @@
     box-sizing: border-box;
   }
 
-  /*body {*/
-  /*  padding: 0;*/
-  /*  margin: 0;*/
-  /*  background-color: #cccccc;*/
-  /*  font-family: sans-serif;*/
-  /*}*/
-
-  /*section#main-container {*/
-  /*  background: #eeeeee;*/
-  /*  min-height: 110vh;*/
-  /*  width: 768px;*/
-  /*  margin: 120px auto;*/
-  /*  padding: 30px;*/
-  /*  line-height: 1.68em;*/
-  /*}*/
-
-  /*section#main-container #big-logo {*/
-  /*  width: 200px;*/
-  /*}*/
-
-  /*section#main-container h3 {*/
-  /*  margin-top: 60px;*/
-  /*}*/
-
-
-
-
   /*header styling*/
   header#site-header {
     width: 100%;
@@ -471,6 +444,20 @@
             </a>
           </li>
           <li th:if="${username != null}">
+            <a th:href="@{/ForgotPassword}" class="dropdown-item">
+              <i class="bi bi-person-exclamation"></i> Quên Mật Khẩu
+            </a>
+          </li>
+
+          <!-- Khi tài khoản là Admin -->
+          <li th:if="${role == 'ROLE_Admin'}">
+            <a th:href="@{/Admin/Home}" class="dropdown-item">
+              <i class="bi bi-gear"></i> Quản trị
+            </a>
+          </li>
+
+          <!-- Khi đã đăng nhập, hiển thị đăng xuất -->
+          <li th:if="${username != null}">
             <a th:href="@{/user/logout}" class="dropdown-item">
               <i class="bi bi-box-arrow-right"></i> Đăng Xuất
             </a>
@@ -487,14 +474,11 @@
               <i class="bi bi-person-add"></i> Đăng Ký
             </a>
           </li>
-          <li>
-            <a th:href="@{/ForgotPassword}" class="dropdown-item">
-              <i class="bi bi-person-exclamation"></i> Quên Mật Khẩu
-            </a>
-          </li>
         </ul>
       </div>
     </div>
+
+
 
 
 

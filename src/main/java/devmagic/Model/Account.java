@@ -11,16 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "Account")
-public class Account {
+public class    Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountId;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     @NotEmpty(message = "Tên người dùng không được để trống")
     @Size(min = 3, max = 50, message = "Tên người dùng phải có từ 3 đến 50 ký tự")
     private String username;
 
+    @Lob
     @Column(name = "password", nullable = false)
     @NotEmpty(message = "Mật khẩu không được để trống")
     @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
@@ -36,7 +37,6 @@ public class Account {
     private String phoneNumber;
 
     @Column(name = "address")
-    @NotEmpty(message = "Địa chỉ không được để trống")
     private String address;
 
     @Column(name = "image_url")
@@ -46,7 +46,11 @@ public class Account {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true; // Giá trị mặc định là true
+
     @Transient
-    private String confirmPassword;
+    @NotEmpty(message = "Xác nhận mật khẩu không được để trống")
+    private String confirmPassword; // Không lưu vào cơ sở dữ liệu
 
 }
