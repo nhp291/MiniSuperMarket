@@ -1,3 +1,4 @@
+
 package devmagic.Model;
 
 import jakarta.persistence.*;
@@ -25,7 +26,7 @@ public class Order {
     @Column(name = "order_date", nullable = false)
     private Date orderDate;
 
-//    @Enumerated(EnumType.ORDINAL)
+    //    @Enumerated(EnumType.ORDINAL)
     @Column(name = "payment_status", nullable = false)
     private String paymentStatus;
 

@@ -158,5 +158,15 @@ public class ProductService {
         Files.write(path, file.getBytes());
         return fileName;
     }
+    public int getAvailableStock(Integer productId) {
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product != null) {
+            return product.getStockQuantity();
+        }
+        return 0; // Trả về 0 nếu sản phẩm không tồn tại
+    }
+
+
+
 
 }
