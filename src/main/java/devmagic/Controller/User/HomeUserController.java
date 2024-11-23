@@ -1,7 +1,13 @@
 package devmagic.Controller.User;
 
+import devmagic.Model.Account;
+import devmagic.Model.Cart;
 import devmagic.Model.Product;
+import devmagic.Service.AccountService;
+import devmagic.Service.CartService;
 import devmagic.Service.ProductService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -9,11 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +26,6 @@ public class HomeUserController {
   
     @Autowired
     private ProductService productService;
-  
-    ProductService productService;
   
     @Autowired
     private AccountService accountService;
@@ -52,7 +54,7 @@ public class HomeUserController {
 
         // Lấy danh sách sản phẩm
         Page<Product> list;
-        List<Product> topProducts = productService.finTop6Product();
+        List<Product> topProducts = productService.findTop6Product();
         Page<Product> paginatedProducts = productService.getForAll(pageNo);
 
         // Xử lý tìm kiếm hoặc lọc giá
@@ -144,7 +146,7 @@ public class HomeUserController {
     @RequestMapping("/product/detail/{id}")
     public String ProductDetail(Model model, @PathVariable("id") Integer id) {
         Product item = productService.findById(id);
-        List<Product> topProducts = productService.finTop6Product();
+        List<Product> topProducts = productService.findTop6Product();
         model.addAttribute("item", item);
         model.addAttribute("product2", topProducts);
         return "layout/ProductDetail";
@@ -169,6 +171,31 @@ public class HomeUserController {
     public String ForgotPassword(Model model) {
         return "ForgotPassword";
     }
+
+    private Integer getAccountIdFromCookies(HttpServletRequest request) {
+        // Lấy danh sách cookie từ request
+        Cookie[] cookies = request.getCookies();
+
+        // Kiểm tra nếu cookies có tồn tại
+        if (cookies != null) {
+            // Duyệt qua từng cookie để tìm cookie có tên là "accountId"
+            for (Cookie cookie : cookies) {
+                if ("accountId".equals(cookie.getName())) {
+                    try {
+                        // Lấy giá trị accountId từ cookie và chuyển sang Integer
+                        return Integer.parseInt(cookie.getValue());
+                    } catch (NumberFormatException e) {
+                        // Xử lý khi không thể chuyển đổi giá trị cookie thành Integer
+                        return null;
+                    }
+                }
+            }
+        }
+
+        // Trả về null nếu không tìm thấy cookie "accountId"
+        return null;
+    }
+
 
     // Phương thức lấy thông tin người dùng đang đăng nhập
     private String getAuthenticatedUsername() {

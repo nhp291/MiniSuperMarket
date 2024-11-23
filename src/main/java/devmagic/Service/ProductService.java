@@ -42,7 +42,7 @@ public class ProductService {
         return productRepository.findById(id).get();
     }
 
-    public List<Product> finTop6Product() {
+    public List<Product> findTop6Product() {
         Pageable limit = PageRequest.of(6, 6);  // Lấy trang đầu tiên với 6 sản phẩm
         return productRepository.findAll(limit).getContent();
     }
