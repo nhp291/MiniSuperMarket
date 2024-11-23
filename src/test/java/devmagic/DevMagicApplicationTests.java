@@ -8,6 +8,6 @@ class DevMagicApplicationTests {
 
     @Test
     void contextLoads() {
+        // Kiểm tra xem ứng dụng có khởi động đúng cách không
     }
-
 }
