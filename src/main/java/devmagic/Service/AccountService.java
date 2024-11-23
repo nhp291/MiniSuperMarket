@@ -138,7 +138,9 @@ public class AccountService {
         }
         return accountRepository.existsByEmail(email);
     }
-
+    public Optional<Account> findById(Integer accountId) {
+        return accountRepository.findById(accountId);
+    }
     public void saveAccountUser(Account account) {
         // Kiểm tra username hoặc email đã tồn tại chưa
         if (accountRepository.existsByUsernameOrEmail(account.getUsername(), account.getEmail())) {
