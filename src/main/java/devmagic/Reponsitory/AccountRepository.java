@@ -13,24 +13,18 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     Page<Account> findAll(Pageable pageable);
-    // Tìm tài khoản theo username
-    Optional<Account> findByUsername(String username);
 
     // Tìm tài khoản theo email
     Optional<Account> findByEmail(String email);
 
-    // Custom Query: Kiểm tra xem username hoặc email có tồn tại
-    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END " +
-            "FROM Account a WHERE a.username = :username OR a.email = :email")
-    boolean existsByUsernameOrEmail(@Param("username") String username, @Param("email") String email);
     long count();
 
     // Tìm tài khoản qua username hoặc email
     Optional<Account> findByUsernameOrEmail(String username, String email);
 
+    Optional<Account> findByUsername(String username);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
-
-
+    boolean existsByUsernameOrEmail(String username, String email);
 
 }

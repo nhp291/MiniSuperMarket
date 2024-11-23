@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
 
+
 @Controller
 @RequestMapping("/Accounts")
 public class AccountController {
@@ -64,12 +65,15 @@ public class AccountController {
 
     @GetMapping("/AccountForm")
     public String addAccountForm(Model model) {
-        model.addAttribute("account", new Account());  // Khởi tạo một đối tượng Account mới
+        Account account = new Account();
+        account.setRole(new Role()); // Khởi tạo đối tượng Role để tránh null
+        model.addAttribute("account", account);
         model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("pageTitle", "Add Account");
         model.addAttribute("viewName", "admin/menu/AddAccount");
         return "admin/layout";
     }
+
 
     @PostMapping("/AddAccount")
     public String addAccount(@Valid @ModelAttribute("account") Account account, BindingResult result,
@@ -118,10 +122,10 @@ public class AccountController {
         }
 
         Account account = optionalAccount.get();
-        model.addAttribute("account", account);
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("account", account); // Truyền đối tượng account
+        model.addAttribute("roles", roleRepository.findAll()); // Danh sách vai trò
         model.addAttribute("pageTitle", "Edit Account");
-        model.addAttribute("viewName", "admin/menu/AddAccount");
+        model.addAttribute("viewName", "admin/menu/AddAccount"); // Giao diện chỉnh sửa
         return "admin/layout";
     }
 
@@ -130,32 +134,30 @@ public class AccountController {
                                 @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                 Model model) throws IOException {
 
-        if (validateAccount(account, result)) {
+        // **Kiểm tra lỗi từ BindingResult**
+        if (result.hasErrors()) {
             model.addAttribute("roles", roleRepository.findAll());
             model.addAttribute("pageTitle", "Edit Account");
             model.addAttribute("viewName", "admin/menu/AddAccount");
             return "admin/layout";
         }
 
+        // Debug giá trị accountId
+        System.out.println("DEBUG - Account ID: " + account.getAccountId());
+
+        // Lấy tài khoản hiện tại từ database
         Optional<Account> existingAccountOptional = accountService.getAccountById(account.getAccountId());
         if (existingAccountOptional.isEmpty()) {
-            result.rejectValue("accountId", "error.account", "Account không tồn tại.");
+            result.rejectValue("accountId", "error.account", "Tài khoản không tồn tại.");
             return "admin/layout";
         }
 
         Account existingAccount = existingAccountOptional.get();
 
+        // Giữ mật khẩu cũ luôn luôn
+        account.setPassword(existingAccount.getPassword());
 
-        if (account.getPassword() == null || account.getPassword().isEmpty()) {
-            account.setPassword(existingAccount.getPassword());
-        } else if (account.getPassword().equals("*****")) {
-            account.setPassword(existingAccount.getPassword());
-        } else {
-            if (!account.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{6,}$")) {
-                result.rejectValue("password", "error.account", "Mật khẩu phải có ít nhất 6 ký tự, gồm chữ thường, chữ hoa và ký tự đặc biệt.");
-            }
-        }
-
+        // Xử lý upload hình ảnh
         if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
             String uploadDir = "Image/imageProfile/";
@@ -176,22 +178,39 @@ public class AccountController {
             account.setImageUrl(existingAccount.getImageUrl()); // Giữ nguyên hình ảnh cũ nếu không upload hình mới
         }
 
+        // Xử lý email
+        if (account.getEmail() == null || account.getEmail().equals(existingAccount.getEmail())) {
+            // Giữ email cũ nếu không thay đổi
+            account.setEmail(existingAccount.getEmail());
+        } else {
+            // Kiểm tra email mới nếu có thay đổi
+            if (accountService.isEmailExist(account.getEmail())) {
+                result.rejectValue("email", "error.account", "Email đã tồn tại.");
+                model.addAttribute("roles", roleRepository.findAll());
+                model.addAttribute("pageTitle", "Edit Account");
+                model.addAttribute("viewName", "admin/menu/Add  Account");
+                return "admin/layout";
+            }
+        }
+
+        // Xử lý vai trò
         Role currentRole = account.getRole();
         Role originalRole = existingAccount.getRole();
 
-        if (!currentRole.equals(originalRole)) {
-            account.setRole(currentRole);
-        } else {
+        if (currentRole == null || currentRole.equals(originalRole)) {
             account.setRole(originalRole);
+        } else {
+            account.setRole(currentRole);
         }
 
-        if (account.getAccountId() == null) {
-            throw new IllegalArgumentException("Account ID must not be null");
-        }
+        System.out.println("Cập nhật tài khoản thành công với ID: {}"+ account.getAccountId());
 
+
+        // Cập nhật tài khoản trong cơ sở dữ liệu
         accountService.saveAccount(account);
         return "redirect:/Accounts/AccountList";
     }
+
 
     @PostMapping("/delete/{id}")
     public String deleteAccount(@PathVariable("id") Integer id) {

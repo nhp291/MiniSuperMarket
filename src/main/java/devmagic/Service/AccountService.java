@@ -7,6 +7,7 @@ import devmagic.Reponsitory.RoleRepository;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,11 +23,36 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, RoleRepository roleRepository) {
+    public AccountService(AccountRepository accountRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public Optional<Account> findByUsername(String username) {
+        return accountRepository.findByUsername(username);
+    }
+
+    public boolean checkLogin(String username, String password) {
+        Optional<Account> account = accountRepository.findByUsername(username);
+        if (account.isPresent()) {
+            boolean match = passwordEncoder.matches(password, account.get().getPassword());
+            if (!match) {
+                logger.debug("Mật khẩu không đúng cho người dùng: " + username);
+            }
+            return match;
+        }
+        logger.debug("Tài khoản không tồn tại: " + username);
+        return false;
+    }
+
+
+    // Helper method for password encoding
+    private String encodePassword(String password) {
+        return passwordEncoder.encode(password); // Sử dụng passwordEncoder đã được inject
     }
 
     // Lấy tài khoản theo username (hoặc email)
@@ -47,26 +73,33 @@ public class AccountService {
             throw new IllegalArgumentException("Account cannot be null");
         }
 
-        // Assign default role if none is provided
+        // Gán vai trò mặc định nếu chưa có
         if (account.getRole() == null) {
             Role defaultRole = roleRepository.findById(2)
                     .orElseThrow(() -> new IllegalArgumentException("Default role not found!"));
             account.setRole(defaultRole);
         }
 
-        // Ensure password is retained for existing accounts
-        if (account.getAccountId() != null) {
-            accountRepository.findById(account.getAccountId())
-                    .ifPresent(existingAccount -> {
-                        if (account.getPassword() == null || account.getPassword().isEmpty()) {
-                            account.setPassword(existingAccount.getPassword());
-                        }
-                    });
+        // Đảm bảo mã hóa mật khẩu cho tài khoản mới
+        if (account.getAccountId() == null) {
+            // Mã hóa mật khẩu mới khi tạo tài khoản
+            account.setPassword(encodePassword(account.getPassword()));
+        } else {
+            // Nếu mật khẩu đã thay đổi, mã hóa lại mật khẩu
+            accountRepository.findById(account.getAccountId()).ifPresent(existingAccount -> {
+                if (account.getPassword() != null && !account.getPassword().isEmpty() &&
+                        !account.getPassword().equals(existingAccount.getPassword())) {
+                    account.setPassword(encodePassword(account.getPassword()));
+                } else {
+                    account.setPassword(existingAccount.getPassword());
+                }
+            });
         }
 
         accountRepository.save(account);
         logger.info("Account saved successfully: {}", account.getUsername());
     }
+
 
 
     public Optional<Account> getAccountById(Integer id) {
@@ -139,6 +172,14 @@ public class AccountService {
         return accountRepository.existsByUsernameOrEmail(username, email);
     }
 
+    // Thay thế các mật khẩu này bằng mật khẩu từ cơ sở dữ liệu
+    String[] rawPasswords = {"password1", "12345", "mysecret"};
 
+    // Phương thức tạm thời để in ra mật khẩu đã mã hóa
+    public void printEncodedPassword(String rawPassword) {
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        System.out.println("Mật khẩu gốc: " + rawPassword);
+        System.out.println("Mật khẩu đã mã hóa: " + encodedPassword);
+    }
 
 }
