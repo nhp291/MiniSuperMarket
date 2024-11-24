@@ -141,45 +141,46 @@ public class AccountService {
     public Optional<Account> findById(Integer accountId) {
         return accountRepository.findById(accountId);
     }
-    public void saveAccountUser(Account account) {
-        // Kiểm tra username hoặc email đã tồn tại chưa
+    public void saveAccountUser(Account account, String confirmPassword) {
+        // Kiểm tra mật khẩu và xác nhận mật khẩu
+        if (!account.getPassword().equals(confirmPassword)) {
+            throw new IllegalArgumentException("Mật khẩu và xác nhận mật khẩu không khớp!");
+        }
+
+        // Kiểm tra ràng buộc số điện thoại
+        String phonePattern = "^(0|\\+84)(\\d{9})$";
+        if (account.getPhoneNumber() != null && !account.getPhoneNumber().matches(phonePattern)) {
+            throw new IllegalArgumentException("Số điện thoại không hợp lệ! Bắt đầu bằng '0' hoặc '+84' và có đúng 9 chữ số.");
+        }
+
+        // Kiểm tra username hoặc email đã tồn tại
         if (accountRepository.existsByUsernameOrEmail(account.getUsername(), account.getEmail())) {
-            throw new IllegalArgumentException("Username hoặc email đã tồn tại!");
+            throw new IllegalArgumentException("Tên đăng nhập hoặc email đã tồn tại!");
         }
 
-        // Tìm Role mặc định từ cơ sở dữ liệu (roleId = 2 cho ROLE_USER)
+        // Tìm vai trò mặc định (ROLE_USER)
         Role defaultRole = roleRepository.findById(2)
-                .orElseThrow(() -> new IllegalArgumentException("Role mặc định không tồn tại!"));
+                .orElseThrow(() -> new IllegalArgumentException("Vai trò mặc định không tồn tại!"));
 
-        // Gán Role mặc định nếu chưa được thiết lập
+        // Gán vai trò nếu chưa được thiết lập
         if (account.getRole() == null) {
-            account.setRole(defaultRole); // Gán đối tượng Role vào tài khoản
+            account.setRole(defaultRole);
         }
 
-        // Nếu imageUrl không có, đặt NULL
-        if (account.getImageUrl() == null || account.getImageUrl().isEmpty()) {
-            account.setImageUrl(null);
-        }
+        // Mã hóa mật khẩu
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
 
-        // Lưu tài khoản vào cơ sở dữ liệu
+        // Lưu tài khoản
         accountRepository.save(account);
+        logger.info("Tài khoản '{}' được lưu thành công.", account.getUsername());
     }
+
+
     public boolean isUsernameOrEmailExist(String username, String email) {
         if ((username == null || username.isEmpty()) && (email == null || email.isEmpty())) {
-            logger.warn("Cả username và email không được để trống khi kiểm tra!");
+            logger.warn("Cả tên đăng nhập và email đều không được để trống khi kiểm tra!");
             return false;
         }
         return accountRepository.existsByUsernameOrEmail(username, email);
     }
-
-    // Thay thế các mật khẩu này bằng mật khẩu từ cơ sở dữ liệu
-    String[] rawPasswords = {"password1", "12345", "mysecret"};
-
-    // Phương thức tạm thời để in ra mật khẩu đã mã hóa
-    public void printEncodedPassword(String rawPassword) {
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-        System.out.println("Mật khẩu gốc: " + rawPassword);
-        System.out.println("Mật khẩu đã mã hóa: " + encodedPassword);
-    }
-
 }

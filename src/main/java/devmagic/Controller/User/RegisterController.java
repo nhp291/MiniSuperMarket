@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
 public class RegisterController {
 
@@ -17,60 +17,59 @@ public class RegisterController {
     @PostMapping("/register")
     public String register(@ModelAttribute Account account,
                            @ModelAttribute("confirmPassword") String confirmPassword,
-                           RedirectAttributes redirectAttributes) {
-        // Kiểm tra các trường bắt buộc
-        if (account.getUsername() == null || account.getUsername().trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Tên đăng nhập không được để trống!");
-            return "redirect:/register";
-        }
-        if (account.getPassword() == null || account.getPassword().trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Mật khẩu không được để trống!");
-            return "redirect:/register";
-        }
-        if (!account.getPassword().equals(confirmPassword)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Mật khẩu và xác nhận mật khẩu không khớp!");
-            return "redirect:/register";
-        }
-        if (account.getEmail() == null || account.getEmail().trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Email không được để trống!");
-            return "redirect:/register";
-        }
-
-        // Kiểm tra xem username hoặc email đã tồn tại trong cơ sở dữ liệu
-        if (accountService.isUsernameOrEmailExist(account.getUsername(), account.getEmail())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Tên đăng nhập hoặc email đã tồn tại!");
-            return "redirect:/register";
-        }
-        // Kiểm tra mật khẩu định dạng đúng
-        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{7,15}$";
-        if (!account.getPassword().matches(passwordPattern)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Mật khẩu phải có  chữ thường, chữ hoa, ký tự đặc biệt,  số, tối đa 15 ký tự.");
-            return "redirect:/register";
-        }
-
-    // Kiểm tra số điện thoại
-        String phonePattern = "^\\d{10}$";
-        if (!account.getPhoneNumber().matches(phonePattern)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Số điện thoại phải có đúng 10 chữ số.");
-            return "redirect:/register";
-        }
-
-    // Kiểm tra định dạng email
-        String emailPattern = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
-        if (!account.getEmail().matches(emailPattern)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Email không đúng định dạng!");
-            return "redirect:/register";
-        }
-
+                           Model model) {
         try {
-            accountService.saveAccountUser(account); // Lưu tài khoản vào cơ sở dữ liệu
-            System.out.println("register nè:" + account);
-            redirectAttributes.addFlashAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
-            return "redirect:/user/login"; // Chuyển hướng đến trang đăng nhập
+            // Kiểm tra dữ liệu từ form
+            if (account.getUsername() == null || account.getUsername().trim().isEmpty()) {
+                model.addAttribute("errorMessage", "Tên đăng nhập không được để trống!");
+                return "register"; // Trả về trang đăng ký
+            }
+
+            if (account.getPassword() == null || account.getPassword().trim().isEmpty()) {
+                model.addAttribute("errorMessage", "Mật khẩu không được để trống!");
+                return "register";
+            }
+
+            if (!account.getPassword().equals(confirmPassword)) {
+                model.addAttribute("errorMessage", "Mật khẩu và xác nhận mật khẩu không khớp!");
+                return "register";
+            }
+
+            if (account.getEmail() == null || account.getEmail().trim().isEmpty()) {
+                model.addAttribute("errorMessage", "Email không được để trống!");
+                return "register";
+            }
+
+            // Kiểm tra định dạng email
+            String emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+            if (!account.getEmail().matches(emailPattern)) {
+                model.addAttribute("errorMessage", "Email không đúng định dạng!");
+                return "register";
+            }
+
+            // Kiểm tra định dạng số điện thoại (nếu có)
+            if (account.getPhoneNumber() != null && !account.getPhoneNumber().isEmpty()) {
+                String phonePattern = "^(0|\\+84)(\\d{9})$";
+                if (!account.getPhoneNumber().matches(phonePattern)) {
+                    model.addAttribute("errorMessage", "Số điện thoại không hợp lệ! Bắt đầu bằng '0' hoặc '+84' và có đúng 9 chữ số.");
+                    return "register";
+                }
+            }
+
+            // Gọi service để lưu tài khoản
+            accountService.saveAccountUser(account, confirmPassword);
+
+            // Thông báo thành công
+            model.addAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
+            return "login"; // Chuyển hướng đến trang đăng nhập
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/register"; // Quay lại trang đăng ký với thông báo lỗi
+            // Xử lý lỗi từ tầng Service và hiển thị lỗi
+            model.addAttribute("errorMessage", e.getMessage());
+            return "register"; // Quay lại trang đăng ký
+        } catch (Exception e) {
+            // Xử lý các lỗi không mong muốn và hiển thị lỗi chi tiết
+            model.addAttribute("errorMessage", "Lỗi không mong muốn: " + e.getMessage());
+            return "register";
         }
     }
 }
-
