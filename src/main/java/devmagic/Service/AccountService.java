@@ -182,4 +182,11 @@ public class AccountService {
         System.out.println("Mật khẩu đã mã hóa: " + encodedPassword);
     }
 
+    public Integer findAccountIdByUsername(String username) {
+        return accountRepository.findByUsername(username)
+                .map(Account::getAccountId) // Assuming Account has a getAccountId method
+                .orElse(null); // Return null if the account is not found
+    }
+
+
 }

@@ -1,7 +1,11 @@
 package devmagic.config;
 
+import devmagic.Service.AccountService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,14 +23,19 @@ import javax.sql.DataSource;
 @Configuration
 public class SecurityConfig {
 
+    @Autowired
+    @Lazy
+    private AccountService accountService; // Đảm bảo AccountService đã có phương thức truy vấn phù hợp
+
+
     /**
      * Bean mã hóa mật khẩu sử dụng Pbkdf2 với cấu hình mạnh hơn.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        String secret = "my-strong-secret"; // Secret key để tăng độ an toàn
-        int iterationCount = 500;        // Tăng số vòng lặp để tăng độ mạnh
-        int hashWidth = 256;               // Độ dài mã hóa
+        String secret = "my-strong-secret";
+        int iterationCount = 500;
+        int hashWidth = 256;
         return new Pbkdf2PasswordEncoder(secret, iterationCount, hashWidth,
                 Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
     }
@@ -68,18 +77,29 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
+            HttpSession session = request.getSession();
+
+            // Lấy accountId từ AccountService
+            String username = authentication.getName();
+            Integer accountId = accountService.findAccountIdByUsername(username);
+
+            session.setAttribute("accountId", accountId);
+
+            // Điều hướng người dùng
             String role = authentication.getAuthorities().stream()
                     .map(grantedAuthority -> grantedAuthority.getAuthority())
                     .findFirst()
                     .orElse("");
 
-            if ("ROLE_Admin".equals(role)) { // Phân biệt role Admin
+            if ("ROLE_Admin".equals(role)) {
                 response.sendRedirect("/Admin/Home");
             } else {
                 response.sendRedirect("/layout/Home");
             }
         };
     }
+
+
 
     /**
      * Cấu hình AuthenticationManager.
