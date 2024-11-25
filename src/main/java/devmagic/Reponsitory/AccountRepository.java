@@ -16,9 +16,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     // Tìm tài khoản theo email
     Optional<Account> findByEmail(String email);
-
     long count();
-
     // Tìm tài khoản qua username hoặc email
     Optional<Account> findByUsernameOrEmail(String username, String email);
 

@@ -141,11 +141,30 @@ public class AccountService {
     public Optional<Account> findById(Integer accountId) {
         return accountRepository.findById(accountId);
     }
+
     public boolean isUsernameOrEmailExist(String username, String email) {
         if ((username == null || username.isEmpty()) && (email == null || email.isEmpty())) {
-            logger.warn("Cả tên đăng nhập và email đều không được để trống khi kiểm tra!");
+            logger.warn("Cả username và email không được để trống khi kiểm tra!");
             return false;
         }
         return accountRepository.existsByUsernameOrEmail(username, email);
     }
+
+    // Thay thế các mật khẩu này bằng mật khẩu từ cơ sở dữ liệu
+    String[] rawPasswords = {"password1", "12345", "mysecret"};
+
+    // Phương thức tạm thời để in ra mật khẩu đã mã hóa
+    public void printEncodedPassword(String rawPassword) {
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        System.out.println("Mật khẩu gốc: " + rawPassword);
+        System.out.println("Mật khẩu đã mã hóa: " + encodedPassword);
+    }
+
+    public Integer findAccountIdByUsername(String username) {
+        return accountRepository.findByUsername(username)
+                .map(Account::getAccountId) // Assuming Account has a getAccountId method
+                .orElse(null); // Return null if the account is not found
+    }
+
+
 }

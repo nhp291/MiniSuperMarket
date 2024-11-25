@@ -74,7 +74,6 @@ public class AccountController {
         return "admin/layout";
     }
 
-
     @PostMapping("/AddAccount")
     public String addAccount(@Valid @ModelAttribute("account") Account account, BindingResult result,
                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile, Model model) throws IOException {
