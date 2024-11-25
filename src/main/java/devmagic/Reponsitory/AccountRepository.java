@@ -26,5 +26,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     boolean existsByUsernameOrEmail(String username, String email);
-
+    @Query("SELECT a.accountId FROM Account a WHERE a.username = :username")
+    Integer findAccountIdByUsername(@Param("username") String username);
 }
