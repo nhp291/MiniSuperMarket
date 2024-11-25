@@ -141,41 +141,6 @@ public class AccountService {
     public Optional<Account> findById(Integer accountId) {
         return accountRepository.findById(accountId);
     }
-    public void saveAccountUser(Account account, String confirmPassword) {
-        // Kiểm tra mật khẩu và xác nhận mật khẩu
-        if (!account.getPassword().equals(confirmPassword)) {
-            throw new IllegalArgumentException("Mật khẩu và xác nhận mật khẩu không khớp!");
-        }
-
-        // Kiểm tra ràng buộc số điện thoại
-        String phonePattern = "^(0|\\+84)(\\d{9})$";
-        if (account.getPhoneNumber() != null && !account.getPhoneNumber().matches(phonePattern)) {
-            throw new IllegalArgumentException("Số điện thoại không hợp lệ! Bắt đầu bằng '0' hoặc '+84' và có đúng 9 chữ số.");
-        }
-
-        // Kiểm tra username hoặc email đã tồn tại
-        if (accountRepository.existsByUsernameOrEmail(account.getUsername(), account.getEmail())) {
-            throw new IllegalArgumentException("Tên đăng nhập hoặc email đã tồn tại!");
-        }
-
-        // Tìm vai trò mặc định (ROLE_USER)
-        Role defaultRole = roleRepository.findById(2)
-                .orElseThrow(() -> new IllegalArgumentException("Vai trò mặc định không tồn tại!"));
-
-        // Gán vai trò nếu chưa được thiết lập
-        if (account.getRole() == null) {
-            account.setRole(defaultRole);
-        }
-
-        // Mã hóa mật khẩu
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
-
-        // Lưu tài khoản
-        accountRepository.save(account);
-        logger.info("Tài khoản '{}' được lưu thành công.", account.getUsername());
-    }
-
-
     public boolean isUsernameOrEmailExist(String username, String email) {
         if ((username == null || username.isEmpty()) && (email == null || email.isEmpty())) {
             logger.warn("Cả tên đăng nhập và email đều không được để trống khi kiểm tra!");

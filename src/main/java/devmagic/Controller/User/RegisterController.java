@@ -19,10 +19,10 @@ public class RegisterController {
                            @ModelAttribute("confirmPassword") String confirmPassword,
                            Model model) {
         try {
-            // Kiểm tra dữ liệu từ form
+            // Kiểm tra dữ liệu nhập
             if (account.getUsername() == null || account.getUsername().trim().isEmpty()) {
                 model.addAttribute("errorMessage", "Tên đăng nhập không được để trống!");
-                return "register"; // Trả về trang đăng ký
+                return "register";
             }
 
             if (account.getPassword() == null || account.getPassword().trim().isEmpty()) {
@@ -40,36 +40,33 @@ public class RegisterController {
                 return "register";
             }
 
-            // Kiểm tra định dạng email
+            // Kiểm tra email hợp lệ
             String emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
             if (!account.getEmail().matches(emailPattern)) {
                 model.addAttribute("errorMessage", "Email không đúng định dạng!");
                 return "register";
             }
 
-            // Kiểm tra định dạng số điện thoại (nếu có)
-            if (account.getPhoneNumber() != null && !account.getPhoneNumber().isEmpty()) {
-                String phonePattern = "^(0|\\+84)(\\d{9})$";
-                if (!account.getPhoneNumber().matches(phonePattern)) {
-                    model.addAttribute("errorMessage", "Số điện thoại không hợp lệ! Bắt đầu bằng '0' hoặc '+84' và có đúng 9 chữ số.");
-                    return "register";
-                }
+            // Kiểm tra username/email đã tồn tại
+            if (accountService.isUsernameExist(account.getUsername())) {
+                model.addAttribute("errorMessage", "Tên đăng nhập đã tồn tại!");
+                return "register";
+            }
+            if (accountService.isEmailExist(account.getEmail())) {
+                model.addAttribute("errorMessage", "Email đã tồn tại!");
+                return "register";
             }
 
-            // Gọi service để lưu tài khoản
-            accountService.saveAccountUser(account, confirmPassword);
+            // Gọi service để lưu account
+            accountService.saveAccount(account);
 
-            // Thông báo thành công
+            // Thông báo đăng ký thành công
             model.addAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
-            return "login"; // Chuyển hướng đến trang đăng nhập
-        } catch (IllegalArgumentException e) {
-            // Xử lý lỗi từ tầng Service và hiển thị lỗi
-            model.addAttribute("errorMessage", e.getMessage());
-            return "register"; // Quay lại trang đăng ký
+            return "login";
         } catch (Exception e) {
-            // Xử lý các lỗi không mong muốn và hiển thị lỗi chi tiết
-            model.addAttribute("errorMessage", "Lỗi không mong muốn: " + e.getMessage());
+            model.addAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
             return "register";
         }
     }
+
 }
