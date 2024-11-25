@@ -10,35 +10,6 @@
     <title>Title</title>
 </head>
 <script>
-    // const app = angular.module('shoppingCartApp', []);
-    // app.controller('MainController', function ($scope, $http) {
-    //     $scope.cart = {
-    //         items: [],
-    //         add(id) {
-    //             alert(id);
-    //             var item = this.items.find(item => item.id == id);
-    //             if (item) {
-    //                 item.qty++;
-    //                 this.saveToLocalStorage();
-    //             } else {
-    //                 $http.get(`/product/detail/${id}`).then(resp => {
-    //                     let product = resp.data;
-    //                     product.qty = 1; // Thêm số lượng ban đầu là 1
-    //                     this.items.push(product);
-    //                     this.saveToLocalStorage();
-    //                 });
-    //             }
-    //         },
-    //         saveToLocalStorage() {
-    //             var json = JSON.stringify(angular.copy(this.items));
-    //             localStorage.setItem("cart", json);
-    //         },
-    //     };
-    // });
-
-
-
-
     document.addEventListener("DOMContentLoaded", function () {
         const carousel = document.querySelector('.category-carousel');
         const prevButton = document.getElementById("prevButton");
@@ -97,6 +68,11 @@
         // Ẩn thanh cuộn để tạo trải nghiệm mượt mà
         carousel.style.overflow = "hidden"; // Ẩn thanh cuộn
     });
+
+    function changeMainImage(src) {
+        // Tìm phần tử ảnh lớn và cập nhật thuộc tính src của nó
+        document.getElementById("mainImage").src = src;
+    }
 
 </script>
 

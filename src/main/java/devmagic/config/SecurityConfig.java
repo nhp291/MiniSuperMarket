@@ -1,5 +1,6 @@
 package devmagic.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,9 @@ import javax.sql.DataSource;
 
 @Configuration
 public class SecurityConfig {
+
+    @Autowired
+    private DataSource dataSource;
 
     /**
      * Bean mã hóa mật khẩu sử dụng Pbkdf2 với cấu hình mạnh hơn.
@@ -61,24 +65,51 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     /**
-     * Xử lý thành công đăng nhập, chuyển hướng theo vai trò của người dùng.
+     * Xử lý thành công đăng nhập, chuyển hướng theo vai trò của người dùng và lưu accountId vào session.
      */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
+            String username = authentication.getName(); // Lấy username của người dùng
+            String accountId = getAccountIdByUsername(username); // Truy vấn accountId dựa trên username
+
+            // Lưu accountId vào session
+            if (accountId != null) {
+                request.getSession().setAttribute("accountId", accountId);
+            }
+
+            // Phân quyền và chuyển hướng
             String role = authentication.getAuthorities().stream()
                     .map(grantedAuthority -> grantedAuthority.getAuthority())
                     .findFirst()
                     .orElse("");
 
-            if ("ROLE_Admin".equals(role)) { // Phân biệt role Admin
+            if ("ROLE_Admin".equals(role)) {
                 response.sendRedirect("/Admin/Home");
             } else {
                 response.sendRedirect("/layout/Home");
             }
         };
+    }
+
+    /**
+     * Truy vấn accountId từ database dựa trên username.
+     */
+    private String getAccountIdByUsername(String username) {
+        String sql = "SELECT account_id FROM account WHERE username = ?";
+        try (var connection = dataSource.getConnection();
+             var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, username);
+            try (var resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("account_id");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy accountId
     }
 
     /**
