@@ -24,6 +24,7 @@
             <!-- Form to Add or Edit Account -->
             <form th:action="@{${account.accountId != null ? '/Accounts/update' : '/Accounts/AddAccount'}}"
                   th:object="${account}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="accountId" th:value="${account.accountId}" />
                 <div class="card">
                     <div class="card-body">
                         <div class="row">

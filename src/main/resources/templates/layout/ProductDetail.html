@@ -11,6 +11,7 @@
 <body class="container bg-body-secondary">
 <main>
   <div class="container ">
+
     <div class="container mt-5">
       <div  class="row bg-white">
         <div class="col-5 ">
@@ -74,12 +75,24 @@
               <h6 >[[${item.stockQuantity}]]</h6>
             </div>
           </div>
-          <form action="/add-to-cart" method="post">
-            <input type="hidden" name="productId" th:value="${item.productId}" />
-            <input type="hidden" name="quantity" value="1" />
-            <button type="submit" class="btn btn-primary" th:if="${username != null}">Mua Ngay</button>
+          <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">
+            <input type="hidden" name="productId" th:value="${item.productId}"/>
+            <input type="hidden" name="quantity" value="1"/>
+            <!-- Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng -->
+            <button type="submit" class="btn btn-primary"
+                    th:if="${item.stockQuantity > 0 and username != null}">
+              Thêm vào giỏ hàng
+            </button>
+            <!-- Nút "Hết hàng" hiển thị khi sản phẩm hết hàng -->
+            <button type="button" class="btn btn-secondary"
+                    th:if="${item.stockQuantity <= 0 and username != null}" disabled>
+              Hết hàng
+            </button>
             <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>
           </form>
+          <div id="cartMessage" style="position: fixed; bottom: 20px; right: 20px; display: none; background-color: green; color: white; padding: 10px; border-radius: 5px; z-index: 9999;">
+            Sản phẩm đã được thêm vào giỏ hàng!
+          </div>
         </div>
       </div>
       <div class="row mt-5">
@@ -154,10 +167,10 @@
       <!--            <a th:href="@{|/product/detail/${item.category.categoryId}|}"> [[${item.category.categoryName}]]</a>-->
       <div class="container-fluid">
         <div class="row">
-          <div th:each="p : ${product2}"
-               class="col-4 col-sm-4 col-md-4 col-lg-2 mt-5 mb-5 d-flex justify-content-center ">
+          <div th:each="p : ${product2.subList(0, 4)}"
+               class="col-4 col-sm-4 col-md-4 col-lg-3 my-5 d-flex justify-content-center">
             <div class="con">
-              <div class="card_box ">
+              <div class="card_box">
                 <div>
                   <a th:href="@{|/product/detail/${p.productId}|}">
                     <div th:if="${p.images != null and p.images.size() > 0}">
@@ -169,7 +182,6 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                       <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
                         <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-
                         <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
                           [[${p.price}]].đ</h6>
                       </div>
@@ -180,20 +192,22 @@
                     <h5 th:text="${p.description}" class="card-text"></h5>
                     <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
                     <div class="d-grid gap-2 d-md-block">
-                      <button type="button" class="btn btn-primary add-to-cart"
-                              th:if="${username != null}"
-                              th:attr="
-                                                    data-product-id=${p.productId},
-                                                    data-product-name=${p.name},
-                                                    data-product-price=${p.price},
-                                                    data-product-image=@{'/Image/imageUrl/' + ${p.images[0].imageUrl}},
-                                                    data-accountId=${accountId}">
-                        Mua Ngay
-                      </button>
+<!--                      <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">-->
+<!--                        <input type="hidden" name="productId" th:value="${item.productId}"/>-->
+<!--                        <input type="hidden" name="quantity" value="1"/>-->
+<!--                        &lt;!&ndash; Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng &ndash;&gt;-->
+<!--                        <button type="submit" class="btn btn-primary"-->
+<!--                                th:if="${item.stockQuantity > 0 and username != null}">-->
+<!--                          Thêm vào giỏ hàng-->
+<!--                        </button>-->
 
-                      <button type="button" class="btn btn-secondary"
-                              th:if="${username == null}" disabled>Đăng nhập
-                      </button>
+<!--                        &lt;!&ndash; Nút "Hết hàng" hiển thị khi sản phẩm hết hàng &ndash;&gt;-->
+<!--                        <button type="button" class="btn btn-secondary"-->
+<!--                                th:if="${item.stockQuantity <= 0 and username != null}" disabled>-->
+<!--                          Hết hàng-->
+<!--                        </button>-->
+<!--                        <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>-->
+<!--                      </form>-->
                     </div>
                   </div>
                 </div>
@@ -201,20 +215,11 @@
               </div>
             </div>
           </div>
-
         </div>
-
         <h5 class="text-center text-primary mt-5"><a th:href="@{/layout/Product}">Xem tất cả</a></h5>
       </div>
-
     </div>
   </div>
-  <script>
-    function changeMainImage(src) {
-      // Tìm phần tử ảnh lớn và cập nhật thuộc tính src của nó
-      document.getElementById("mainImage").src = src;
-    }
-  </script>
 </main>
 </body>
 </html>

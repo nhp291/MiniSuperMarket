@@ -1,5 +1,6 @@
 package devmagic.Controller.User;
 
+import devmagic.Message.ResponseMessage;
 import devmagic.Model.Account;
 import devmagic.Model.Cart;
 import devmagic.Model.Product;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -82,28 +84,28 @@ public class HomeUserController {
         return "layout/Home";
     }
 
-    @PostMapping("/add-to-cart")
+    @PostMapping("/cart/shoppingcart")
     @ResponseBody
-    public String addToCart(@RequestParam("productId") Integer productId,
-                            @RequestParam("quantity") Integer quantity,
-                            HttpServletRequest request) {
+    public ResponseEntity<?> addToCart(@RequestParam("productId") Integer productId,
+                                       @RequestParam("quantity") Integer quantity,
+                                       HttpServletRequest request) {
 
         // Lấy accountId từ session
         Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
-            return "Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng!";
+            return ResponseEntity.badRequest().body(new ResponseMessage("Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng!"));
         }
 
         // Kiểm tra sản phẩm có tồn tại hay không
         Product product = productService.findById(productId);
         if (product == null) {
-            return "Sản phẩm không tồn tại!";
+            return ResponseEntity.badRequest().body(new ResponseMessage("Sản phẩm không tồn tại!"));
         }
 
         // Tìm Account từ cơ sở dữ liệu
         Optional<Account> accountOptional = accountService.findById(accountId);
         if (accountOptional.isEmpty()) {
-            return "Tài khoản không hợp lệ!";
+            return ResponseEntity.badRequest().body(new ResponseMessage("Tài khoản không hợp lệ!"));
         }
         Account account = accountOptional.get();
 
@@ -121,8 +123,8 @@ public class HomeUserController {
             cart.setQuantity(cart.getQuantity() + quantity);  // Cộng thêm số lượng
             cart.setPrice(finalPrice.doubleValue());  // Cập nhật giá
             cartService.save(cart);  // Lưu giỏ hàng đã cập nhật
-            return "Sản phẩm đã được cập nhật trong giỏ hàng!";
-        } else {
+            return ResponseEntity.ok(new ResponseMessage("Sản phẩm đã được cập nhật trong giỏ hàng!"));
+        } else{
             // Nếu sản phẩm chưa có trong giỏ hàng, tạo mới giỏ hàng
             Cart cart = new Cart();
             cart.setAccount(account);
@@ -130,14 +132,29 @@ public class HomeUserController {
             cart.setQuantity(quantity);
             cart.setPrice(finalPrice.doubleValue());  // Sử dụng giá sau giảm giá nếu có
             cartService.save(cart);  // Lưu giỏ hàng mới
-            return "Sản phẩm đã được thêm vào giỏ hàng!";
+            // Trả về thông báo thành công
+            return ResponseEntity.ok(new ResponseMessage("Sản phẩm đã được thêm vào giỏ hàng!"));
         }
+
     }
 
 
 
     @RequestMapping("/layout/Product")
-    public String Product(Model model, @RequestParam("cid") Optional<String> cid) {
+    public String Product(Model model, @RequestParam("cid") Optional<String> cid, HttpServletRequest request) {
+        // Lấy thông tin người dùng từ session
+        String username = getAuthenticatedUsername();
+        String role = getAuthenticatedRole();
+        Integer accountId = getAccountIdFromSession(request);
+
+        if (username != null) {
+            model.addAttribute("username", username);
+            model.addAttribute("role", role);
+        }
+
+        if (accountId != null) {
+            model.addAttribute("accountId", accountId);
+        }
         if (cid.isPresent()) {
             List<Product> list = productService.findByCategoryId(cid.get());
             model.addAttribute("product", list);
@@ -149,7 +166,20 @@ public class HomeUserController {
     }
 
     @RequestMapping("/product/detail/{id}")
-    public String ProductDetail(Model model, @PathVariable("id") Integer id) {
+    public String ProductDetail(Model model, @PathVariable("id") Integer id, HttpServletRequest request) {
+        // Lấy thông tin người dùng từ session
+        String username = getAuthenticatedUsername();
+        String role = getAuthenticatedRole();
+        Integer accountId = getAccountIdFromSession(request);
+
+        if (username != null) {
+            model.addAttribute("username", username);
+            model.addAttribute("role", role);
+        }
+
+        if (accountId != null) {
+            model.addAttribute("accountId", accountId);
+        }
         Product item = productService.findById(id);
         List<Product> topProducts = productService.findTop6Product();
         model.addAttribute("item", item);

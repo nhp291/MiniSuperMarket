@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer brandId;
+    private int brandId;
 
     @Column(name = "brand_name", nullable = false)
     @NotEmpty(message = "Tên thương hiệu không được để trống")

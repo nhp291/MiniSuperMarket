@@ -23,6 +23,10 @@ public class CartService {
         this.cartRepository = cartRepository;
     }
 
+    public List<CartItemDTO> getUpdatedCart(Integer accountId) {
+        return getCartItemDTOs(accountId);  // Trả về danh sách sản phẩm trong giỏ hàng dưới dạng DTO
+    }
+
     // Find cart item by account and product
     public Optional<Cart> findByAccountAndProduct(Account account, Product product) {
         return cartRepository.findByAccountAndProduct(account, product);
