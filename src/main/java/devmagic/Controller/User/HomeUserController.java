@@ -4,11 +4,14 @@ import devmagic.Message.ResponseMessage;
 import devmagic.Model.Account;
 import devmagic.Model.Cart;
 import devmagic.Model.Product;
+import devmagic.Model.Role;
+import devmagic.Reponsitory.RoleRepository;
 import devmagic.Service.AccountService;
 import devmagic.Service.CartService;
 import devmagic.Service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -17,9 +20,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +47,9 @@ public class HomeUserController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @RequestMapping("/layout/Home")
     public String Home(
@@ -86,16 +102,12 @@ public class HomeUserController {
 
     @PostMapping("/cart/shoppingcart")
     @ResponseBody
-    public ResponseEntity<?> addToCart(@RequestParam("productId") Integer productId,
+    public ResponseEntity<?> addaToCart(@RequestParam("productId") Integer productId,
                                        @RequestParam("quantity") Integer quantity,
                                        HttpServletRequest request) {
 
         // Lấy accountId từ session
         Integer accountId = getAccountIdFromSession(request);
-        if (accountId == null) {
-            return ResponseEntity.badRequest().body(new ResponseMessage("Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng!"));
-        }
-
         // Kiểm tra sản phẩm có tồn tại hay không
         Product product = productService.findById(productId);
         if (product == null) {
@@ -124,7 +136,7 @@ public class HomeUserController {
             cart.setPrice(finalPrice.doubleValue());  // Cập nhật giá
             cartService.save(cart);  // Lưu giỏ hàng đã cập nhật
             return ResponseEntity.ok(new ResponseMessage("Sản phẩm đã được cập nhật trong giỏ hàng!"));
-        } else{
+        } else {
             // Nếu sản phẩm chưa có trong giỏ hàng, tạo mới giỏ hàng
             Cart cart = new Cart();
             cart.setAccount(account);
@@ -137,7 +149,6 @@ public class HomeUserController {
         }
 
     }
-
 
 
     @RequestMapping("/layout/Product")
@@ -193,14 +204,80 @@ public class HomeUserController {
     }
 
     @GetMapping("/user/contact")
-    public String contact(Model model) {
+    public String contact(Model model, HttpServletRequest request) {
+        // Lấy thông tin người dùng từ session
+        String username = getAuthenticatedUsername();
+        String role = getAuthenticatedRole();
+        Integer accountId = getAccountIdFromSession(request);
+
+        if (username != null) {
+            model.addAttribute("username", username);
+            model.addAttribute("role", role);
+        }
+
+        if (accountId != null) {
+            model.addAttribute("accountId", accountId);
+        }
         return "user/contact";
     }
 
-    @GetMapping("/user/register")
-    public String register(Model model) {
-        return "user/register";
+    @GetMapping("user/register")
+    public String registerForm(Model model) {
+        model.addAttribute("account", new Account());
+        return "user/register"; // Trả về trang đăng ký
     }
+
+    @PostMapping("user/register")
+    public String register(@Valid @ModelAttribute("account") Account account,
+                           BindingResult result,
+                           @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                           RedirectAttributes redirectAttributes,
+                           Model model) throws IOException {
+
+        // Kiểm tra lỗi nhập liệu
+        if (validateAccount(account, result)) {
+            return "user/register";
+        }
+
+        // Gán vai trò mặc định USER (ID = 2)
+        Role defaultRole = roleRepository.findById(2)
+                .orElseThrow(() -> new RuntimeException("Role mặc định không tồn tại."));
+        account.setRole(defaultRole);
+
+        // Xử lý ảnh đại diện
+        String defaultImage = "User.png"; // Nếu không upload ảnh, dùng ảnh mặc định
+        account.setImageUrl(defaultImage);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            String uploadDir = "src/main/resources/static/Image/imageProfile/";
+            Path uploadPath = Paths.get(uploadDir);
+
+            // Tạo thư mục nếu chưa tồn tại
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            // Lưu file ảnh vào thư mục
+            try (InputStream inputStream = imageFile.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                account.setImageUrl(fileName); // Lưu tên ảnh vào database
+            } catch (IOException e) {
+                model.addAttribute("error", "Không thể lưu tệp hình ảnh.");
+                return "user/register";
+            }
+        }
+
+        // Lưu thông tin tài khoản
+        try {
+            accountService.saveAccount(account);
+            return "redirect:/user/register?success=true"; // Chuyển hướng với tham số success
+        } catch (Exception e) {
+            model.addAttribute("error", "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.");
+            return "user/register";
+        }
+    }
+
 
     @GetMapping("/ForgotPassword")
     public String ForgotPassword(Model model) {
@@ -248,4 +325,31 @@ public class HomeUserController {
         }
         return (Integer) accountIdObj; // Nếu accountId là Integer, trả về trực tiếp
     }
-}
+
+        private boolean validateAccount (Account account, BindingResult result){
+            boolean hasErrors = false;
+
+            if (accountService.isUsernameExist(account.getUsername())) {
+                result.rejectValue("username", "error.account", "Tên đăng nhập đã tồn tại.");
+                hasErrors = true;
+            }
+
+            if (accountService.isEmailExist(account.getEmail())) {
+                result.rejectValue("email", "error.account", "Email đã tồn tại.");
+                hasErrors = true;
+            }
+
+            if (!account.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{6,}$")) {
+                result.rejectValue("password", "error.account", "Mật khẩu phải có ít nhất 6 ký tự, gồm chữ thường, chữ hoa và ký tự đặc biệt.");
+                hasErrors = true;
+            }
+
+            if (account.getPhoneNumber() == null || !account.getPhoneNumber().matches("^\\d{10,15}$")) {
+                result.rejectValue("phoneNumber", "error.account", "Số điện thoại phải là số, từ 10 đến 15 ký tự.");
+                hasErrors = true;
+            }
+
+            return hasErrors;
+
+        }
+    }

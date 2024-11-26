@@ -1,7 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{/layout/index :: dynamic(~{::main})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,44 +70,32 @@
             100% { transform: scale(1); }
         }
     </style>
-    <div class="history-box">
-        <div class="history-title">
-            Lịch Sử Hóa Đơn
-        </div>
+    <div class="container mt-5">
+        <h3 class="text-center mb-4">Lịch Sử Hóa Đơn</h3>
         <table class="table table-bordered">
             <thead>
             <tr>
                 <th>Ngày Mua</th>
                 <th>Mã Hóa Đơn</th>
-                <th>Tổng Tiền</th>
+                <th>Phương Thức Thanh Toán</th>
+                <th>Trạng Thái</th>
                 <th>Chi Tiết</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>30/10/2024</td>
-                <td>INV-001</td>
-                <td>$36.00</td>
-                <td><a href="/invoice/1" class="btn-view">Xem</a></td>
+            <!-- Lặp qua danh sách orders -->
+            <tr th:each="order : ${orders}">
+                <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></td>
+                <td th:text="${order.orderId}"></td>
+                <td th:text="${order.paymentMethod}"></td>
+                <td th:text="${order.paymentStatus}"></td>
+                <td>
+                    <a th:href="'/invoice/' + ${order.orderId}" class="btn btn-primary btn-sm">Xem</a>
+                </td>
             </tr>
-            <tr>
-                <td>30/10/2024</td>
-                <td>INV-002</td>
-                <td>$24.00</td>
-                <td><a href="/invoice/2" class="btn-view">Xem</a></td>
-            </tr>
-            <tr>
-                <td>30/10/2024</td>
-                <td>INV-003</td>
-                <td>$4.00</td>
-                <td><a href="/invoice/3" class="btn-view">Xem</a></td>
-            </tr>
-
             </tbody>
         </table>
     </div>
 </main>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -387,7 +387,9 @@
 </style>
 <header id="site-header">
   <div id="site-header-container">
-    <a><img src="/Image/logo.png" width="90px" alt=""></a>
+    <a >
+      <img src="/Image/imageProfile/logo.jpg" alt="Logo" width="90px">
+    </a>
 
     <div id="site-header-logo">
 
@@ -482,10 +484,10 @@
     <a  th:href="@{/cart/shoppingcart}"><button  type="button" class="btn btn-light"><i class="bi bi-cart"></i><span> Giỏ Hàng</span></button></a>
 
     <script>
-      // // Loại bỏ query string nếu có
-      // if (window.location.search) {
-      //   window.history.replaceState(null, null, window.location.pathname);
-      // }
+      // Loại bỏ query string nếu có
+      if (window.location.search) {
+        window.history.replaceState(null, null, window.location.pathname);
+      }
     </script>
   </div>
 </header>

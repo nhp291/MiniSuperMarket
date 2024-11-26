@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -95,23 +98,31 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    @Transactional
     public Product createProduct(Product product, List<MultipartFile> files) throws IOException {
+        // Lưu sản phẩm vào DB trước
         Product savedProduct = productRepository.save(product);
 
+        // Duyệt qua danh sách tệp hình ảnh
         if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
                 if (!file.isEmpty()) {
+                    // Sử dụng phương thức saveImage để xử lý hình ảnh
                     String fileName = saveImage(file);
-                    ProductImage productImage = new ProductImage();
-                    productImage.setProduct(savedProduct);
-                    productImage.setImageUrl(fileName);
-                    productImageRepository.save(productImage);
+
+                    // Tạo và lưu hình ảnh vào DB nếu chưa có
+                    if (fileName != null) {
+                        ProductImage productImage = new ProductImage();
+                        productImage.setProduct(savedProduct);
+                        productImage.setImageUrl(fileName);
+                        productImageRepository.save(productImage);
+                    }
                 }
             }
         }
+
         return savedProduct;
     }
+
 
     @Transactional
     public Product updateProduct(Integer id, Product product, MultipartFile file) throws IOException {
@@ -151,13 +162,31 @@ public class ProductService {
     }
 
     public String saveImage(MultipartFile file) throws IOException {
-//        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        String fileName = file.getOriginalFilename();
-        Path path = Paths.get(UPLOAD_DIRECTORY + fileName);
-        Files.createDirectories(path.getParent());
-        Files.write(path, file.getBytes());
-        return fileName;
+        // Thư mục lưu trữ ảnh
+        String directoryPath = "src/main/resources/static/Image/imageUrl/";
+        File dir = new File(directoryPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        // Lấy tên gốc của tệp
+        String originalFileName = file.getOriginalFilename();
+        Path imagePath = Paths.get(directoryPath + originalFileName);
+
+        // Kiểm tra nếu tệp đã tồn tại
+        if (Files.exists(imagePath)) {
+            // Tệp đã tồn tại, không lưu lại, trả về tên tệp
+            return originalFileName;
+        }
+
+        // Nếu chưa tồn tại, lưu tệp vào thư mục
+        Files.write(imagePath, file.getBytes());
+
+        // Trả về tên tệp
+        return originalFileName;
     }
+
+
     public int getAvailableStock(Integer productId) {
         Product product = productRepository.findById(productId).orElse(null);
         if (product != null) {

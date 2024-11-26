@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "Account")
-public class    Account {
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountId;
@@ -53,4 +53,8 @@ public class    Account {
     @NotEmpty(message = "Xác nhận mật khẩu không được để trống")
     private String confirmPassword; // Không lưu vào cơ sở dữ liệu
 
+    // Constructor nhận tham số kiểu Integer
+    public Account(Integer accountId) {
+        this.accountId = accountId;
+    }
 }

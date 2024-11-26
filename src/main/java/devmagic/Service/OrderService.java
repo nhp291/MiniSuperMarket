@@ -1,8 +1,11 @@
 package devmagic.Service;
 
 import devmagic.Model.Order;
-import devmagic.Model.PaymentStatus;
+import devmagic.Model.OrderDetail;
+import devmagic.Model.Product;
 import devmagic.Reponsitory.OrderRepository;
+import devmagic.Reponsitory.OrderDetailRepository;
+import devmagic.Reponsitory.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,48 +14,69 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+    private final OrderRepository orderRepository;
+    private final OrderDetailRepository orderDetailRepository;
+    private final ProductRepository productRepository;
+
     @Autowired
-    private OrderRepository ordersRepository;
+    public OrderService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, ProductRepository productRepository) {
+        this.orderRepository = orderRepository;
+        this.orderDetailRepository = orderDetailRepository;
+        this.productRepository = productRepository;
+    }
 
     public List<Order> getAllOrders() {
-        return ordersRepository.findAll().stream()
+        return orderRepository.findAll().stream()
                 .filter(order -> !order.isDeleted())
                 .collect(Collectors.toList());
     }
 
     public Order createOrder(Order order) {
-        return ordersRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        order.getOrderDetails().forEach(orderDetail -> {
+            orderDetail.setOrder(savedOrder);
+            orderDetailRepository.save(orderDetail);
+
+            // Cập nhật số lượng sản phẩm trong kho
+            Product product = orderDetail.getProduct();
+            product.setStockQuantity(product.getStockQuantity() - orderDetail.getQuantity());
+            productRepository.save(product);
+        });
+        return savedOrder;
     }
 
     public Order updateOrder(Integer id, Order order) {
         order.setOrderId(id);
-        return ordersRepository.save(order);
+        return orderRepository.save(order);
     }
 
     public void deleteOrder(Integer id) {
-        Order order = ordersRepository.findById(id)
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         order.setDeleted(true);
-        ordersRepository.save(order);
+        orderRepository.save(order);
     }
 
     public Long getTotalOrders() {
-        return ordersRepository.countTotalOrders();
+        return orderRepository.countTotalOrders();
     }
 
     public Double getTotalRevenue() {
-        return ordersRepository.calculateTotalRevenue();
+        return orderRepository.calculateTotalRevenue();
     }
 
     public List<Object[]> getRevenueByMonth() {
-        return ordersRepository.getRevenueByMonth();
+        return orderRepository.getRevenueByMonth();
     }
 
     public void updatePaymentStatus(int orderId, String paymentStatus) {
-        Order order = ordersRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
         order.setPaymentStatus(paymentStatus);
-        ordersRepository.save(order);
+        orderRepository.save(order);
     }
 
+    // Thêm phương thức lấy đơn hàng theo accountId
+    public List<Order> getOrdersByAccountId(int accountId) {
+        return orderRepository.findByAccount_AccountId(accountId);
+    }
 }
-

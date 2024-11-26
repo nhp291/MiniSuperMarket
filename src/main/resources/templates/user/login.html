@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,8 +16,21 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             display: flex;
-            transition: all 0.4s ease-in-out;
             position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.8s ease-in-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .left-section {
@@ -29,27 +42,6 @@
             flex-direction: column;
             justify-content: center;
             text-align: left;
-        }
-
-        .left-section h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: 1.5px;
-        }
-
-        .left-section p {
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 40px;
-        }
-
-        .left-section .logo {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            letter-spacing: 1.2px;
         }
 
         .right-section {
@@ -67,17 +59,6 @@
             transition: all 0.3s ease;
         }
 
-        .form-floating input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-        }
-
-        .form-floating label {
-            padding-left: 25px;
-            font-size: 14px;
-            color: #888;
-        }
-
         .btn-login {
             background: linear-gradient(to right, #1e3a8a, #3b82f6);
             color: white;
@@ -89,54 +70,6 @@
             margin-top: 15px;
             box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
             transition: all 0.4s ease;
-        }
-
-        .btn-login:hover {
-            background: linear-gradient(to right, #19317b, #347ade);
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.6);
-        }
-
-        .social-login-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .btn-social {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: transform 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-social.google {
-            background-color: #db4437;
-        }
-
-        .btn-social.facebook {
-            background-color: #3b5998;
-        }
-
-        .btn-social:hover {
-            transform: scale(1.1);
-            opacity: 0.9;
-        }
-
-        .terms a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .terms a:hover {
-            text-decoration: underline;
         }
 
         @media (max-width: 992px) {
@@ -165,7 +98,7 @@
 
             <!-- Biểu mẫu đăng nhập -->
             <form action="/login" method="post">
-            <div class="form-floating mb-4">
+                <div class="form-floating mb-4">
                     <input class="form-control" id="email" name="username" placeholder="Tên đăng nhập" type="text">
                     <label for="email">Tên đăng nhập</label>
                 </div>
@@ -183,34 +116,10 @@
                 Bạn chưa có tài khoản? <a href="register">Đăng ký</a>
             </div>
             <hr class="my-4">
-            <div class="text-center">
-                <p>Hoặc đăng nhập với</p>
-                <div class="social-login-buttons">
-                    <a class="btn-social google" href="#"><i class="bi bi-google"></i></a>
-                    <a class="btn-social facebook" href="#"><i class="bi bi-facebook"></i></a>
-                </div>
-            </div>
         </div>
     </div>
 </main>
-
 <script>
-    // Loại bỏ query string nếu có
-    if (window.location.search) {
-        window.history.replaceState(null, null, window.location.pathname);
-    }
-
-    // Kiểm tra đầu vào trên frontend
-    document.querySelector("form").addEventListener("submit", function (event) {
-        const username = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-
-        if (!username || !password) {
-            event.preventDefault();
-            alert("Tên đăng nhập và mật khẩu không được để trống!");
-        }
-    });
-
     function togglePassword() {
         const passwordField = document.getElementById('password');
         const toggleIcon = document.getElementById('togglePasswordIcon');
@@ -226,7 +135,6 @@
         }
     }
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

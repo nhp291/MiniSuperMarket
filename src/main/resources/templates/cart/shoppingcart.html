@@ -1,365 +1,360 @@
 <!DOCTYPE html>
-
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{/layout/index :: dynamic(~{::main})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<body>
 <main>
-    <style>
-        .shopping-body {
-            background: #ddd;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            font-family: sans-serif;
-            font-size: 1rem;
-            font-weight: bold;
+    <style> .shopping-body {
+        background: #ddd;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        font-family: sans-serif;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 1200px;
+        height: 100%;
+        box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border-radius: 1rem;
+        border: transparent;
+        background-color: white;
+    }
+
+    .cart {
+        background-color: #fff;
+        padding: 6vh 7vh;
+        border-bottom-left-radius: 1rem;
+        border-top-left-radius: 1rem;
+        position: relative; /* Thêm thuộc tính này */
+    }
+
+    .cart-items {
+        max-height: 500px;
+        overflow-y: auto;
+        margin-top: 2vh;
+        padding-right: 10px;
+    }
+
+    .cart-items::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .cart-items::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+    .cart-items::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+    }
+
+    .summary {
+        background-color: #7c7c7c;
+        border-top-right-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+        padding: 6vh;
+        color: rgb(161, 158, 158);
+    }
+
+    .row {
+        margin: 0;
+    }
+
+    .title b {
+        font-size: 2rem;
+    }
+
+    .back-to-shop {
+        position: absolute; /* Thêm thuộc tính này */
+        bottom: 20px; /* Điều chỉnh khoảng cách từ dưới lên */
+        left: 20px; /* Điều chỉnh khoảng cách từ trái sang */
+    }
+
+    .cart-item {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding: 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .cart-item:last-child {
+        border-bottom: none;
+    }
+
+    .cart-item img {
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    .quantity-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .radio-input {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .radio-input label {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 0px 30px;
+        cursor: pointer;
+        height: 50px;
+        position: relative;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .radio-input label:hover {
+        background-color: #2a2e3c;
+        border-color: #435dd8;
+    }
+
+    .radio-input label:has(input:checked) {
+        background-color: #2d3750;
+        border-color: #435dd8;
+    }
+
+    .radio-input .text {
+        font-size: 1rem;
+        color: white;
+    }
+
+    input[type="radio"] {
+        display: none;
+    }
+
+    @media (max-width: 576px) {
+        .quantity-controls {
+            flex-direction: row;
         }
 
-        .card {
-            width: 100%;
-            max-width: 1200px;
-            height: 100%;
-            box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            border-radius: 1rem;
-            border: transparent;
-            background-color: white;
-        }
-
-        .cart {
-            background-color: #fff;
-            padding: 6vh 7vh;
-            border-bottom-left-radius: 1rem;
-            border-top-left-radius: 1rem;
-        }
-
-        .cart-items {
-            max-height: 500px;
-            overflow-y: auto;
-            margin-top: 2vh;
-            padding-right: 10px;
-        }
-
-        .cart-items::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .cart-items::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-        }
-
-        .cart-items::-webkit-scrollbar-track {
-            background-color: #f1f1f1;
-        }
-
-        .summary {
-            background-color: #7c7c7c;
-            border-top-right-radius: 1rem;
-            border-bottom-right-radius: 1rem;
-            padding: 6vh;
-            color: rgb(161, 158, 158);
-        }
-
-        .row {
-            margin: 0;
-        }
-
-        .title b {
-            font-size: 2rem;
-        }
-
-        .back-to-shop {
-            margin-top: 5rem;
+        .quantity-controls a, .quantity-controls span {
+            padding: 5px 10px;
         }
 
         .cart-item {
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            padding: 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-
-        .cart-item img {
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-        }
-
-        .quantity-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .radio-input {
-            display: flex;
             flex-direction: column;
-            gap: 15px;
+            align-items: flex-start;
         }
 
-        .radio-input label {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 0px 30px;
-            cursor: pointer;
-            height: 50px;
-            position: relative;
-            border-radius: 10px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
+        .cart-item .col {
+            width: 100%;
+            text-align: left;
         }
 
-        .radio-input label:hover {
-            background-color: #2a2e3c;
-            border-color: #435dd8;
+        .back-to-shop {
+            text-align: center;
         }
 
-        .radio-input label:has(input:checked) {
-            background-color: #2d3750;
-            border-color: #435dd8;
+        .cart-item .close {
+            margin-top: 10px;
         }
 
-        .radio-input .text {
-            font-size: 1rem;
-            color: white;
+        .text-end {
+            margin-left: 0;
+            text-align: right;
         }
+    }
 
-        input[type="radio"] {
-            display: none;
-        }
+    .btn-remove {
+        color: white;
+        background-color: red;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
 
-        @media (max-width: 576px) {
-            .quantity-controls {
-                flex-direction: row;
-            }
-
-            .quantity-controls a,
-            .quantity-controls span {
-                padding: 5px 10px;
-            }
-
-            .cart-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .cart-item .col {
-                width: 100%;
-                text-align: left;
-            }
-
-            .back-to-shop {
-                text-align: center;
-            }
-
-            .cart-item .close {
-                margin-top: 10px;
-            }
-
-            .text-end {
-                margin-left: 0;
-                text-align: right;
-            }
-        }
-
-        .btn-remove {
-            color: white;
-            background-color: red;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .btn-remove:hover {
-            background-color: darkred;
-        }
-    </style>
-
-
-
+    .btn-remove:hover {
+        background-color: darkred;
+    } </style>
     <div class="shopping-body">
         <div class="card">
-            <div class="row">
-                <!-- Giỏ hàng -->
+            <div class="row"> <!-- Giỏ hàng -->
                 <div class="col-md-8 cart">
                     <div class="title">
                         <div class="row">
-                            <div class="col">
-                                <h4><b>Shopping Cart</b></h4>
-                            </div>
-                            <div class="col align-self-center text-end text-muted">
-                                <span th:text="${cartItems.size()}"></span> items
+                            <div class="col"><h4><b>Shopping Cart</b></h4></div>
+                            <div class="col align-self-center text-end text-muted"><span
+                                    th:text="${cartItems.size()}"></span> items
                             </div>
                         </div>
                     </div>
                     <div class="cart-items" id="cart-items">
                         <div class="cart-item" th:each="item : ${cartItems}" data-item-id="${item.id}">
-                            <div class="col-2">
-                                <img class="img-fluid" th:src="@{'/Image/imageUrl/' + ${item.imageUrl}}" alt="Product Image">
-                            </div>
+                            <div class="col-2"><img class="img-fluid" th:src="@{'/Image/imageUrl/' + ${item.imageUrl}}"
+                                                    alt="Product Image"></div>
                             <div class="col">
                                 <div class="row" th:text="${item.productName}">Product Name</div>
                             </div>
-                            <div class="col quantity-controls">
-                                <a href="#" class="text-decoration-none" onclick="updateQuantity(this, -1)">-</a>
-                                <span class="border px-2" th:text="${item.quantity}">1</span>
-                                <a href="#" class="text-decoration-none" onclick="updateQuantity(this, 1)">+</a>
+                            <div class="col quantity-controls"><a href="#" class="text-decoration-none"
+                                                                  onclick="updateQuantity(this, -1)">-</a> <span
+                                    class="border px-2" th:text="${item.quantity}">1</span> <a href="#"
+                                                                                               class="text-decoration-none"
+                                                                                               onclick="updateQuantity(this, 1)">+</a>
                             </div>
-                            <div class="col text-end">
-                                &dollar;<span th:text="${item.price}" data-price-per-unit="${item.pricePerUnit}">0.00</span>
+                            <div class="col text-end"> &dollar;<span th:text="${item.price}"
+                                                                     data-price-per-unit="${item.pricePerUnit}">0.00</span>
                                 <button class="btn-remove" onclick="removeItem(this)">Xóa</button>
                             </div>
                         </div>
                     </div>
                     <div class="back-to-shop">
-                        <a href="#" class="btn btn-warning"><b>Back to shop</b></a>
+                        <a th:href="@{/layout/Home}" class="btn btn-warning back-to-shop-btn"><b>Back to shop</b></a>
                     </div>
-                </div>
 
-                <!-- Tóm tắt đơn hàng -->
-                <div class="col-md-4 summary" style="color: white;">
-                    <h5><b>Order Summary</b></h5>
+                </div> <!-- Tóm tắt đơn hàng -->
+                <div class="col-md-4 summary" style="color: white;"><h5><b>Order Summary</b></h5>
                     <div class="row">
                         <div class="col">Total Quantity</div>
                         <div class="col text-end total-quantity" th:text="${totalQuantity}">0</div>
                     </div>
                     <div class="row">
                         <div class="col">Total Price</div>
-                        <div class="col text-end">&dollar;<span class="total-price" th:text="${totalPrice}">0.00</span></div>
+                        <div class="col text-end">&dollar;<span class="total-price" th:text="${totalPrice}">0.00</span>
+                        </div>
                     </div>
-                    <div class="row radio-input mt-4">
-                        <label>
-                            <input type="radio" name="payment-method" checked>
-                            <span class="text">Credit Card</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="payment-method">
-                            <span class="text">Cash</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="payment-method">
-                            <span class="text">Paypal</span>
-                        </label>
-                    </div>
+                    <div class="row radio-input mt-4"><label> <input type="radio" name="payment-method" value="Cash"
+                                                                     checked> <span class="text">Cash</span> </label>
+                        <label> <input type="radio" name="payment-method" value="Bank Transfer"> <span class="text">Bank Transfer</span>
+                        </label> <label> <input type="radio" name="payment-method" value="VN Pay"> <span class="text">VN Pay</span>
+                        </label></div>
                     <div class="row">
-                        <button class="btn btn-primary mt-3">Checkout</button>
+                        <form action="/cart/checkout" method="post"><input type="hidden" name="paymentMethod"
+                                                                           id="paymentMethod" value="Cash"> <a
+                                th:href="@{/cart/thankyou}">
+                            <button class="btn btn-primary mt-3" type="submit">Checkout</button>
+                        </a></form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-
-            // Cập nhật số lượng sản phẩm
-            function updateQuantity(element, change) {
-            const cartItem = element.closest('.cart-item');
-            const quantityElement = cartItem.querySelector('.quantity-controls span');
-            let quantity = parseInt(quantityElement.textContent);
-            quantity = Math.max(1, quantity + change); // Đảm bảo số lượng không dưới 1
-            quantityElement.textContent = quantity;
-
-            // Cập nhật giá
-            const priceElement = cartItem.querySelector('.text-end span');
-            const pricePerUnit = parseFloat(priceElement.getAttribute('data-price-per-unit'));
-            priceElement.textContent = (pricePerUnit * quantity).toFixed(2);
-
-            // Gửi số lượng cập nhật đến máy chủ
-            const itemId = cartItem.getAttribute('data-item-id');
-            updateCartItemInDatabase(itemId, quantity);
-            updateOrderSummary();
-        }
-
-            function updateCartItemInDatabase(itemId, quantity) {
-            fetch(`/cart/updateQuantity`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `id=${itemId}&quantity=${quantity}`,
-            })
-                .then(response => response.text())
-                .then(data => {
-                    if (data === "success") {
-                        console.log("Item quantity updated successfully");
-                    } else {
-                        console.error("Error updating quantity:", data);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error updating item:", error);
-                });
-        }
-
-            // Xóa sản phẩm khỏi giỏ hàng
-            function removeItem(element) {
-            const cartItem = element.closest('.cart-item');
-            const itemId = cartItem.getAttribute('data-item-id');
-
-            // Xóa sản phẩm khỏi DOM
-            cartItem.remove();
-
-            // Gửi yêu cầu xóa sản phẩm đến server
-            fetch(`/cart/removeItem`, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-            body: `id=${itemId}`,
-        })
-            .then(response => response.text())
-            .then(data => {
-            if (data === "success") {
-            console.log("Item removed successfully");
-            updateOrderSummary();
-        } else {
-            console.error("Error removing item:", data);
-        }
-        })
-            .catch(error => {
-            console.error("Error removing item:", error);
-        });
-        }
-
-            // Cập nhật thông tin tóm tắt đơn hàng
-            function updateOrderSummary() {
-            const cartItems = document.querySelectorAll('.cart-item');
-            let totalQuantity = 0;
-            let totalPrice = 0;
-
-            cartItems.forEach(item => {
-            const quantity = parseInt(item.querySelector('.quantity-controls span').textContent);
-            const price = parseFloat(item.querySelector('.text-end span').textContent);
-            totalQuantity += quantity;
-            totalPrice += price;
-        });
-
-            document.querySelector('.summary .total-quantity').textContent = totalQuantity;
-            document.querySelector('.summary .total-price').textContent = totalPrice.toFixed(2);
-        }
-    </script>
 
 
+                        <script>
+                            // Cập nhật số lượng sản phẩm
+                            function updateQuantity(element, change) {
+                                const cartItem = element.closest('.cart-item');
+                                const quantityElement = cartItem.querySelector('.quantity-controls span');
+                                let quantity = parseInt(quantityElement.textContent);
+                                quantity = Math.max(1, quantity + change); // Đảm bảo số lượng không dưới 1
+                                quantityElement.textContent = quantity;
+
+                                // Cập nhật giá
+                                const priceElement = cartItem.querySelector('.text-end span');
+                                const pricePerUnit = parseFloat(priceElement.getAttribute('data-price-per-unit'));
+                                priceElement.textContent = (pricePerUnit * quantity).toFixed(2);
+
+                                // Gửi số lượng cập nhật đến máy chủ
+                                const itemId = cartItem.getAttribute('data-item-id');
+                                updateCartItemInDatabase(itemId, quantity);
+                                updateOrderSummary();
+                            }
+
+                            function updateCartItemInDatabase(itemId, quantity) {
+                                fetch(`/cart/updateQuantity`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                    },
+                                    body: `id=${itemId}&quantity=${quantity}`,
+                                })
+                                    .then(response => response.text())
+                                    .then(data => {
+                                        if (data === "success") {
+                                            console.log("Item quantity updated successfully");
+                                        } else {
+                                            console.error("Error updating quantity:", data);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Error updating item:", error);
+                                    });
+                            }
+
+                            // Xóa sản phẩm khỏi giỏ hàng
+                            function removeItem(element) {
+                                const cartItem = element.closest('.cart-item');
+                                const itemId = cartItem.getAttribute('data-item-id');
+
+                                // Xóa sản phẩm khỏi DOM
+                                cartItem.remove();
+
+                                // Gửi yêu cầu xóa sản phẩm đến server
+                                fetch(`/cart/removeItem`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                    },
+                                    body: `id=${itemId}`,
+                                })
+                                    .then(response => response.text())
+                                    .then(data => {
+                                        if (data === "success") {
+                                            console.log("Item removed successfully");
+                                            updateOrderSummary();
+                                        } else {
+                                            console.error("Error removing item:", data);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Error removing item:", error);
+                                    });
+                            }
+
+                            // Cập nhật thông tin tóm tắt đơn hàng
+                            function updateOrderSummary() {
+                                const cartItems = document.querySelectorAll('.cart-item');
+                                let totalQuantity = 0;
+                                let totalPrice = 0;
+
+                                cartItems.forEach(item => {
+                                    const quantity = parseInt(item.querySelector('.quantity-controls span').textContent);
+                                    const price = parseFloat(item.querySelector('.text-end span').textContent);
+                                    totalQuantity += quantity;
+                                    totalPrice += price;
+                                });
+
+                                document.querySelector('.summary .total-quantity').textContent = totalQuantity;
+                                document.querySelector('.summary .total-price').textContent = totalPrice.toFixed(2);
+                            }
+
+                            // Cập nhật phương thức thanh toán khi người dùng chọn
+                            document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+                                radio.addEventListener('change', () => {
+                                    document.getElementById('paymentMethod').value = radio.value;
+                                });
+                            });
+                        </script>
 
 
 </main>
-
-
+</body>
 </html>
+
+
+
 

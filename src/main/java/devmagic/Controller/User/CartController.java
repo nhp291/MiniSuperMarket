@@ -1,8 +1,9 @@
 package devmagic.Controller.User;
 
 import devmagic.Dto.CartItemDTO;
-import devmagic.Model.Cart;
+import devmagic.Model.*;
 import devmagic.Service.CartService;
+import devmagic.Service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,30 +13,33 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/cart")
 public class CartController {
 
     private final CartService cartService;
+    private final OrderService orderService;
 
     @Autowired
-    public CartController(CartService cartService) {
+    public CartController(CartService cartService, OrderService orderService) {
         this.cartService = cartService;
+        this.orderService = orderService;
     }
 
     // Hiển thị giỏ hàng
     @GetMapping("/shoppingcart")
     public String shoppingCart(HttpServletRequest request, Model model) {
-        Integer userId = getUserIdFromSession(request);
-        if (userId == null) {
-            return "redirect:/user/login";  // Nếu không có userId thì chuyển hướng đến trang login
+        Integer accountId = getAccountIdFromSession(request);
+        if (accountId == null) {
+            return "redirect:/user/login";  // Nếu không có accountId thì chuyển hướng đến trang login
         }
         // Lấy thông tin người dùng từ session
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
-        Integer accountId = getAccountIdFromSession(request);
 
         if (username != null) {
             model.addAttribute("username", username);
@@ -46,9 +50,8 @@ public class CartController {
             model.addAttribute("accountId", accountId);
         }
 
-
         // Lấy thông tin giỏ hàng
-        List<CartItemDTO> cartItems = cartService.getCartItemDTOs(userId);
+        List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
         double totalPrice = cartService.calculateTotalPrice(cartItems);
         int totalQuantity = cartService.calculateTotalQuantity(cartItems);
 
@@ -73,11 +76,11 @@ public class CartController {
         if (cart == null) {
             return "error=cart_not_found";  // Nếu không tìm thấy giỏ hàng
         }
-
         cart.setQuantity(quantity);  // Cập nhật số lượng sản phẩm
         cartService.save(cart);  // Lưu vào database
         return "success";  // Trả về thành công
     }
+
     // Xóa sản phẩm khỏi giỏ hàng
     @PostMapping("/removeItem")
     @ResponseBody
@@ -95,18 +98,69 @@ public class CartController {
         return "success";  // Trả về thành công
     }
 
-    // Lấy userId từ session
-    private Integer getUserIdFromSession(HttpServletRequest request) {
+
+    // Xử lý khi người dùng nhấn nút "Checkout"
+    @PostMapping("/checkout")
+    public String checkout(HttpServletRequest request, Model model,
+                           @RequestParam("paymentMethod") String paymentMethod) {
+        Integer accountId = getAccountIdFromSession(request);
+        if (accountId == null) {
+            return "redirect:/user/login";  // Nếu không có accountId thì chuyển hướng đến trang login
+        }
+
+        // Lấy thông tin giỏ hàng
+        List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
+        if (cartItems.isEmpty()) {
+            return "redirect:/cart/shoppingcart";  // Nếu giỏ hàng trống thì chuyển hướng lại trang giỏ hàng
+        }
+
+        // Tạo đơn hàng mới
+        Order order = new Order();
+        order.setAccount(new Account(accountId));
+        order.setOrderDate(new Date());
+        order.setPaymentStatus("Pending");
+        order.setPaymentMethod(paymentMethod); // Sử dụng phương thức thanh toán được chọn
+
+        order.setOrderDetails(cartItems.stream().map(cartItem -> {
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+            orderDetail.setProduct(cartItem.getProduct()); // Sử dụng đối tượng Product từ CartItemDTO
+            orderDetail.setQuantity(cartItem.getQuantity());
+            orderDetail.setPrice(cartItem.getPrice());
+            return orderDetail;
+        }).collect(Collectors.toList()));
+
+        // Lưu đơn hàng và chi tiết đơn hàng vào database, đồng thời cập nhật số lượng sản phẩm trong kho
+        orderService.createOrder(order);
+
+        // Xóa giỏ hàng sau khi tạo đơn hàng
+        cartService.clearCart(accountId);
+
+        // Tính tổng giá trị đơn hàng
+        double totalOrderPrice = order.getOrderDetails().stream()
+                .mapToDouble(orderDetail -> orderDetail.getPrice() * orderDetail.getQuantity())
+                .sum();
+
+        // Truyền dữ liệu đơn hàng vào model để hiển thị trên trang invoice
+        model.addAttribute("order", order);
+        model.addAttribute("totalOrderPrice", totalOrderPrice);
+        return "cart/thankyou";  // Trả về trang hóa đơn với đường dẫn chính xác
+    }
+
+
+
+    // Lấy accountId từ session
+    private Integer getAccountIdFromSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Object accountIdObj = session.getAttribute("accountId");
 
-        // Kiểm tra nếu session không có accountId hoặc accountId không phải kiểu Integer
+        // Kiểm tra nếu session không có accountId hoặc accountId không phải kiểu Integer hoặc String
         if (accountIdObj == null) {
-            return null;  // Không có userId trong session
+            return null;  // Không có accountId trong session
         }
 
         try {
-            // Nếu là Integer, trả về. Nếu là String, chuyển sang Integer.
+            // Nếu là Integer, trả về trực tiếp. Nếu là String, chuyển sang Integer.
             if (accountIdObj instanceof Integer) {
                 return (Integer) accountIdObj;
             } else if (accountIdObj instanceof String) {
@@ -118,6 +172,7 @@ public class CartController {
         }
         return null;
     }
+
     // Phương thức lấy thông tin người dùng đang đăng nhập
     private String getAuthenticatedUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -140,22 +195,13 @@ public class CartController {
         }
         return null;
     }
-    /**
-     * Lấy accountId từ session.
-     */
-    private Integer getAccountIdFromSession(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Object accountIdObj = session.getAttribute("accountId");
 
-        // Kiểm tra và chuyển đổi kiểu dữ liệu từ String sang Integer
-        if (accountIdObj instanceof String) {
-            try {
-                return Integer.parseInt((String) accountIdObj);
-            } catch (NumberFormatException e) {
-                // Nếu không thể chuyển đổi, trả về null
-                return null;
-            }
+    @GetMapping("/backToShop")
+    public String backToShop(HttpServletRequest request) {
+        Integer accountId = getAccountIdFromSession(request);
+        if (accountId == null) {
+            return "redirect:/user/login";  // Nếu chưa đăng nhập, chuyển hướng tới trang đăng nhập
         }
-        return (Integer) accountIdObj; // Nếu accountId là Integer, trả về trực tiếp
+        return "redirect:/layout/Home";  // Điều hướng đến trang layout/home
     }
 }
