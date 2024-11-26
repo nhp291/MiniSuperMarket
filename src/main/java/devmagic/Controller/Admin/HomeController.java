@@ -64,25 +64,21 @@ public class HomeController {
         return "admin/layout";
     }
 
-
-    @GetMapping("/GeneralSettings")
-    public String GeneralSettings(Model model) {
-        model.addAttribute("pageTitle", "General Settings");
-        model.addAttribute("viewName", "admin/menu/GeneralSettings");
-        return "admin/layout";
-    }
-
     @GetMapping("/MyProfile")
     public String MyProfile(Model model, HttpSession session) {
-        Account account = (Account) session.getAttribute("user");
-
+        Account account = (Account) session.getAttribute("Admin");
+        if (account == null) {
+            System.out.println("Session user attribute is null");
+        } else {
+            System.out.println("Session user: " + account.getUsername());
+        }
         if (account != null) {
             model.addAttribute("account", account);
             model.addAttribute("pageTitle", "My Profile");
             model.addAttribute("viewName", "admin/menu/MyProfile");
         } else {
             model.addAttribute("error", "Chưa đăng nhập");
-            return "user/login";
+            return "user/login";  // Nếu không có tài khoản thì chuyển hướng đến trang login
         }
 
         return "admin/layout";
@@ -161,6 +157,13 @@ public class HomeController {
     @GetMapping("/Admin/Home")
     public String home() {
         return "home"; // Trả về tên view trang Home (có thể là home.html hoặc trang khác tùy theo cấu hình của bạn)
+    }
+
+    @GetMapping("/GeneralSetting")
+    public String GeneralSettings(Model model) {
+        model.addAttribute("pageTitle", "General Settings");
+        model.addAttribute("viewName", "admin/menu/GeneralSettings");
+        return "admin/layout";
     }
 
 }

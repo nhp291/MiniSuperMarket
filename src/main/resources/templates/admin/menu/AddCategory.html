@@ -46,6 +46,16 @@
 
                             <div class="col-lg-12">
                                 <div class="form-group">
+                                    <div>
+                                        <label>Hình ảnh hiện tại</label>
+                                        <div>
+                                            <img th:if="${category.imageUrl != null}"
+                                                 th:src="@{'/Image/imageUrl/' + ${category.imageUrl}}"
+                                                 alt="Hình ảnh danh mục"
+                                                 class="img-thumbnail"
+                                                 style="max-width: 200px; max-height: 200px; object-fit: contain;">
+                                        </div>
+                                    </div>
                                     <label>Product Image</label>
                                     <div class="image-upload">
                                         <input type="file" name="imageFile" class="form-control">

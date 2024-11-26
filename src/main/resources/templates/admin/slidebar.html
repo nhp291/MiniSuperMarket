@@ -13,81 +13,67 @@
                     <li class="active">
                         <a th:href="@{/Admin/Home}">
                             <img src="/admin/img/icons/dashboard.svg" alt="img">
-                            <span> Dashboard</span>
+                            <span> Quản trị</span>
                         </a>
                     </li>
                     <li class="submenu">
                         <a href="javascript:void(0);">
                             <img src="/admin/img/icons/product.svg" alt="img">
-                            <span>Product</span>
+                            <span>Sản phẩm</span>
                             <span class="menu-arrow"></span>
                         </a>
                         <ul>
-                            <li><a th:href="@{/Products/ProductList}">Product List</a></li>
-                            <li><a th:href="@{/Products/AddProduct}">Add Product</a></li>
-                            <li><a th:href="@{/Categories/CategoryList}">Category List</a></li>
-                            <li><a th:href="@{/Categories/AddCategory}">Add Category</a></li>
+                            <li><a th:href="@{/Products/ProductList}">Danh sách sản phẩm</a></li>
+                            <li><a th:href="@{/Products/AddProduct}">Thêm sản phẩm</a></li>
+                            <li><a th:href="@{/Categories/CategoryList}">Loại sản phẩm</a></li>
+                            <li><a th:href="@{/Categories/AddCategory}">Thêm loại sản phẩm</a></li>
                             <li><a th:href="@{/Brand/BrandList}">Brand List</a></li>
                             <li><a th:href="@{/Brand/AddBrand}">Add Brand</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="/admin/img/icons/purchase1.svg" alt="img"><span> WareHouses</span>
+                        <a href="javascript:void(0);"><img src="/admin/img/icons/purchase1.svg" alt="img"><span>Kho hàng</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a th:href="@{/Admin/WareHouse}">WareHouse List</a></li>
+                            <li><a th:href="@{/Warehouses/WarehouseList}">Danh sách Kho hàng</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
                         <a href="javascript:void(0);">
                             <img src="/admin/img/icons/users1.svg" alt="img">
-                            <span>Account</span>
+                            <span>Tài khoản</span>
                             <span class="menu-arrow"></span>
                         </a>
                         <ul>
-                            <li><a th:href="@{/Accounts/AccountList}">Account List</a></li>
-                            <li><a th:href="@{/Accounts/AccountForm}">Add Account</a></li>
+                            <li><a th:href="@{/Accounts/AccountList}">Danh sách tài khoản</a></li>
+                            <li><a th:href="@{/Accounts/AccountForm}">Thêm tài khoản</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="/admin/img/icons/quotation1.svg" alt="img"><span>Promotion</span>
+                        <a href="javascript:void(0);"><img src="/admin/img/icons/quotation1.svg" alt="img"><span>Đơn hàng</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a th:href="@{/Admin/PromotionList}">Promotion List</a></li>
-                            <li><a th:href="@{/Admin/AddPromotion}">Add Promotion</a></li>
+                            <li><a th:href="@{/Orders/OrderList}">Danh sách đơn hàng</a></li>
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="/admin/img/icons/quotation1.svg" alt="img"><span>Orders</span>
-                            <span class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a th:href="@{/Orders/OrderList}">Order List</a></li>
-                        </ul>
-                    </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);">
+                        <a>
                             <i data-feather="bar-chart-2"></i>
-                            <span> Charts </span>
+                            <span> Thống kê </span>
                             <span class="menu-arrow"></span>
                         </a>
                         <ul>
-                            <li><a th:href="@{/Admin/ChartApex}">Apex Charts</a></li>
-                            <li><a th:href="@{/Admin/ChartJs}">Chart Js</a></li>
-                            <li><a th:href="@{/Admin/ChartMorris}">Morris Charts</a></li>
-                            <li><a th:href="@{/Admin/ChartFlot}">Flot Charts</a></li>
-                            <li><a th:href="@{/Admin/ChartPeity}">Peity Charts</a></li>
+                            <li><a th:href="@{/statistics/chart-apex}">Apex Charts</a></li>
                         </ul>
                     </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="/admin/img/icons/settings.svg"
-                                                           alt="img"><span> Settings</span> <span
-                                class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="generalsettings.html">General Settings</a></li>
-                            <li><a href="currencysettings.html">Currency Settings</a></li>
-                            <li><a href="grouppermissions.html">Group Permissions</a></li>
-                        </ul>
-                    </li>
+<!--                    <li class="submenu">-->
+<!--                        <a href="javascript:void(0);"><img src="/admin/img/icons/settings.svg"-->
+<!--                                                           alt="img"><span>Cài đặt</span> <span-->
+<!--                                class="menu-arrow"></span></a>-->
+<!--                        <ul>-->
+<!--                            <li><a th:href="@{/Admin/GeneralSetting}">Cài đặt chung</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
                 </ul>
             </div>
         </div>

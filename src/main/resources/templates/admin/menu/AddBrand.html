@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title th:text="${brand != null and brand.brandId != null ? 'Cập nhật thương hiệu' : 'Thêm thương hiệu mới'}"></title>
+    <title th:text="${pageTitle}">Quản lý thương hiệu</title>
     <link rel="stylesheet" href="/admin/css/styles.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4 th:text="${brand != null and brand.brandId != null ? 'Cập nhật thương hiệu' : 'Thêm thương hiệu mới'}"></h4>
+                    <h4 th:text="${pageTitle}">Thêm thương hiệu</h4>
                 </div>
                 <div class="page-btn">
                     <a th:href="@{/Brand/BrandList}" class="btn btn-added">
@@ -22,55 +22,36 @@
 
             <div class="card">
                 <div class="card-body">
-                    <!-- Form xử lý thêm/cập nhật -->
-                    <form th:action="${brand != null and brand.brandId != null ? '/Brand/UpdateBrand/' + brand.brandId : '/Brand/AddBrand'}"
+                    <!-- Form thêm/cập nhật thương hiệu -->
+                    <form th:action="@{${brand.brandId == null} ? '/Brand/AddBrand' : '/Brand/UpdateBrand/' + ${brand.brandId}}"
                           th:object="${brand}" method="post" enctype="multipart/form-data">
-                        <div class="row">
-                            <!-- Tên thương hiệu -->
-                            <div class="col-lg-12 col-sm-12">
-                                <div class="form-group">
-                                    <label for="brandName">Tên thương hiệu</label>
-                                    <input type="text" th:field="*{brandName}" class="form-control" id="brandName" placeholder="Nhập tên thương hiệu" required>
-                                    <div th:if="${#fields.hasErrors('brandName')}" th:errors="*{brandName}" class="text-danger"></div>
-                                </div>
-                            </div>
-
-                            <!-- Mô tả thương hiệu -->
-                            <div class="col-lg-12 col-sm-12">
-                                <div class="form-group">
-                                    <label for="description">Mô tả</label>
-                                    <textarea th:field="*{description}" class="form-control" id="description" placeholder="Nhập mô tả" required></textarea>
-                                    <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
-                                </div>
-                            </div>
-
-                            <!-- Ảnh thương hiệu -->
-                            <div class="col-lg-12 col-sm-12">
-                                <div class="form-group">
-                                    <label for="imageFile">Ảnh thương hiệu</label>
-                                    <div class="image-upload">
-                                        <input type="file" name="imageFile" class="form-control" id="imageFile">
-                                        <div class="image-uploads">
-                                            <img src="/admin/img/icons/upload.svg" alt="icon">
-                                            <h4>Nhấn hoặc kéo thả tệp vào đây để tải lên</h4>
-                                        </div>
-                                    </div>
-                                    <!-- Hiển thị ảnh hiện tại nếu có -->
-                                    <div th:if="${brand != null and brand.imageUrl != null}" class="mt-3">
-                                        <label>Ảnh hiện tại:</label>
-                                        <img th:src="@{'/Image/imageUrl/' + ${brand.imageUrl}}" alt="Ảnh thương hiệu" width="100">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Nút thao tác -->
-                            <div class="col-lg-12 col-sm-12">
-                                <button type="submit" class="btn btn-submit me-2">
-                                    <span th:text="${brand != null and brand.brandId != null ? 'Cập nhật' : 'Thêm mới'}"></span>
-                                </button>
-                                <a th:href="@{/Brand/AddBrand}" class="btn btn-cancel">Đặt lại</a>
-                            </div>
+                    <!-- Tên thương hiệu -->
+                        <div class="form-group">
+                            <label for="brandName">Tên thương hiệu</label>
+                            <input type="text" th:field="*{brandName}" class="form-control" id="brandName" placeholder="Nhập tên thương hiệu" required>
+                            <div th:if="${#fields.hasErrors('brandName')}" th:errors="*{brandName}" class="text-danger"></div>
                         </div>
+
+                        <!-- Mô tả thương hiệu -->
+                        <div class="form-group">
+                            <label for="description">Mô tả</label>
+                            <textarea th:field="*{description}" class="form-control" id="description" placeholder="Nhập mô tả"></textarea>
+                            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></div>
+                        </div>
+
+                        <!-- Hình ảnh thương hiệu -->
+                        <div class="form-group">
+                            <div th:if="${brand.imageUrl != null}">
+                                <label>Ảnh hiện tại:</label>
+                                <img th:src="@{'/Image/imageUrl/' + ${brand.imageUrl}}" alt="Ảnh thương hiệu" class="img-thumbnail" style="max-width: 100px;">
+                            </div>
+                            <label for="imageFile">Ảnh thương hiệu</label>
+                            <input type="file" name="imageFile" class="form-control" id="imageFile">
+                        </div>
+
+                        <!-- Nút thao tác -->
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <a th:href="@{/Brand/BrandList}" class="btn btn-secondary">Hủy</a>
                     </form>
                 </div>
             </div>
