@@ -71,10 +71,15 @@ public class CartService {
             String productName = cart.getProduct().getName();
             int quantity = cart.getQuantity();
             double price = cart.getPrice();
-            cartItemDTOs.add(new CartItemDTO(imageUrl, productName, quantity, price));
+            Product product = cart.getProduct(); // Lấy đối tượng Product từ Cart
+            cartItemDTOs.add(new CartItemDTO(imageUrl, productName, quantity, price, product));
         }
         return cartItemDTOs;
     }
+
+    // Clear cart items for a given accountId
+    public void clearCart(Integer accountId) {
+        List<Cart> cartItems = cartRepository.findByAccount_AccountId(accountId);
+        cartRepository.deleteAll(cartItems);
+    }
 }
-
-

@@ -6,8 +6,8 @@ import devmagic.Model.Product;
 import devmagic.Service.AccountService;
 import devmagic.Service.CartService;
 import devmagic.Service.ProductService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -23,13 +23,13 @@ import java.util.Optional;
 
 @Controller
 public class HomeUserController {
-  
+
     @Autowired
     private ProductService productService;
-  
+
     @Autowired
     private AccountService accountService;
-  
+
     @Autowired
     private CartService cartService;
 
@@ -39,17 +39,21 @@ public class HomeUserController {
             @Param("keyword") String keyword,
             @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
             @RequestParam(name = "minPrice", required = false) Double minPrice,
-            @RequestParam(name = "maxPrice", required = false) Double maxPrice) {
+            @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+            HttpServletRequest request) {
 
-        // Lấy thông tin người dùng
+        // Lấy thông tin người dùng từ session
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
-
-        System.out.print("Role nè: " + role);
+        Integer accountId = getAccountIdFromSession(request);
 
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
+        }
+
+        if (accountId != null) {
+            model.addAttribute("accountId", accountId);
         }
 
         // Lấy danh sách sản phẩm
@@ -84,8 +88,8 @@ public class HomeUserController {
                             @RequestParam("quantity") Integer quantity,
                             HttpServletRequest request) {
 
-        // Lấy accountId từ cookie
-        Integer accountId = getAccountIdFromCookies(request);
+        // Lấy accountId từ session
+        Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
             return "Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng!";
         }
@@ -130,6 +134,24 @@ public class HomeUserController {
         }
     }
 
+    /**
+     * Lấy accountId từ session.
+     */
+    private Integer getAccountIdFromSession(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Object accountIdObj = session.getAttribute("accountId");
+
+        // Kiểm tra và chuyển đổi kiểu dữ liệu từ String sang Integer
+        if (accountIdObj instanceof String) {
+            try {
+                return Integer.parseInt((String) accountIdObj);
+            } catch (NumberFormatException e) {
+                // Nếu không thể chuyển đổi, trả về null
+                return null;
+            }
+        }
+        return (Integer) accountIdObj; // Nếu accountId là Integer, trả về trực tiếp
+    }
 
     @RequestMapping("/layout/Product")
     public String Product(Model model, @RequestParam("cid") Optional<String> cid) {
@@ -171,31 +193,6 @@ public class HomeUserController {
     public String ForgotPassword(Model model) {
         return "ForgotPassword";
     }
-
-    private Integer getAccountIdFromCookies(HttpServletRequest request) {
-        // Lấy danh sách cookie từ request
-        Cookie[] cookies = request.getCookies();
-
-        // Kiểm tra nếu cookies có tồn tại
-        if (cookies != null) {
-            // Duyệt qua từng cookie để tìm cookie có tên là "accountId"
-            for (Cookie cookie : cookies) {
-                if ("accountId".equals(cookie.getName())) {
-                    try {
-                        // Lấy giá trị accountId từ cookie và chuyển sang Integer
-                        return Integer.parseInt(cookie.getValue());
-                    } catch (NumberFormatException e) {
-                        // Xử lý khi không thể chuyển đổi giá trị cookie thành Integer
-                        return null;
-                    }
-                }
-            }
-        }
-
-        // Trả về null nếu không tìm thấy cookie "accountId"
-        return null;
-    }
-
 
     // Phương thức lấy thông tin người dùng đang đăng nhập
     private String getAuthenticatedUsername() {
