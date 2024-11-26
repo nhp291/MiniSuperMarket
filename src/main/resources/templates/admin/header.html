@@ -43,21 +43,20 @@
                 <a class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
 
                     <span class="user-img">
-<!--                        <img th:src="@{'/Image/imageProfile/' + ${account.imageUrl}}" alt="User Image">-->
+                        <img th:src="@{${account != null && account.imageUrl != null} ? '/Image/imageProfile/' + ${account.imageUrl} : '/Image/imageProfile/User.png'}" alt="User Image">
                         <span class="status online"></span>
                     </span>
-<!--                    <span class="user-name" th:text="${account.username}">John Doe</span>-->
-
+                    <span class="user-name" th:text="${account != null ? account.username : 'Guest'}"></span>
                 </a>
                 <div class="dropdown-menu menu-drop-user">
                     <div class="profilename">
                         <div class="profileset">
                             <span class="user-img">
-<!--                                <img th:src="@{'/Image/imageProfile/' + ${account.imageUrl}}" alt="User Image">-->
+                                <img th:src="@{${account != null && account.imageUrl != null} ? '/Image/imageProfile/' + ${account.imageUrl} : '/Image/imageProfile/User.png'}" alt="User Image">
                                 <span class="status online"></span>
                             </span>
                             <div class="profilesets">
-<!--                                <h6 th:text="${account.username}">John Doe</h6>-->
+                                <span class="user-name" th:text="${account != null ? account.username : 'Guest'}"></span>
                                 <h5>Admin</h5>
                             </div>
                         </div>

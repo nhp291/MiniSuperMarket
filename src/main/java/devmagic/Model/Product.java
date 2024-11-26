@@ -1,5 +1,6 @@
 package devmagic.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -49,7 +50,9 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "warehouse_id", nullable = false)
+    @JsonBackReference
     private Warehouse warehouse;
+
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();

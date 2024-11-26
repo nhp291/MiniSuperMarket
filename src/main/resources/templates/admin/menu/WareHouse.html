@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <title th:text="${pageTitle}">Warehouse List</title>
+    <!-- You can add other meta tags, CSS links, etc. here -->
 </head>
 <body>
 <div class="main-wrapper" th:fragment="content">
@@ -9,13 +11,14 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>WareHouse list</h4>
+                    <h4>WareHouse List</h4>
                     <h6></h6>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
+                    <!-- Search Filters Section -->
                     <div class="table-top">
                         <div class="search-set">
                             <div class="search-path">
@@ -31,111 +34,81 @@
                         <div class="wordset">
                             <ul>
                                 <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                            src="/admin/img/icons/pdf.svg" alt="img"></a>
+                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img src="/admin/img/icons/pdf.svg" alt="img"></a>
                                 </li>
                                 <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                            src="/admin/img/icons/excel.svg" alt="img"></a>
+                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img src="/admin/img/icons/excel.svg" alt="img"></a>
                                 </li>
                                 <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                            src="/admin/img/icons/printer.svg" alt="img"></a>
+                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img src="/admin/img/icons/printer.svg" alt="img"></a>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="card" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label>
-                                            <select class="form-select">
-                                                <option> Category</option>
-                                            </select>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label>
-                                            <select class="form-select">
-                                                <option> Brand</option>
-                                            </select>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-2 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label>
-                                            <select class="form-select">
-                                                <option> WareHouse</option>
-                                            </select>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                    <div class="form-group">
-                                        <a class="btn btn-filters ms-auto">
-                                            <img src="/admin/img/icons/search-whites.svg" alt="img">
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- Warehouses Table -->
                     <div class="table-responsive">
-                        <table class="table  datanew">
+                        <table class="table datanew">
                             <thead>
                             <tr>
-                                <th>WareHouse name</th>
+                                <th>Warehouse Name</th>
                                 <th>Location</th>
                                 <th>Product Name</th>
                                 <th>Brand</th>
                                 <th>Category</th>
                                 <th>Price</th>
                                 <th>Sale</th>
-                                <th>Created By</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <!--                            <tr>-->
-                            <!--                                <td>-->
-                            <!--                                    <label class="checkboxs">-->
-                            <!--                                        <input type="checkbox">-->
-                            <!--                                        <span class="checkmarks"></span>-->
-                            <!--                                    </label>-->
-                            <!--                                </td>-->
-                            <!--                                <td class="productimgname">-->
-                            <!--                                    <a href="javascript:void(0);" class="product-img">-->
-                            <!--                                        <img src="/admin/img/product/noimage.png" alt="product">-->
-                            <!--                                    </a>-->
-                            <!--                                    <a href="javascript:void(0);">Computers</a>-->
-                            <!--                                </td>-->
-                            <!--                                <td>CT001</td>-->
-                            <!--                                <td>Computers Description</td>-->
-                            <!--                                <td>Admin</td>-->
-                            <!--                                <td>-->
-                            <!--                                    <a class="me-3" href="editcategory.html">-->
-                            <!--                                        <img src="/admin/img/icons/edit.svg" alt="img">-->
-                            <!--                                    </a>-->
-                            <!--                                    <a class="me-3 confirm-text" href="javascript:void(0);">-->
-                            <!--                                        <img src="/admin/img/icons/delete.svg" alt="img">-->
-                            <!--                                    </a>-->
-                            <!--                                </td>-->
-                            <!--                            </tr>-->
-
+                            <tr th:each="warehouse : ${warehouses.content}">
+                                <td th:text="${warehouse.warehouseName}"></td>
+                                <td th:text="${warehouse.location}"></td>
+                                <td>
+                                    <ul>
+                                        <li th:each="product : ${warehouse.products}" th:text="${product.name}"></li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li th:each="product : ${warehouse.products}" th:text="${product.brand.brandName}"></li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li th:each="product : ${warehouse.products}" th:text="${product.category.categoryName}"></li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li th:each="product : ${warehouse.products}" th:text="${product.price}"></li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li th:each="product : ${warehouse.products}" th:text="${product.sale}"></li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <a th:href="@{/Warehouses/{id}/edit(id=${warehouse.warehouseId})}">Edit</a>
+                                    <a th:href="@{/Warehouses/{id}/delete(id=${warehouse.warehouseId})}">Delete</a>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
+
+                        <!-- Pagination Section -->
+                        <div th:if="${totalPages > 1}">
+                            <ul class="pagination">
+                                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                                    <a th:href="@{/Warehouses/WarehouseList(page=${i})}" th:text="${i + 1}"></a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

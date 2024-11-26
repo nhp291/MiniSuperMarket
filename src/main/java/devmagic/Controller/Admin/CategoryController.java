@@ -60,46 +60,50 @@ public class CategoryController {
             return "admin/layout";
         }
 
-        // Nếu có ảnh mới, lưu lại ảnh
+        // Đường dẫn thư mục lưu trữ ảnh
+        String projectImageDir = "src/main/resources/static/Image/imageUrl/";
+        Path uploadPath = Paths.get(projectImageDir);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath); // Tạo thư mục nếu chưa tồn tại
+        }
+
         if (!imageFile.isEmpty()) {
+            // Lấy tên file mới
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            String projectImageDir = "src/main/resources/static/Image/imageUrl/";
+            Path filePath = uploadPath.resolve(fileName);
 
-            Path uploadPath = Paths.get(projectImageDir);
-
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
+            // Kiểm tra nếu file đã tồn tại
+            if (Files.exists(filePath)) {
+                // Nếu file đã tồn tại, chỉ cần cập nhật tên vào DB
+                category.setImageUrl(fileName);
+            } else {
+                // Nếu file chưa tồn tại, lưu file mới và cập nhật tên
+                try (InputStream inputStream = imageFile.getInputStream()) {
+                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    throw new IOException("Không thể lưu tệp hình ảnh: " + fileName, e);
+                }
+                category.setImageUrl(fileName);
             }
-
-            try (InputStream inputStream = imageFile.getInputStream()) {
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new IOException("Không thể lưu tệp hình ảnh: " + fileName, e);
-            }
-            category.setImageUrl(fileName); // Cập nhật đường dẫn ảnh mới
         } else if (id != null) {
-            // Nếu không có ảnh mới, giữ lại ảnh cũ khi chỉnh sửa
+            // Nếu không upload file, giữ lại ảnh cũ khi chỉnh sửa
             Optional<Category> existingCategory = categoryService.findById(id);
             existingCategory.ifPresent(c -> category.setImageUrl(c.getImageUrl()));
         }
 
-        // Nếu có id, thực hiện cập nhật, nếu không thì tạo mới
+        // Thực hiện lưu hoặc cập nhật danh mục
         if (id != null) {
-            Optional<Category> existingCategory = categoryService.findById(id);
-            if (existingCategory.isPresent()) {
-                categoryService.updateCategory(id, category); // Cập nhật danh mục
-            } else {
-                // Nếu không tìm thấy danh mục với id đó, có thể báo lỗi hoặc tạo danh mục mới
-                categoryService.createCategory(category);
-            }
+            categoryService.updateCategory(id, category);
         } else {
-            categoryService.createCategory(category); // Thêm mới nếu không có id
+            categoryService.createCategory(category);
         }
 
         // Chuyển hướng về danh sách danh mục
         return "redirect:/Categories/CategoryList";
     }
+
+
 
 
     // Xóa danh mục
