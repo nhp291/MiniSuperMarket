@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <title>Title</title>
 </head>
 <body>
@@ -403,20 +402,48 @@
                                 <div>
                                     <a th:href="@{|/product/detail/${p.productId}|}">
                                         <div th:if="${p.images != null and p.images.size() > 0}">
-                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}" class="card-img-top" />
+                                            <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}"
+                                                 class="card-img-top" alt="Product Image"/>
                                         </div>
                                     </a>
                                     <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
+                                                <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
+                                                <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
+                                                    [[${p.price}]].đ</h6>
+                                            </div>
+                                            <div th:unless="${p.sale != null}">
+                                                <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                            </div>
+                                        </div>
                                         <h5 th:text="${p.description}" class="card-text"></h5>
-                                        <h6 class="text-danger" th:text="${p.price} + 'đ'"></h6>
-                                        <form action="/add-to-cart" method="post">
-                                            <input type="hidden" name="productId" th:value="${p.productId}" />
-                                            <input type="hidden" name="quantity" value="1" />
-                                            <button type="submit" class="btn btn-primary" th:if="${username != null}">Thêm vào giỏ hàng</button>
-                                            <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>
-                                        </form>
+                                        <h6 class="text-success">Sản phẩm bán trong ngày</h6>
+                                        <div class="d-grid gap-2 d-md-block">
+                                            <!-- Form thêm vào giỏ hàng -->
+                                            <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">
+                                                <input type="hidden" name="productId" th:value="${p.productId}"/>
+                                                <input type="hidden" name="quantity" value="1"/>
+                                                <!-- Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng -->
+                                                <button type="submit" class="btn btn-primary"
+                                                        th:if="${p.stockQuantity > 0 and username != null}">
+                                                    Thêm vào giỏ hàng
+                                                </button>
+                                                <!-- Nút "Hết hàng" hiển thị khi sản phẩm hết hàng -->
+                                                <button type="button" class="btn btn-secondary"
+                                                        th:if="${p.stockQuantity <= 0 and username != null}" disabled>
+                                                    Hết hàng
+                                                </button>
+                                                <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>
+                                            </form>
+
+                                            <div id="cartMessage" style="position: fixed; bottom: 20px; right: 20px; display: none; background-color: green; color: white; padding: 10px; border-radius: 5px; z-index: 9999;">
+                                                Sản phẩm đã được thêm vào giỏ hàng!
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <span th:if="${p.sale != null}"></span>
                             </div>
                         </div>
                     </div>
@@ -653,9 +680,7 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                         <h5 class="text-center text-primary mt-5"><a th:href="@{/layout/Product}">Xem tất cả</a></h5>
                     </div>
                 </div>

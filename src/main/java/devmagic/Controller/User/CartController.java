@@ -76,7 +76,6 @@ public class CartController {
         if (cart == null) {
             return "error=cart_not_found";  // Nếu không tìm thấy giỏ hàng
         }
-
         cart.setQuantity(quantity);  // Cập nhật số lượng sản phẩm
         cartService.save(cart);  // Lưu vào database
         return "success";  // Trả về thành công
@@ -145,7 +144,6 @@ public class CartController {
         // Truyền dữ liệu đơn hàng vào model để hiển thị trên trang invoice
         model.addAttribute("order", order);
         model.addAttribute("totalOrderPrice", totalOrderPrice);
-
         return "cart/thankyou";  // Trả về trang hóa đơn với đường dẫn chính xác
     }
 
