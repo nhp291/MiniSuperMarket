@@ -1,11 +1,8 @@
 package devmagic.config;
 
-import devmagic.Service.AccountService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,18 +21,16 @@ import javax.sql.DataSource;
 public class SecurityConfig {
 
     @Autowired
-    @Lazy
-    private AccountService accountService; // Đảm bảo AccountService đã có phương thức truy vấn phù hợp
-
+    private DataSource dataSource;
 
     /**
      * Bean mã hóa mật khẩu sử dụng Pbkdf2 với cấu hình mạnh hơn.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        String secret = "my-strong-secret";
-        int iterationCount = 500;
-        int hashWidth = 256;
+        String secret = "my-strong-secret"; // Secret key để tăng độ an toàn
+        int iterationCount = 500;        // Tăng số vòng lặp để tăng độ mạnh
+        int hashWidth = 256;               // Độ dài mã hóa
         return new Pbkdf2PasswordEncoder(secret, iterationCount, hashWidth,
                 Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
     }
@@ -70,22 +65,21 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     /**
-     * Xử lý thành công đăng nhập, chuyển hướng theo vai trò của người dùng.
+     * Xử lý thành công đăng nhập, chuyển hướng theo vai trò của người dùng và lưu accountId vào session.
      */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            HttpSession session = request.getSession();
+            String username = authentication.getName(); // Lấy username của người dùng
+            String accountId = getAccountIdByUsername(username); // Truy vấn accountId dựa trên username
 
-            // Lấy accountId từ AccountService
-            String username = authentication.getName();
-            Integer accountId = accountService.findAccountIdByUsername(username);
+            // Lưu accountId vào session
+            if (accountId != null) {
+                request.getSession().setAttribute("accountId", accountId);
+            }
 
-            session.setAttribute("accountId", accountId);
-
-            // Điều hướng người dùng
+            // Phân quyền và chuyển hướng
             String role = authentication.getAuthorities().stream()
                     .map(grantedAuthority -> grantedAuthority.getAuthority())
                     .findFirst()
@@ -99,7 +93,24 @@ public class SecurityConfig {
         };
     }
 
-
+    /**
+     * Truy vấn accountId từ database dựa trên username.
+     */
+    private String getAccountIdByUsername(String username) {
+        String sql = "SELECT account_id FROM account WHERE username = ?";
+        try (var connection = dataSource.getConnection();
+             var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, username);
+            try (var resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("account_id");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy accountId
+    }
 
     /**
      * Cấu hình AuthenticationManager.
