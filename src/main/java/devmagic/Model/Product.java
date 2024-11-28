@@ -53,6 +53,11 @@ public class Product {
     @JsonBackReference
     private Warehouse warehouse;
 
+    @Column(name = "origin", nullable = true)
+    private String origin; 
+
+    @Column(name = "detailed_description", columnDefinition = "TEXT", nullable = true)
+    private String detailedDescription;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();

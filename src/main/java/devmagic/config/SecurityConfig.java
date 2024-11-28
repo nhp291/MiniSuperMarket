@@ -42,7 +42,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/user/login", "/layout/Home", "/user/register", "/css/**", "/js/**", "/Image/**").permitAll()
+                        .requestMatchers("/user/login", "/layout/**","/product/**", "/user/register", "/css/**", "/js/**", "/Image/**").permitAll()
                         .requestMatchers("/Admin/**").hasRole("Admin") // Chỉ Admin mới truy cập được /Admin/
                         .anyRequest().authenticated()
                 )
