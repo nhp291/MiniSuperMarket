@@ -40,6 +40,13 @@ public class Product {
     @Min(value = 0, message = "Số lượng tồn kho không được âm")
     private Integer stockQuantity = 0;
 
+    @Column(name = "origin", nullable = true)
+    private String origin;
+
+    @Column(name = "unit", nullable = false)
+    @NotEmpty(message = "Đơn vị không được để trống")
+    private String unit;    
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -53,11 +60,7 @@ public class Product {
     @JsonBackReference
     private Warehouse warehouse;
 
-    @Column(name = "origin", nullable = true)
-    private String origin; 
 
-    @Column(name = "detailed_description", columnDefinition = "TEXT", nullable = true)
-    private String detailedDescription;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();
