@@ -45,7 +45,7 @@ public class Product {
 
     @Column(name = "unit", nullable = false)
     @NotEmpty(message = "Đơn vị không được để trống")
-    private String unit;    
+    private String unit;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
