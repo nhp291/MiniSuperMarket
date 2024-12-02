@@ -26,4 +26,7 @@ public class AccountAuthProvider {
     @ManyToOne
     @JoinColumn(name = "provider_user_id")
     private AuthProviders provider_user;
+
+    @Column(name = "provider_token")
+    private String providerToken;
 }

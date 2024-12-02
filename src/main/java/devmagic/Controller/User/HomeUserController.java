@@ -177,7 +177,13 @@ public class HomeUserController {
     }
 
     @RequestMapping("/product/detail/{id}")
-    public String ProductDetail(Model model, @PathVariable("id") Integer id, HttpServletRequest request) {
+    public String ProductDetail(Model model, @PathVariable(value = "id", required = false) Integer id, HttpServletRequest request) {
+        // Kiểm tra giá trị id
+        if (id == null) {
+            model.addAttribute("error", "ID sản phẩm không hợp lệ hoặc không được cung cấp.");
+            return "errorPage"; // Trả về trang lỗi (tạo một trang lỗi phù hợp nếu chưa có)
+        }
+
         // Lấy thông tin người dùng từ session
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
@@ -191,12 +197,23 @@ public class HomeUserController {
         if (accountId != null) {
             model.addAttribute("accountId", accountId);
         }
+
+        // Tìm sản phẩm theo ID
         Product item = productService.findById(id);
+        if (item == null) {
+            model.addAttribute("error", "Sản phẩm không tồn tại.");
+            return "errorPage"; // Trả về trang lỗi nếu sản phẩm không được tìm thấy
+        }
+
+        // Lấy danh sách các sản phẩm hàng đầu
         List<Product> topProducts = productService.findTop6Product();
+
+        // Thêm thông tin vào model để hiển thị trên giao diện
         model.addAttribute("item", item);
         model.addAttribute("product2", topProducts);
         return "layout/ProductDetail";
     }
+
 
     @GetMapping("/user/login")
     public String login(Model model) {
@@ -307,26 +324,27 @@ public class HomeUserController {
         return null;
     }
 
-    /**
-     * Lấy accountId từ session.
-     */
-    private Integer getAccountIdFromSession(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Object accountIdObj = session.getAttribute("accountId");
 
-        // Kiểm tra và chuyển đổi kiểu dữ liệu từ String sang Integer
-        if (accountIdObj instanceof String) {
+    //Lấy accountId từ session.
+    private Integer getAccountIdFromSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false); // Chỉ lấy session nếu tồn tại
+        if (session == null) {
+            return null;
+        }
+        Object accountIdObj = session.getAttribute("accountId");
+        if (accountIdObj instanceof Integer) {
+            return (Integer) accountIdObj;
+        } else if (accountIdObj instanceof String) {
             try {
                 return Integer.parseInt((String) accountIdObj);
             } catch (NumberFormatException e) {
-                // Nếu không thể chuyển đổi, trả về null
-                return null;
+                return null; // Trả về null nếu không thể chuyển đổi
             }
         }
-        return (Integer) accountIdObj; // Nếu accountId là Integer, trả về trực tiếp
+        return null;
     }
 
-        private boolean validateAccount (Account account, BindingResult result){
+    private boolean validateAccount (Account account, BindingResult result){
             boolean hasErrors = false;
 
             if (accountService.isUsernameExist(account.getUsername())) {

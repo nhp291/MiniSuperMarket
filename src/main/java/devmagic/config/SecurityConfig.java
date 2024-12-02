@@ -1,5 +1,9 @@
 package devmagic.config;
 
+import devmagic.Model.Account;
+import devmagic.Model.Role;
+import devmagic.Reponsitory.AccountRepository;
+import devmagic.Reponsitory.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +27,13 @@ public class SecurityConfig {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+
     /**
      * Bean mã hóa mật khẩu sử dụng Pbkdf2 với cấu hình mạnh hơn.
      */
@@ -42,75 +53,82 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/user/login", "/layout/Home", "/user/register", "/css/**", "/js/**", "/Image/**").permitAll()
-                        .requestMatchers("/Admin/**").hasRole("Admin") // Chỉ Admin mới truy cập được /Admin/
+                        .requestMatchers("/user/login", "/layout/**", "/product/**","/user/**", "/user/register", "/css/**", "/js/**", "/Image/**").permitAll()
+                        .requestMatchers("/Admin/**").hasRole("Admin")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/user/login")             // Trang đăng nhập tùy chỉnh
-                        .loginProcessingUrl("/login")         // URL xử lý đăng nhập
-                        .successHandler(authenticationSuccessHandler()) // Xử lý thành công
-                        .failureUrl("/user/login?error=true") // Trang lỗi đăng nhập
+                        .loginPage("/user/login")
+                        .loginProcessingUrl("/login")
+                        .successHandler(authenticationSuccessHandler())
+                        .failureUrl("/user/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")                 // URL xử lý đăng xuất
-                        .logoutSuccessUrl("/layout/Home")     // Chuyển hướng tới /layout/Home sau khi đăng xuất
-                        .invalidateHttpSession(true)          // Xóa toàn bộ session
-                        .clearAuthentication(true)            // Xóa thông tin xác thực
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/layout/Home")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
                         .permitAll()
                 )
-                .csrf(AbstractHttpConfigurer::disable);               // Tắt CSRF (chỉ nên dùng khi cần thiết)
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
 
-    /**
-     * Xử lý thành công đăng nhập, chuyển hướng theo vai trò của người dùng và lưu accountId vào session.
-     */
+
+    //Xử lý thành công đăng nhập, chuyển hướng theo vai trò của người dùng và lưu accountId vào session.
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            String username = authentication.getName(); // Lấy username của người dùng
-            String accountId = getAccountIdByUsername(username); // Truy vấn accountId dựa trên username
+            String username = authentication.getName(); // Lấy username từ authentication
+            Account account = getAccountByUsername(username); // Lấy Account từ DB
 
-            // Lưu accountId vào session
-            if (accountId != null) {
-                request.getSession().setAttribute("accountId", accountId);
-            }
+            if (account != null) {
+                // Lấy vai trò từ authentication
+                String roleName = authentication.getAuthorities().stream()
+                        .map(grantedAuthority -> grantedAuthority.getAuthority())
+                        .findFirst()
+                        .orElse("");
 
-            // Phân quyền và chuyển hướng
-            String role = authentication.getAuthorities().stream()
-                    .map(grantedAuthority -> grantedAuthority.getAuthority())
-                    .findFirst()
-                    .orElse("");
+                // Tìm Role từ database
+                Role role = roleRepository.findByRoleName(roleName.replace("ROLE_", ""))
+                        .orElseThrow(() -> new IllegalArgumentException("Vai trò không hợp lệ: " + roleName));
 
-            if ("ROLE_Admin".equals(role)) {
-                response.sendRedirect("/Admin/Home");
+                // Gán role vào account
+                account.setRole(role);
+
+                // Lưu thông tin vào session và chuyển hướng dựa trên vai trò
+                if ("ROLE_Admin".equals(roleName)) {
+                    request.getSession().setAttribute("Admin", account);
+                    request.getSession().setAttribute("accountId", account.getAccountId());
+                    System.out.println("Lưu Admin vào session: " + account.getUsername());
+                    response.sendRedirect("/Admin/Home");
+                } else if ("ROLE_User".equals(roleName)) {
+                    request.getSession().setAttribute("User", account);
+                    request.getSession().setAttribute("accountId", account.getAccountId());
+                    System.out.println("Lưu User vào session: " + account.getUsername());
+                    response.sendRedirect("/layout/Home");
+                } else {
+                    System.out.println("Vai trò không hợp lệ: " + roleName);
+                    response.sendRedirect("/user/login?error=invalid-role");
+                }
             } else {
-                response.sendRedirect("/layout/Home");
+                System.out.println("Không tìm thấy tài khoản với username: " + username);
+                response.sendRedirect("/user/login?error=true");
             }
         };
     }
 
-    /**
-     * Truy vấn accountId từ database dựa trên username.
-     */
-    private String getAccountIdByUsername(String username) {
-        String sql = "SELECT account_id FROM account WHERE username = ?";
-        try (var connection = dataSource.getConnection();
-             var preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, username);
-            try (var resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getString("account_id");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null; // Trả về null nếu không tìm thấy accountId
+
+
+    // Lấy thông tin Account từ DB
+    private Account getAccountByUsername(String username) {
+        return accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản với username: " + username));
     }
+
+
 
     /**
      * Cấu hình AuthenticationManager.

@@ -139,5 +139,17 @@
         </div>
     </div>
 </div>
+<script>
+    tinymce.init({
+        selector: 'textarea#description', // Chọn phần tử textarea bằng id
+        plugins: [
+            'anchor', 'autolink', 'charmap', 'image', 'link', 'lists', 'media',
+            'searchreplace', 'table', 'visualblocks', 'wordcount'
+        ],
+        toolbar: 'undo redo | bold italic underline | link image media | numlist bullist | removeformat',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name'
+    });
+</script>
 </body>
 </html>
