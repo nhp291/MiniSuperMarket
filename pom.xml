@@ -103,11 +103,10 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.twilio</groupId>-->
-<!--            <artifactId>twilio</artifactId>-->
-<!--            <version>8.21.0</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -124,14 +123,11 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <repositories>
         <repository>
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
         </repository>
     </repositories>
 

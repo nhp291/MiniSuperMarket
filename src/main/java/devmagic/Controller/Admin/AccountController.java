@@ -37,6 +37,7 @@ public class AccountController {
     @Autowired
     private RoleRepository roleRepository;
 
+
     @GetMapping("/AccountList")
     public String accountList(Model model) {
         List<Account> accounts = accountService.getAllAccounts()

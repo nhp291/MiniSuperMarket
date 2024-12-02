@@ -1,5 +1,6 @@
 package devmagic.config;
 
+import devmagic.interceptor.AccountInterceptor;
 import devmagic.interceptor.CookieInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(cookieInterceptor)
+        registry.addInterceptor(new AccountInterceptor())
                 .addPathPatterns("/**"); // Áp dụng cho tất cả các đường dẫn
     }
 
