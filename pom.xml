@@ -103,35 +103,27 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.twilio</groupId>-->
-<!--            <artifactId>twilio</artifactId>-->
-<!--            <version>8.21.0</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>10.6.3</version>
+        </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
-            <!-- Quản lý phiên bản của ZXing -->
             <dependency>
-                <groupId>com.google.zxing</groupId>
-                <artifactId>core</artifactId>
-                <version>3.5.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.zxing</groupId>
-                <artifactId>javase</artifactId>
-                <version>3.5.1</version>
+                <groupId>com.twilio.sdk</groupId>
+                <artifactId>twilio</artifactId>
+                <version>10.6.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <repositories>
         <repository>
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
         </repository>
     </repositories>
 

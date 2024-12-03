@@ -39,14 +39,17 @@ public class HomeController {
 
     @GetMapping("/Home")
     public String Home(Model model, HttpSession session) {
-        // Lấy tài khoản người dùng từ session
-        Account account = (Account) session.getAttribute("user");
 
-        // Truyền thông tin tài khoản vào model
+        Account account = (Account) session.getAttribute("Admin");
         if (account != null) {
             model.addAttribute("account", account);
+            System.out.println("Image URL: " + account.getImageUrl());
+        } else {
+            System.out.println("Chưa có người dùng đăng nhập.");
+            return "redirect:/user/login";
         }
 
+        // Các thông tin khác
         long productCount = productRepository.countProducts();
         model.addAttribute("productCount", productCount);
 
@@ -63,6 +66,7 @@ public class HomeController {
         model.addAttribute("viewName", "admin/index");
         return "admin/layout";
     }
+
 
     @GetMapping("/MyProfile")
     public String MyProfile(Model model, HttpSession session) {
@@ -97,7 +101,7 @@ public class HomeController {
             return "admin/layout";
         }
 
-        Account currentAccount = (Account) session.getAttribute("user");
+        Account currentAccount = (Account) session.getAttribute("Admin");
         if (currentAccount == null) {
             model.addAttribute("error", "Bạn cần đăng nhập trước khi cập nhật thông tin.");
             return "user/login";
@@ -113,7 +117,7 @@ public class HomeController {
         if (!imageFile.isEmpty()) {
             // Lấy MIME type của tệp
             String contentType = imageFile.getContentType();
-            if (contentType != null && contentType.startsWith("image/")) {
+            if (contentType != null && contentType.startsWith("Image/imageProfile/")) {
                 String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
                 String uploadDir = "src/main/resources/static/Image/imageProfile/";
                 Path uploadPath = Paths.get(uploadDir);
@@ -138,7 +142,7 @@ public class HomeController {
         accountService.saveAccount(currentAccount);
 
         // Cập nhật thông tin trong session
-        session.setAttribute("user", currentAccount);
+        session.setAttribute("Admin", currentAccount);
 
         model.addAttribute("success", "Cập nhật thông tin thành công!");
         return "redirect:/Admin/MyProfile"; // Quay lại trang hồ sơ
@@ -147,23 +151,14 @@ public class HomeController {
     // Xử lý khi người dùng click logout
     @PostMapping("/Admin/Logout")
     public String logout(HttpSession session) {
-        // Xóa thông tin người dùng khỏi session
-        session.invalidate(); // Hoặc bạn có thể xóa thông tin cụ thể: session.removeAttribute("account");
-
-        // Sau khi logout xong, chuyển hướng đến trang chủ
+        session.invalidate();
         return "redirect:/layout/Home";
     }
 
     @GetMapping("/Admin/Home")
     public String home() {
-        return "home"; // Trả về tên view trang Home (có thể là home.html hoặc trang khác tùy theo cấu hình của bạn)
+        return "home";
     }
 
-    @GetMapping("/GeneralSetting")
-    public String GeneralSettings(Model model) {
-        model.addAttribute("pageTitle", "General Settings");
-        model.addAttribute("viewName", "admin/menu/GeneralSettings");
-        return "admin/layout";
-    }
 
 }
