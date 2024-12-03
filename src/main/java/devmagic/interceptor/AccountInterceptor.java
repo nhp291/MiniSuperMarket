@@ -1,32 +1,28 @@
 package devmagic.interceptor;
 
 import devmagic.Model.Account;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
+import jakarta.servlet.http.HttpSession;
 
+@Component
 public class AccountInterceptor implements HandlerInterceptor {
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-        if (modelAndView != null) {
-            // Lấy tài khoản từ session
-            Object account = request.getSession().getAttribute("User"); // Lấy thông tin User từ session
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // Lấy thông tin 'account' từ session
+        HttpSession session = request.getSession();
+        Account account = (Account) session.getAttribute("Admin");
 
-            if (account != null) {
-                // Kiểm tra vai trò của tài khoản
-                Account userAccount = (Account) account;
-                if ("Admin".equals(userAccount.getRole().getRoleName())) {
-                    // Nếu là Admin, hiển thị thông tin tất cả người dùng (hoặc thông tin quản trị viên)
-                    modelAndView.addObject("account", account);
-                    // Thêm các thông tin khác của người dùng nếu cần thiết
-                } else {
-                    // Nếu là User, chỉ hiển thị thông tin của người dùng hiện tại
-                    modelAndView.addObject("account", account);
-                }
-            }
+        // Nếu tài khoản tồn tại, thêm vào request để các controller có thể truy cập được
+        if (account != null) {
+            request.setAttribute("account", account);
         }
-    }
 
+        // Tiếp tục xử lý yêu cầu
+        return true;
+    }
 }
