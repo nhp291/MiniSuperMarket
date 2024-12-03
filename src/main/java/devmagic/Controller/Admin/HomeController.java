@@ -162,23 +162,14 @@ public class HomeController extends BaseController {
     // Xử lý khi người dùng click logout
     @PostMapping("/Admin/Logout")
     public String logout(HttpSession session) {
-        // Xóa thông tin người dùng khỏi session
-        session.invalidate(); // Hoặc bạn có thể xóa thông tin cụ thể: session.removeAttribute("account");
-
-        // Sau khi logout xong, chuyển hướng đến trang chủ
+        session.invalidate();
         return "redirect:/layout/Home";
     }
 
     @GetMapping("/Admin/Home")
     public String home() {
-        return "home"; // Trả về tên view trang Home (có thể là home.html hoặc trang khác tùy theo cấu hình của bạn)
+        return "home";
     }
 
-    @GetMapping("/GeneralSetting")
-    public String GeneralSettings(Model model) {
-        model.addAttribute("pageTitle", "General Settings");
-        model.addAttribute("viewName", "admin/menu/GeneralSettings");
-        return "admin/layout";
-    }
 
 }

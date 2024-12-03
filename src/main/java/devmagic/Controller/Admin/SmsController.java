@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.twilio.Twilio;
-import com.twilio.rest.verify.v2.service.Verification;
-
 @RestController
 public class SmsController {
 

@@ -120,15 +120,11 @@ public class SecurityConfig {
         };
     }
 
-
-
     // Lấy thông tin Account từ DB
     private Account getAccountByUsername(String username) {
         return accountRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản với username: " + username));
     }
-
-
 
     /**
      * Cấu hình AuthenticationManager.

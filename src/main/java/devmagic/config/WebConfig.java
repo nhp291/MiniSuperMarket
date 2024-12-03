@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
-    private CookieInterceptor cookieInterceptor;
+    private AccountInterceptor accountInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
