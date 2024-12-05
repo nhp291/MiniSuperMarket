@@ -133,7 +133,7 @@ public class HomeUserController {
             // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng
             Cart cart = existingCart.get();
             cart.setQuantity(cart.getQuantity() + quantity);  // Cộng thêm số lượng
-            cart.setPrice(finalPrice.doubleValue());  // Cập nhật giá
+            cart.setPrice(BigDecimal.valueOf(finalPrice.doubleValue()));  // Cập nhật giá
             cartService.save(cart);  // Lưu giỏ hàng đã cập nhật
             return ResponseEntity.ok(new ResponseMessage("Sản phẩm đã được cập nhật trong giỏ hàng!"));
         } else {
@@ -142,7 +142,7 @@ public class HomeUserController {
             cart.setAccount(account);
             cart.setProduct(product);
             cart.setQuantity(quantity);
-            cart.setPrice(finalPrice.doubleValue());  // Sử dụng giá sau giảm giá nếu có
+            cart.setPrice(BigDecimal.valueOf(finalPrice.doubleValue()));  // Sử dụng giá sau giảm giá nếu có
             cartService.save(cart);  // Lưu giỏ hàng mới
             // Trả về thông báo thành công
             return ResponseEntity.ok(new ResponseMessage("Sản phẩm đã được thêm vào giỏ hàng!"));
