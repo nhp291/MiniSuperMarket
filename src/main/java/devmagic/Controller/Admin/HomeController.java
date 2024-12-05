@@ -5,6 +5,7 @@ import devmagic.Reponsitory.ProductRepository;
 import devmagic.Service.AccountService;
 import devmagic.Service.BrandService;
 import devmagic.Service.CategoryService;
+import devmagic.Utils.BaseController;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +24,7 @@ import java.nio.file.StandardCopyOption;
 
 @Controller
 @RequestMapping("/Admin")
-public class HomeController {
+public class HomeController extends BaseController {
 
     @Autowired
     private AccountService accountService;
@@ -115,28 +116,37 @@ public class HomeController {
 
         // Xử lý ảnh đại diện nếu có
         if (!imageFile.isEmpty()) {
-            // Lấy MIME type của tệp
             String contentType = imageFile.getContentType();
-            if (contentType != null && contentType.startsWith("Image/imageProfile/")) {
+            if (contentType != null && contentType.startsWith("image/")) {
                 String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
                 String uploadDir = "src/main/resources/static/Image/imageProfile/";
                 Path uploadPath = Paths.get(uploadDir);
+                Path filePath = uploadPath.resolve(fileName);
 
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                 }
 
-                try (InputStream inputStream = imageFile.getInputStream()) {
-                    Path filePath = uploadPath.resolve(fileName);
-                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                // Nếu file đã tồn tại, chỉ cập nhật tên trong database
+                if (Files.exists(filePath)) {
                     currentAccount.setImageUrl(fileName);
-                } catch (IOException e) {
-                    throw new IOException("Không thể lưu hình ảnh: " + fileName, e);
+                } else {
+                    // Nếu file chưa tồn tại, lưu file mới
+                    try (InputStream inputStream = imageFile.getInputStream()) {
+                        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                        currentAccount.setImageUrl(fileName);
+                    } catch (IOException e) {
+                        throw new IOException("Không thể lưu hình ảnh: " + fileName, e);
+                    }
                 }
             } else {
-                throw new IOException("Tệp không phải là hình ảnh hợp lệ");
+                model.addAttribute("error", "Tệp không phải là hình ảnh hợp lệ.");
+                return "admin/layout";
             }
+        } else if (currentAccount.getImageUrl() == null) {
+            currentAccount.setImageUrl("User.png");
         }
+
 
         // Lưu thông tin tài khoản đã thay đổi
         accountService.saveAccount(currentAccount);
@@ -147,6 +157,7 @@ public class HomeController {
         model.addAttribute("success", "Cập nhật thông tin thành công!");
         return "redirect:/Admin/MyProfile"; // Quay lại trang hồ sơ
     }
+
 
     // Xử lý khi người dùng click logout
     @PostMapping("/Admin/Logout")

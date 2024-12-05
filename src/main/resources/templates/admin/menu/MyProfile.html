@@ -23,7 +23,8 @@
                             <div class="profile-top">
                                 <div class="profile-content">
                                     <div class="profile-contentimg">
-                                        <img th:src="@{'/Image/imageProfile/'+${account.imageUrl}}" alt="Profile Image" id="blah">
+                                        <img th:src="${account.imageUrl != null ? '/Image/imageProfile/' +
+                                            account.imageUrl : '/Image/imageProfile/User.png'}" alt="Profile Image" id="blah">
                                         <div class="profileupload">
                                             <input type="file" name="imageFile" id="imgInp">
                                             <a href="javascript:void(0);"><img src="/admin/img/icons/edit-set.svg" alt="Edit"></a>
