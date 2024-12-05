@@ -25,25 +25,34 @@ public class InfoController {
     @Autowired
     private AccountService accountService;
 
-
     // Hiển thị thông tin người dùng
     @GetMapping("/info")
     public String getInfo(Model model, HttpSession session) {
-        Account account = (Account) session.getAttribute("user");
+        Object userAttribute = session.getAttribute("User");
 
-        if (account != null) {
-            model.addAttribute("account", account);
-            model.addAttribute("pageTitle", "My Profile");
-            model.addAttribute("viewName", "admin/menu/MyProfile");
-        } else {
-            model.addAttribute("error", "Chưa đăng nhập");
-            return "user/login";
+        if (userAttribute == null || !(userAttribute instanceof Account)) {
+            System.out.println("Session không chứa thông tin người dùng hợp lệ.");
+            return "redirect:/layout/Home";
         }
-        return "user/info"; // Trả về template info.html
+
+        Account account = (Account) userAttribute;
+
+        // Log vai trò để xác minh
+        System.out.println("Tài khoản trong session: " + account.getUsername()+", Vai trò: " + account.getRole().getRoleName());
+
+
+        if (!"User".equals(account.getRole().getRoleName()) && !"Admin".equals(account.getRole().getRoleName())) {
+            System.out.println("Vai trò không hợp lệ: " + account.getRole());
+            return "redirect:/layout/Home";
+        }
+
+        model.addAttribute("account", account);
+        return "user/info";
     }
 
-    // Xử lý cập nhật thông tin
-    // Xử lý cập nhật thông tin
+
+
+    // Xử lý cập nhật thông tin người dùng
     @PostMapping("/updateInfo")
     public String updateInfo(@ModelAttribute("account") Account account,
                              BindingResult result,
@@ -51,10 +60,11 @@ public class InfoController {
                              HttpSession session,
                              Model model) throws IOException {
         if (result.hasErrors()) {
-            return "user/info";
+            return "user/info"; // Trả về trang info nếu có lỗi trong việc xác nhận dữ liệu
         }
 
-        Account currentAccount = (Account) session.getAttribute("user");
+        // Lấy tài khoản người dùng từ session
+        Account currentAccount = (Account) session.getAttribute("User");
         if (currentAccount == null) {
             model.addAttribute("error", "Bạn cần đăng nhập trước khi cập nhật thông tin.");
             return "user/login";
@@ -102,10 +112,9 @@ public class InfoController {
         accountService.saveAccount(currentAccount);
 
         // Cập nhật thông tin trong session
-        session.setAttribute("user", currentAccount);
+        session.setAttribute("User", currentAccount);
 
         model.addAttribute("success", "Cập nhật thông tin thành công!");
         return "redirect:/user/info"; // Điều hướng sau khi cập nhật thành công
     }
-
 }
