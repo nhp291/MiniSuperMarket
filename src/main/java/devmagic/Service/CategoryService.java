@@ -3,6 +3,8 @@ package devmagic.Service;
 import devmagic.Model.Category;
 import devmagic.Reponsitory.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,4 +40,8 @@ public class CategoryService {
         return categoryRepository.count();  // Gọi phương thức để đếm số lượng Category
     }
 
+
+    public Page<Category> getCategoriesPage(Pageable pageable) {
+        return categoryRepository.findAll(pageable);
+    }
 }

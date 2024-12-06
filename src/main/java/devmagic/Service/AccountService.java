@@ -7,6 +7,9 @@ import devmagic.Reponsitory.RoleRepository;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -166,5 +169,12 @@ public class AccountService {
                 .orElse(null); // Return null if the account is not found
     }
 
+    public Page<Account> getAllAccounts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return accountRepository.findAll(pageable);
+    }
+    public Page<Account> getAllAccountsPage(Pageable pageable) {
+        return accountRepository.findAll(pageable); // This will automatically handle pagination
+    }
 
 }

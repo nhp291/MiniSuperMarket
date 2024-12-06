@@ -1,7 +1,7 @@
 package devmagic.Service;
 
-import devmagic.Model.Product;
-import devmagic.Model.ProductImage;
+import devmagic.Dto.ProductDTO;
+import devmagic.Model.*;
 import devmagic.Reponsitory.ProductImageRepository;
 import devmagic.Reponsitory.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +28,6 @@ import java.util.UUID;
 @Service
 public class ProductService {
     @Autowired
-
     private ProductRepository productRepository;
 
     @Autowired
@@ -123,7 +123,6 @@ public class ProductService {
         return savedProduct;
     }
 
-
     @Transactional
     public Product updateProduct(Integer id, Product product, MultipartFile file) throws IOException {
         Optional<Product> existingProductOpt = productRepository.findById(id);
@@ -162,30 +161,27 @@ public class ProductService {
     }
 
     public String saveImage(MultipartFile file) throws IOException {
-        // Thư mục lưu trữ ảnh
         String directoryPath = "src/main/resources/static/Image/imageUrl/";
         File dir = new File(directoryPath);
         if (!dir.exists()) {
-            dir.mkdirs();
+            dir.mkdirs(); // Tạo thư mục nếu chưa tồn tại
         }
 
-        // Lấy tên gốc của tệp
+        // Lấy tên file gốc
         String originalFileName = file.getOriginalFilename();
-        Path imagePath = Paths.get(directoryPath + originalFileName);
 
-        // Kiểm tra nếu tệp đã tồn tại
+        // Kiểm tra nếu file đã tồn tại
+        Path imagePath = Paths.get(directoryPath + originalFileName);
         if (Files.exists(imagePath)) {
-            // Tệp đã tồn tại, không lưu lại, trả về tên tệp
-            return originalFileName;
+            System.out.println("File đã tồn tại: " + originalFileName);
+            return originalFileName; // Trả về tên file
         }
 
-        // Nếu chưa tồn tại, lưu tệp vào thư mục
+        // Lưu file mới
         Files.write(imagePath, file.getBytes());
-
-        // Trả về tên tệp
+        System.out.println("File được lưu: " + originalFileName);
         return originalFileName;
     }
-
 
     public int getAvailableStock(Integer productId) {
         Product product = productRepository.findById(productId).orElse(null);
@@ -195,7 +191,20 @@ public class ProductService {
         return 0; // Trả về 0 nếu sản phẩm không tồn tại
     }
 
-
+    public Product convertToProduct(ProductDTO productDTO, Category category, Warehouse warehouse, Brand brand) {
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(BigDecimal.valueOf(productDTO.getPrice()));
+        product.setSale(BigDecimal.valueOf(productDTO.getSale()));
+        product.setStockQuantity(productDTO.getStockQuantity());
+        product.setCategory(category);
+        product.setWarehouse(warehouse);
+        product.setBrand(brand);
+        product.setOrigin(productDTO.getOrigin());
+        product.setUnit(productDTO.getUnit());
+        return product;
+    }
 
 
 }
