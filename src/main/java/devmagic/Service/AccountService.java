@@ -177,4 +177,7 @@ public class AccountService {
         return accountRepository.findAll(pageable); // This will automatically handle pagination
     }
 
+    public boolean usernameExists(String username) {
+        return accountRepository.existsByUsername(username);
+    }
 }

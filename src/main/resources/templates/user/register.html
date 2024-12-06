@@ -31,17 +31,17 @@
             border-radius: 12px;
             overflow: hidden;
             background-color: #fff;
-            animation: slideIn 0.8s ease-out;
+            animation: fadeSlideIn 0.8s ease-out;
         }
 
-        @keyframes slideIn {
-            from {
+        @keyframes fadeSlideIn {
+            0% {
+                transform: translateY(100px);
                 opacity: 0;
-                transform: translateY(50px);
             }
-            to {
-                opacity: 1;
+            100% {
                 transform: translateY(0);
+                opacity: 1;
             }
         }
 
@@ -74,8 +74,8 @@
         .form-container {
             width: 60%;
             padding: 30px 40px;
-            background-color: #f9f9f9;
-            position: relative;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .form-container h2 {
@@ -101,7 +101,6 @@
         .form-group {
             margin-bottom: 20px;
             position: relative;
-            transition: all 0.3s ease-in-out;
         }
 
         .form-group label {
@@ -146,16 +145,16 @@
             font-size: 1rem;
             font-weight: bold;
             color: #fff;
-            background: linear-gradient(to right, #007bff, #0056b3);
+            background: linear-gradient(to right, #28a745, #218838);
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s;
         }
 
         .btn:hover {
-            background: linear-gradient(to right, #0056b3, #003d80);
-            transform: scale(1.05);
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
 
         .footer {
@@ -180,16 +179,37 @@
             display: none;
             text-align: center;
             font-size: 1.2rem;
-            color: green;
+            color: #155724;
+            background-color: #d4edda;
+            border: 2px solid #c3e6cb;
             margin-top: 20px;
             position: absolute;
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #d4edda;
             padding: 10px 20px;
-            border: 1px solid #c3e6cb;
             border-radius: 5px;
+            animation: bounceIn 0.5s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
         }
     </style>
 </head>
@@ -197,83 +217,75 @@
 <div class="container">
     <div class="sidebar">
         <h1>DEV MAGIC<br>Siêu Thị Mini</h1>
-        <p>
-            Siêu thị Devmagic là một trong những chuỗi siêu thị lớn nhất và phát triển nhanh chóng tại Việt Nam.
-            Với tiêu chí "Mọi thứ bạn cần, trong tầm tay bạn".
-        </p>
+        <p>Siêu thị Devmagic là một trong những chuỗi siêu thị lớn nhất và phát triển nhanh chóng tại Việt Nam.</p>
     </div>
     <div class="form-container">
         <h2>Tham gia cùng chúng tôi</h2>
-        <!-- Thêm thông báo thành công -->
-        <div class="success-message" id="success-message">
-            Đăng ký thành công! Đang chuyển đến trang đăng nhập...
+
+        <div class="success-message" id="success-message">Đăng ký thành công! Đang chuyển đến trang đăng nhập...</div>
+
+        <div class="error-message" th:if="${error}">
+            <span th:text="${error}"></span>
         </div>
-        <form action="/user/register" method="POST" enctype="multipart/form-data" id="register-form">
+
+        <form action="/user/register" method="POST" enctype="multipart/form-data" id="register-form" th:object="${account}">
             <div class="form-group">
                 <label for="username">Tên đăng nhập *</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" th:field="*{username}" required>
+                <div th:if="${#fields.hasErrors('username')}" style="color: red;">
+                    <span th:errors="*{username}"></span>
+                </div>
             </div>
             <div class="form-group">
                 <label for="password">Mật khẩu *</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" th:field="*{password}" required>
                 <span class="eye-icon" onclick="togglePassword('password')">👁️</span>
             </div>
             <div class="form-group">
                 <label for="confirm-password">Xác nhận mật khẩu *</label>
-                <input type="password" id="confirm-password" name="confirm-password" required>
+                <input type="password" id="confirm-password" th:field="*{confirmPassword}" required>
                 <span class="eye-icon" onclick="togglePassword('confirm-password')">👁️</span>
             </div>
             <div class="form-group">
                 <label for="email">Email *</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" th:field="*{email}" required>
             </div>
             <div class="form-group">
                 <label for="phone">Số điện thoại *</label>
-                <input type="text" id="phone" name="phoneNumber" required>
+                <input type="text" id="phone" th:field="*{phoneNumber}" required>
             </div>
             <div class="form-group">
                 <label for="address">Địa chỉ</label>
-                <input type="text" id="address" name="address">
-            </div>
-            <div class="form-group">
-                <label for="image">Ảnh đại diện</label>
-                <input type="file" id="image" name="imageFile">
+                <input type="text" id="address" th:field="*{address}">
             </div>
             <div>
                 <button type="submit" class="btn">Đăng Ký</button>
             </div>
-            <div class="mt-4 text-center">
-                Bạn đã có tài khoản? <a href="user/login">Đăng Nhập</a>
+            <div class="footer">
+                <p>Đã có tài khoản? <a href="/user/login">Đăng nhập</a></p>
             </div>
         </form>
     </div>
 </div>
+
 <script>
-    // Function to toggle password visibility
     function togglePassword(inputId) {
         const field = document.getElementById(inputId);
         const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
         field.setAttribute('type', type);
     }
 
-    // Function to get query parameters
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
     }
 
-    // Hiển thị thông báo thành công và chuyển hướng nếu tham số success=true
-    window.onload = function() {
-        const success = getQueryParam('success');
-        if (success === 'true') {
-            const successMessage = document.getElementById('success-message');
-            successMessage.style.display = 'block';
-
-            // Chuyển hướng sau 2 giây
-            setTimeout(function() {
-                window.location.href = '/user/login'; // Đường dẫn đến trang đăng nhập
-            }, 2000);
-        }
+    // Hiển thị thông báo thành công nếu có tham số "success=true"
+    if (getQueryParam('success') === 'true') {
+        document.getElementById('success-message').style.display = 'block';
+        setTimeout(() => {
+            window.location.href = '/user/login';
+        }, 3000);
     }
 </script>
 </body>
