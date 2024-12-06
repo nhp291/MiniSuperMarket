@@ -109,6 +109,23 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="pagination-wrapper text-center mt-2">
+                        <!-- First Page Link -->
+                        <a  class="pagination-button btn border-success" th:href="@{/Accounts/AccountList?page=1}" th:if="${currentPage > 1}"><i class="bi bi-chevron-double-left"></a>
+
+                        <!-- Previous Page Link -->
+                        <a class="pagination-button btn border-success" th:href="@{/Accounts/AccountList?page=${currentPage - 1}}" th:if="${currentPage > 1}"><i class="bi bi-chevron-compact-left"></i></a>
+
+                        <!-- Page Numbers -->
+                        <span class="pagination-button btn btn-info text-light" th:text="'Trang ' + ${currentPage} + ' / ' + ${totalPages}"></span>
+
+                        <!-- Next Page Link -->
+                        <a class="pagination-button btn border-success" th:href="@{/Accounts/AccountList?page=${currentPage + 1}}" th:if="${currentPage < totalPages}"><i class="bi bi-chevron-compact-right"></i></a>
+
+                        <!-- Last Page Link -->
+                        <a class="pagination-button btn border-success" th:href="@{/Accounts/AccountList?page=${totalPages}}" th:if="${currentPage < totalPages}"><i class="bi bi-chevron-double-right"></i></a>
+                    </div>
+
                 </div>
             </div>
         </div>

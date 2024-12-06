@@ -1,12 +1,13 @@
 package devmagic.Service;
 
 import devmagic.Model.Order;
-import devmagic.Model.OrderDetail;
 import devmagic.Model.Product;
 import devmagic.Reponsitory.OrderRepository;
 import devmagic.Reponsitory.OrderDetailRepository;
 import devmagic.Reponsitory.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,7 +79,12 @@ public class OrderService {
 
     // Cập nhật trạng thái thanh toán
     public void updatePaymentStatus(int orderId, String paymentStatus) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        // Kiểm tra đơn hàng có tồn tại hay không
+        Order order = orderRepository.findById(orderId).orElseThrow(() ->
+                new RuntimeException("Order not found")
+        );
+
+        // Cập nhật trạng thái thanh toán
         order.setPaymentStatus(paymentStatus);
         orderRepository.save(order);
     }
@@ -88,11 +94,10 @@ public class OrderService {
         return orderRepository.findByAccount_AccountId(accountId);
     }
 
-//    // Thêm phương thức vào OrderService
-//    public Order getOrderById(int orderId) {
-//        return orderRepository.findById(orderId)
-//                .orElse(null); // Nếu không tìm thấy, trả về null
-//    }
+    public Page<Order> getOrdersByPage(Pageable pageable) {
+        return orderRepository.findAll(pageable);
+    }
+
     public Order findById(int orderId) {
         return orderRepository.findById(orderId).orElse(null);
     }

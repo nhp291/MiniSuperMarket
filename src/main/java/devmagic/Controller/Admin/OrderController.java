@@ -1,8 +1,14 @@
 package devmagic.Controller.Admin;
 
 import devmagic.Model.Order;
+import devmagic.Reponsitory.OrderRepository;
 import devmagic.Service.OrderService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +26,9 @@ public class OrderController {
     @Autowired
     private OrderService ordersService;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     // Queue để gửi sự kiện từ server đến client qua SSE
     private final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
 
@@ -36,17 +45,22 @@ public class OrderController {
 
     // Hiển thị danh sách đơn hàng trên giao diện
     @GetMapping("/OrderList")
-    public String OrderList(Model model) {
-        try {
-            List<Order> orders = ordersService.getAllActiveOrders();
-            model.addAttribute("orders", orders);
-            model.addAttribute("pageTitle", "Order List Page");
-            model.addAttribute("viewName", "admin/menu/OrderList");
-            return "admin/layout";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Error fetching orders: " + e.getMessage());
-            return "error";
-        }
+    public String OrderList(Model model,
+                            @RequestParam(value = "page", defaultValue = "0") int page,
+                            @RequestParam(value = "size", defaultValue = "10") int size) {
+        // Phân trang
+        Pageable pageable = PageRequest.of(page, size, Sort.by("orderDate").descending());
+        Page<Order> ordersPage = ordersService.getOrdersByPage(pageable);
+
+        // Thêm thông tin phân trang vào model
+        model.addAttribute("orders", ordersPage.getContent()); // Danh sách đơn hàng
+        model.addAttribute("currentPage", page);               // Trang hiện tại
+        model.addAttribute("totalPages", ordersPage.getTotalPages()); // Tổng số trang
+        model.addAttribute("pageSize", size);                  // Kích thước trang
+        model.addAttribute("pageTitle", "Order List Page");
+        model.addAttribute("viewName", "admin/menu/OrderList");
+
+        return "admin/layout";
     }
 
     // API: Lấy danh sách đơn hàng (JSON)
@@ -130,21 +144,50 @@ public class OrderController {
     }
 
     // Cập nhật trạng thái thanh toán và gửi SSE cho frontend
-    @PostMapping("/ChangePaymentStatus")
-    public String changePaymentStatus(@RequestParam int orderId, @RequestParam String paymentStatus) {
+    @PostMapping("/{orderId}/change-payment-status")
+    public String changePaymentStatus(
+            @PathVariable int orderId,
+            @RequestParam String paymentStatus,
+            Model model) {
         try {
+            // Kiểm tra giá trị paymentStatus không null và hợp lệ
+            if (paymentStatus == null || paymentStatus.isEmpty()) {
+                throw new IllegalArgumentException("Payment status cannot be null or empty");
+            }
+
             // Cập nhật trạng thái thanh toán
             ordersService.updatePaymentStatus(orderId, paymentStatus);
 
-            // Thông báo qua SSE
-            eventQueue.put("Payment status updated for Order ID: " + orderId + " to " + paymentStatus);
+            // Lấy lại danh sách đơn hàng sau khi cập nhật
+            List<Order> orders = ordersService.getAllOrders();
+            model.addAttribute("orders", orders);
 
-            return "redirect:/Orders/OrderList";
+            // Thêm thông báo thành công
+            model.addAttribute("message", "Payment status updated successfully!");
         } catch (Exception e) {
-            return "error";  // Trả về lỗi nếu có
+            // Thêm thông báo lỗi
+            model.addAttribute("error", "Failed to update payment status: " + e.getMessage());
         }
+
+        model.addAttribute("pageTitle", "Order List Page");
+        model.addAttribute("viewName", "admin/menu/OrderList");
+        return "admin/layout"; // Trả về lại trang danh sách
     }
 
+    public void updatePaymentStatus(int orderId, String paymentStatus) {
+        // Kiểm tra đơn hàng có tồn tại hay không
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // Kiểm tra trạng thái hợp lệ
+        if (!List.of("PENDING", "PROCESSING", "COMPLETED", "CANCELLED").contains(paymentStatus)) {
+            throw new IllegalArgumentException("Invalid payment status: " + paymentStatus);
+        }
+
+        // Cập nhật trạng thái thanh toán
+        order.setPaymentStatus(paymentStatus);
+        orderRepository.save(order);
+    }
+}
     // Xử lý ngoại lệ
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleException(RuntimeException ex) {

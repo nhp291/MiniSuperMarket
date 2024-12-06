@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Title</title>
+    <title>Danh sách đơn hàng</title>
 </head>
 <body>
 <div class="main-wrapper" th:fragment="content">
@@ -10,8 +10,8 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4> Orders List</h4>
-                    <h6>Manage your Orders</h6>
+                    <h4>Danh sách đơn hàng</h4>
+                    <h6>Quản lý các đơn hàng của bạn</h6>
                 </div>
             </div>
 
@@ -19,15 +19,7 @@
                 <div class="card-body">
                     <div class="table-top">
                         <div class="search-set">
-                            <div class="search-path">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <img src="/admin/img/icons/filter.svg" alt="img">
-                                    <span><img src="/admin/img/icons/closes.svg" alt="img"></span>
-                                </a>
-                            </div>
-                            <div class="search-input">
-                                <a class="btn btn-searchset"><img src="/admin/img/icons/search-white.svg" alt="img"></a>
-                            </div>
+
                         </div>
                         <div class="wordset">
                             <ul>
@@ -47,139 +39,84 @@
                         </div>
                     </div>
 
-                    <div class="card mb-0" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-12 col-sm-12">
-                                    <div class="row">
-                                        <div class="col-lg col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>Category</option>
-                                                    <option>Computers</option>
-                                                    <option>Fruits</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>Brand</option>
-                                                    <option>N/D</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg col-sm-6 col-12 ">
-                                            <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>Price</option>
-                                                    <option>150.00</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-1 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <a class="btn btn-filters ms-auto">
-                                                    <img src="/admin/img/icons/search-whites.svg" alt="img">
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="table-responsive">
+
+                        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
                         <table class="table datanew">
                             <thead>
                             <tr>
-                                <th>Tên Sản Phẩm</th>
-                                <th>Tên Người Dùng</th>
-                                <th>Ngày Đặt Hàng</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Tên người dùng</th>
+                                <th>Ngày đặt hàng</th>
                                 <th>Giá</th>
-                                <th>Số Điện Thoại</th>
-                                <th>Số Lượng</th>
-                                <th>Trạng Thái</th>
-                                <th>Phương Thức</th>
-                                <th>Địa Chỉ</th>
-                                <th>Người Tạo</th>
-                                <th>Hành Động</th>
+                                <th>Số điện thoại</th>
+                                <th>Số lượng</th>
+                                <th>Trạng thái</th>
+                                <th>Phương thức thanh toán</th>
+                                <th>Địa chỉ</th>
+                                <th>Thao tác</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <!-- Hiển thị thông báo nếu không có đơn hàng -->
-                            <tr th:if="${#lists.isEmpty(orders)}">
-                                <td colspan="11" class="text-center">No orders found</td>
-                            </tr>
-                            <!-- Hiển thị danh sách đơn hàng -->
                             <tr th:each="order : ${orders}">
-                                <td th:text="${order.orderDetails[0].product.name}">Product Name</td>
-                                <td th:text="${order.account.username}">User Name</td>
-                                <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}">Order Date</td>
-                                <td th:text="${order.orderDetails[0].price}">Price</td>
-                                <td th:text="${order.account.phoneNumber}">Phone</td>
-                                <td th:text="${order.orderDetails[0].quantity}">Qty</td>
+                                <td th:text="${order.orderDetails[0].product.name}">Tên sản phẩm</td>
+                                <td th:text="${order.account.username}">Tên người dùng</td>
+                                <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}">Ngày đặt hàng</td>
+                                <td th:text="${order.orderDetails[0].price}">Giá</td>
+                                <td th:text="${order.account.phoneNumber}">Số điện thoại</td>
+                                <td th:text="${order.orderDetails[0].quantity}">Số lượng</td>
                                 <td>
-                                    <select name="paymentStatus" th:value="${order.paymentStatus}"
-                                            onchange="updatePaymentStatus(${order.orderId}, this.value)">
-                                        <option value="0" th:text="#{status.pending}">Pending</option>
-                                        <option value="1" th:text="#{status.processing}">Processing</option>
-                                        <option value="2" th:text="#{status.completed}">Completed</option>
-                                        <option value="3" th:text="#{status.cancelled}">Cancelled</option>
-                                    </select>
+                                    <form th:action="@{/Orders/{orderId}/change-payment-status(orderId=${order.orderId})}" method="post">
+                                        <select name="paymentStatus" th:value="${order.paymentStatus != null ? order.paymentStatus : 'PENDING'}" onchange="this.form.submit()">
+                                            <option value="PENDING" th:selected="${order.paymentStatus == 'PENDING'}">Chờ xử lý</option>
+                                            <option value="PROCESSING" th:selected="${order.paymentStatus == 'PROCESSING'}">Đang xử lý</option>
+                                            <option value="COMPLETED" th:selected="${order.paymentStatus == 'COMPLETED'}">Hoàn thành</option>
+                                            <option value="CANCELLED" th:selected="${order.paymentStatus == 'CANCELLED'}">Hủy bỏ</option>
+                                        </select>
+                                    </form>
                                 </td>
-                                <td th:text="${order.paymentMethod}">Payment Method</td>
-                                <td th:text="${order.account.address}">Address</td>
-                                <td th:text="${order.account.username}">Created By</td>
+                                <td th:text="${order.paymentMethod}">Phương thức thanh toán</td>
+                                <td th:text="${order.account.address}">Địa chỉ</td>
                                 <td>
-                                    <a th:href="@{/Admin/OrderDetail/{id}(id=${order.orderId})}" class="me-3">
-                                        <img th:src="@{/admin/img/icons/eye.svg}" alt="View">
-                                    </a>
-                                    <a th:href="@{/Admin/EditOrder/{id}(id=${order.orderId})}" class="me-3">
-                                        <img th:src="@{/admin/img/icons/edit.svg}" alt="Edit">
-                                    </a>
-                                    <a th:href="@{/Admin/DeleteOrder/{id}(id=${order.orderId})}" class="confirm-text">
-                                        <img th:src="@{/admin/img/icons/delete.svg}" alt="Delete">
-                                    </a>
+                                    <a th:href="@{/Admin/OrderDetail/{id}(id=${order.orderId})}"><img src="/admin/img/icons/eye.svg" alt="img"></a>
+                                    <a th:href="@{/Admin/DeleteOrder/{id}(id=${order.orderId})}"><img src="/admin/img/icons/delete.svg" alt="img"></a>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
+<!--                    <div class="pagination-wrapper text-center mt-2">-->
+<!--                        &lt;!&ndash; Nút Đầu Trang &ndash;&gt;-->
+<!--                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">-->
+<!--                            <a th:href="@{/Orders/OrderList(page=0, size=${pageSize})}"><i class="bi bi-chevron-double-left"></i></a>-->
+<!--                        </span>-->
+
+<!--                        &lt;!&ndash; Nút Trước &ndash;&gt;-->
+<!--                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">-->
+<!--                            <a th:href="@{/Orders/OrderList(page=${currentPage - 1}, size=${pageSize})}"><i class="bi bi-chevron-compact-left"></i></a>-->
+<!--                        </span>-->
+
+<!--                        &lt;!&ndash; Thông Tin Phân Trang &ndash;&gt;-->
+<!--                        <span class="pagination-info btn btn-info text-light">-->
+<!--                            Trang <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>-->
+<!--                        </span>-->
+
+<!--                        &lt;!&ndash; Nút Tiếp &ndash;&gt;-->
+<!--                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">-->
+<!--                            <a th:href="@{/Orders/OrderList(page=${currentPage + 1}, size=${pageSize})}"><i class="bi bi-chevron-compact-right"></i></a>-->
+<!--                        </span>-->
+
+<!--                        &lt;!&ndash; Nút Cuối Trang &ndash;&gt;-->
+<!--                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">-->
+<!--                            <a th:href="@{/Orders/OrderList(page=${totalPages - 1}, size=${pageSize})}"><i class="bi bi-chevron-double-right"></i></a>-->
+<!--                        </span>-->
+<!--                    </div>-->
                 </div>
             </div>
-
         </div>
     </div>
 </div>
-
-<script>
-    // Kết nối tới endpoint SSE
-    const eventSource = new EventSource('/Orders/events');
-
-    // Lắng nghe sự kiện từ server
-    eventSource.onmessage = function(event) {
-        console.log("Received event: " + event.data);
-
-        // Cập nhật UI hoặc làm gì đó khi có sự kiện (ví dụ: cập nhật danh sách đơn hàng)
-        alert("Updated: " + event.data);  // Hiển thị thông báo sự kiện
-
-        // Cập nhật lại phần trạng thái thanh toán trong bảng
-        const statusSelects = document.querySelectorAll('select[name="paymentStatus"]');
-        statusSelects.forEach(function(select) {
-            // Tìm và thay đổi giá trị của trạng thái thanh toán
-            if (select.value === event.data) {
-                select.value = event.data;  // Cập nhật trạng thái
-            }
-        });
-    };
-
-    eventSource.onerror = function(error) {
-        console.error("Error in SSE: " + error);
-    };
-</script>
-
-
 </body>
 </html>

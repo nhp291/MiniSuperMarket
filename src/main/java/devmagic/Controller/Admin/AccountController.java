@@ -8,6 +8,9 @@ import devmagic.Reponsitory.RoleRepository;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,23 +41,33 @@ public class AccountController {
     private RoleRepository roleRepository;
 
     @GetMapping("/AccountList")
-    public String accountList(Model model) {
-        List<Account> accounts = accountService.getAllAccounts()
-                .stream()
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+    public String accountList(@RequestParam(defaultValue = "1") int page, Model model) {
+        int pageSize = 10; // Number of accounts per page
 
-        accounts.forEach(account -> {
+        // Create a Pageable object to control pagination
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+        // Get a page of accounts using pagination
+        Page<Account> accountPage = accountService.getAllAccountsPage(pageable);
+
+        // Loop through the accounts and set the default image if it's null
+        accountPage.getContent().forEach(account -> {
             if (account.getImageUrl() == null) {
                 account.setImageUrl("User.png");
             }
         });
 
-        model.addAttribute("accounts", accounts);
+        // Prepare data for the view
+        model.addAttribute("accounts", accountPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", accountPage.getTotalPages());
         model.addAttribute("pageTitle", "Account List");
         model.addAttribute("viewName", "admin/menu/AccountList");
+
         return "admin/layout";
     }
+
+
 
     @GetMapping("/AccountForm")
     public String addAccountForm(Model model) {
