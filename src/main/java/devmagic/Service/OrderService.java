@@ -26,6 +26,12 @@ public class OrderService {
         this.productRepository = productRepository;
     }
 
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll().stream()
+                .filter(order -> !order.isDeleted())
+                .collect(Collectors.toList());
+    }
+
     // Lấy danh sách đơn hàng không bị xóa
     public List<Order> getAllActiveOrders() {
         return orderRepository.findAll().stream()

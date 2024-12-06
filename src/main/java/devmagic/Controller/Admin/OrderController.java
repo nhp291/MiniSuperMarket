@@ -3,12 +3,12 @@ package devmagic.Controller.Admin;
 import devmagic.Model.Order;
 import devmagic.Reponsitory.OrderRepository;
 import devmagic.Service.OrderService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -187,10 +187,11 @@ public class OrderController {
         order.setPaymentStatus(paymentStatus);
         orderRepository.save(order);
     }
-}
+
     // Xử lý ngoại lệ
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleException(RuntimeException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
 }
