@@ -1,37 +1,69 @@
 package devmagic.Controller.User;
 
-
 import devmagic.Model.Order;
 import devmagic.Service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
+@RequestMapping("/cart")
 public class PaymenthistoryController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @GetMapping("/cart/Paymenthistory")
-    public String getPaymentHistory(HttpSession session, Model model) {
-        // Lấy accountId từ session
-        Integer accountId = (Integer) session.getAttribute("accountId");
+    @Autowired
+    public PaymenthistoryController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @GetMapping("/paymenthistory")
+    public String getPaymentHistory(HttpServletRequest request, Model model) {
+        Integer accountId = getAccountIdFromSession(request);
+
         if (accountId == null) {
-            return "redirect:/user/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+            return "redirect:/user/login";
         }
 
-        // Lấy danh sách đơn hàng theo accountId
+        String username = getAuthenticatedUsername(request);
+        model.addAttribute("username", username != null ? username : "");
+
         List<Order> orders = orderService.getOrdersByAccountId(accountId);
 
-        // Đưa danh sách đơn hàng vào model
-        model.addAttribute("orders", orders);
+        if (orders == null || orders.isEmpty()) {
+            model.addAttribute("message", "Bạn chưa có hóa đơn nào.");
+        } else {
+            model.addAttribute("orders", orders);
+        }
 
-        // Trả về trang hiển thị
-        return "payment_history";
+        return "cart/paymenthistory";
+    }
+
+    private Integer getAccountIdFromSession(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Object accountIdObj = session.getAttribute("accountId");
+
+        if (accountIdObj instanceof Integer) {
+            return (Integer) accountIdObj;
+        } else if (accountIdObj instanceof String) {
+            try {
+                return Integer.parseInt((String) accountIdObj);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private String getAuthenticatedUsername(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Object usernameObj = session.getAttribute("username");
+        return (usernameObj instanceof String) ? (String) usernameObj : null;
     }
 }

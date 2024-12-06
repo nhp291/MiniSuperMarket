@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
@@ -190,6 +191,7 @@
     .btn-remove:hover {
         background-color: darkred;
     } </style>
+
     <div class="shopping-body">
         <div class="card">
             <div class="row"> <!-- Giỏ hàng -->
@@ -215,8 +217,8 @@
                                                                                                class="text-decoration-none"
                                                                                                onclick="updateQuantity(this, 1)">+</a>
                             </div>
-                            <div class="col text-end"> &dollar;<span th:text="${item.price}"
-                                                                     data-price-per-unit="${item.pricePerUnit}">0.00</span>
+                            <div class="col text-end"> &dollar;<span th:text="${item.price}" data-price-per-unit="${item.price}">0.00</span>
+
                                 <button class="btn-remove" onclick="removeItem(this)">Xóa</button>
                             </div>
                         </div>
@@ -233,127 +235,134 @@
                     </div>
                     <div class="row">
                         <div class="col">Total Price</div>
-                        <div class="col text-end">&dollar;<span class="total-price" th:text="${totalPrice}">0.00</span>
-                        </div>
+                        <div class="col text-end">&dollar;<span class="total-price" th:text="${totalPrice}">0.00</span></div>
                     </div>
-                    <div class="row radio-input mt-4"><label> <input type="radio" name="payment-method" value="Cash"
-                                                                     checked> <span class="text">Cash</span> </label>
-                        <label> <input type="radio" name="payment-method" value="Bank Transfer"> <span class="text">Bank Transfer</span>
-                        </label> <label> <input type="radio" name="payment-method" value="VN Pay"> <span class="text">VN Pay</span>
-                        </label></div>
+                    <div class="row radio-input mt-4">
+                        <label> <input type="radio" name="payment-method" value="Cash" checked> <span class="text">Cash</span> </label>
+                        <label> <input type="radio" name="payment-method" value="Bank Transfer"> <span class="text">Bank Transfer</span> </label>
+                        <label> <input type="radio" name="payment-method" value="VN Pay"> <span class="text">VN Pay</span> </label>
+                    </div>
                     <div class="row">
-                        <form action="/cart/checkout" method="post"><input type="hidden" name="paymentMethod"
-                                                                           id="paymentMethod" value="Cash"> <a
-                                th:href="@{/cart/thankyou}">
-                            <button class="btn btn-primary mt-3" type="submit">Checkout</button>
-                        </a></form>
+                        <form action="/cart/checkout" method="post"><input type="hidden" name="paymentMethod" id="paymentMethod" value="Cash">
+                            <a th:href="@{/cart/thankyou}">
+                                <button class="btn btn-primary mt-3" type="submit">Checkout</button>
+                            </a>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-                        <script>
-                            // Cập nhật số lượng sản phẩm
-                            function updateQuantity(element, change) {
-                                const cartItem = element.closest('.cart-item');
-                                const quantityElement = cartItem.querySelector('.quantity-controls span');
-                                let quantity = parseInt(quantityElement.textContent);
-                                quantity = Math.max(1, quantity + change); // Đảm bảo số lượng không dưới 1
-                                quantityElement.textContent = quantity;
+    <script>
+        // Cập nhật số lượng sản phẩm
+        function updateQuantity(element, change) {
+            const cartItem = element.closest('.cart-item');
+            const quantityElement = cartItem.querySelector('.quantity-controls span');
+            let quantity = parseInt(quantityElement.textContent);
+            quantity = Math.max(1, quantity + change); // Đảm bảo số lượng không dưới 1
+            quantityElement.textContent = quantity;
 
-                                // Cập nhật giá
-                                const priceElement = cartItem.querySelector('.text-end span');
-                                const pricePerUnit = parseFloat(priceElement.getAttribute('data-price-per-unit'));
-                                priceElement.textContent = (pricePerUnit * quantity).toFixed(2);
+            // Giữ nguyên giá sản phẩm
+            const priceElement = cartItem.querySelector('.text-end span');
+            const pricePerUnit = parseFloat(priceElement.getAttribute('data-price-per-unit'));
 
-                                // Gửi số lượng cập nhật đến máy chủ
-                                const itemId = cartItem.getAttribute('data-item-id');
-                                updateCartItemInDatabase(itemId, quantity);
-                                updateOrderSummary();
-                            }
+            // Kiểm tra giá trị pricePerUnit
+            if (isNaN(pricePerUnit)) {
+                console.error(`Lỗi: Giá trị pricePerUnit không hợp lệ cho sản phẩm ${cartItem.getAttribute('data-item-id')}`);
+                return;
+            }
 
-                            function updateCartItemInDatabase(itemId, quantity) {
-                                fetch(`/cart/updateQuantity`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                    },
-                                    body: `id=${itemId}&quantity=${quantity}`,
-                                })
-                                    .then(response => response.text())
-                                    .then(data => {
-                                        if (data === "success") {
-                                            console.log("Item quantity updated successfully");
-                                        } else {
-                                            console.error("Error updating quantity:", data);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error("Error updating item:", error);
-                                    });
-                            }
+            // Gửi số lượng cập nhật đến máy chủ
+            const itemId = cartItem.getAttribute('data-item-id');
+            updateCartItemInDatabase(itemId, quantity)
+                .then(() => updateOrderSummary());
+        }
 
-                            // Xóa sản phẩm khỏi giỏ hàng
-                            function removeItem(element) {
-                                const cartItem = element.closest('.cart-item');
-                                const itemId = cartItem.getAttribute('data-item-id');
+        // Gửi yêu cầu cập nhật số lượng sản phẩm tới máy chủ
+        function updateCartItemInDatabase(itemId, quantity) {
+            return fetch(`/cart/updateQuantity`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${itemId}&quantity=${quantity}`,
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === "success") {
+                        console.log("Item quantity updated successfully");
+                    } else {
+                        console.error("Error updating quantity:", data);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error updating item:", error);
+                });
+        }
 
-                                // Xóa sản phẩm khỏi DOM
-                                cartItem.remove();
+        // Cập nhật thông tin tóm tắt đơn hàng
+        function updateOrderSummary() {
+            const cartItems = document.querySelectorAll('.cart-item');
+            let totalQuantity = 0;
+            let totalPrice = 0;
 
-                                // Gửi yêu cầu xóa sản phẩm đến server
-                                fetch(`/cart/removeItem`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                    },
-                                    body: `id=${itemId}`,
-                                })
-                                    .then(response => response.text())
-                                    .then(data => {
-                                        if (data === "success") {
-                                            console.log("Item removed successfully");
-                                            updateOrderSummary();
-                                        } else {
-                                            console.error("Error removing item:", data);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error("Error removing item:", error);
-                                    });
-                            }
+            cartItems.forEach(item => {
+                const quantity = parseInt(item.querySelector('.quantity-controls span').textContent);
+                const price = parseFloat(item.querySelector('.text-end span').getAttribute('data-price-per-unit'));
 
-                            // Cập nhật thông tin tóm tắt đơn hàng
-                            function updateOrderSummary() {
-                                const cartItems = document.querySelectorAll('.cart-item');
-                                let totalQuantity = 0;
-                                let totalPrice = 0;
+                // Kiểm tra giá trị price
+                if (isNaN(price)) {
+                    console.error(`Lỗi: Giá trị price không hợp lệ cho sản phẩm ${item.getAttribute('data-item-id')}`);
+                    return;
+                }
 
-                                cartItems.forEach(item => {
-                                    const quantity = parseInt(item.querySelector('.quantity-controls span').textContent);
-                                    const price = parseFloat(item.querySelector('.text-end span').textContent);
-                                    totalQuantity += quantity;
-                                    totalPrice += price;
-                                });
+                totalQuantity += quantity;
+                totalPrice += price * quantity;
+            });
 
-                                document.querySelector('.summary .total-quantity').textContent = totalQuantity;
-                                document.querySelector('.summary .total-price').textContent = totalPrice.toFixed(2);
-                            }
+            document.querySelector('.summary .total-quantity').textContent = totalQuantity;
+            document.querySelector('.summary .total-price').textContent = totalPrice.toFixed(2);
+        }
 
-                            // Cập nhật phương thức thanh toán khi người dùng chọn
-                            document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
-                                radio.addEventListener('change', () => {
-                                    document.getElementById('paymentMethod').value = radio.value;
-                                });
-                            });
-                        </script>
+        // Xóa sản phẩm khỏi giỏ hàng
+        function removeItem(element) {
+            const cartItem = element.closest('.cart-item');
+            const itemId = cartItem.getAttribute('data-item-id');
 
+            // Xóa sản phẩm khỏi DOM
+            cartItem.remove();
+
+            // Gửi yêu cầu xóa sản phẩm đến server
+            fetch(`/cart/removeItem`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${itemId}`,
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === "success") {
+                        console.log("Item removed successfully");
+                        updateOrderSummary();
+                    } else {
+                        console.error("Error removing item:", data);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error removing item:", error);
+                });
+        }
+
+        // Cập nhật phương thức thanh toán khi người dùng chọn
+        document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('paymentMethod').value = radio.value;
+            });
+        });
+    </script>
 
 </main>
 </body>
 </html>
-
-
-
-
