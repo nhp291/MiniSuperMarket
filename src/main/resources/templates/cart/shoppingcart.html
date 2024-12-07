@@ -198,9 +198,9 @@
                 <div class="col-md-8 cart">
                     <div class="title">
                         <div class="row">
-                            <div class="col"><h4><b>Shopping Cart</b></h4></div>
+                            <div class="col"><h4><b>Giỏ Hàng</b></h4></div>
                             <div class="col align-self-center text-end text-muted"><span
-                                    th:text="${cartItems.size()}"></span> items
+                                    th:text="${cartItems.size()}"></span> Sản Phẩm
                             </div>
                         </div>
                     </div>
@@ -209,7 +209,7 @@
                             <div class="col-2"><img class="img-fluid" th:src="@{'/Image/imageUrl/' + ${item.imageUrl}}"
                                                     alt="Product Image"></div>
                             <div class="col">
-                                <div class="row" th:text="${item.productName}">Product Name</div>
+                                <div class="row" th:text="${item.productName}">Tên Sản Phẩm</div>
                             </div>
                             <div class="col quantity-controls"><a href="#" class="text-decoration-none"
                                                                   onclick="updateQuantity(this, -1)">-</a> <span
@@ -218,34 +218,33 @@
                                                                                                onclick="updateQuantity(this, 1)">+</a>
                             </div>
                             <div class="col text-end"> &dollar;<span th:text="${item.price}" data-price-per-unit="${item.price}">0.00</span>
-
                                 <button class="btn-remove" onclick="removeItem(this)">Xóa</button>
                             </div>
                         </div>
                     </div>
                     <div class="back-to-shop">
-                        <a th:href="@{/layout/Home}" class="btn btn-warning back-to-shop-btn"><b>Back to shop</b></a>
+                            <a th:href="@{/layout/Home}" class="btn btn-warning back-to-shop-btn"><b>Quay Lại</b></a>
                     </div>
 
                 </div> <!-- Tóm tắt đơn hàng -->
-                <div class="col-md-4 summary" style="color: white;"><h5><b>Order Summary</b></h5>
+                <div class="col-md-4 summary" style="color: white;"><h5><b>Tóm Tắc Đơn Hàng</b></h5>
                     <div class="row">
-                        <div class="col">Total Quantity</div>
+                        <div class="col">Tổng Số Lượng</div>
                         <div class="col text-end total-quantity" th:text="${totalQuantity}">0</div>
                     </div>
                     <div class="row">
-                        <div class="col">Total Price</div>
+                        <div class="col">Tổng Tiền</div>
                         <div class="col text-end">&dollar;<span class="total-price" th:text="${totalPrice}">0.00</span></div>
                     </div>
                     <div class="row radio-input mt-4">
-                        <label> <input type="radio" name="payment-method" value="Cash" checked> <span class="text">Cash</span> </label>
-                        <label> <input type="radio" name="payment-method" value="Bank Transfer"> <span class="text">Bank Transfer</span> </label>
+                        <label> <input type="radio" name="payment-method" value="Cash" checked> <span class="text">Tiền Mặt</span> </label>
+                        <label> <input type="radio" name="payment-method" value="Bank Transfer"> <span class="text">Ngân Hàng</span> </label>
                         <label> <input type="radio" name="payment-method" value="VN Pay"> <span class="text">VN Pay</span> </label>
                     </div>
                     <div class="row">
                         <form action="/cart/checkout" method="post"><input type="hidden" name="paymentMethod" id="paymentMethod" value="Cash">
                             <a th:href="@{/cart/thankyou}">
-                                <button class="btn btn-primary mt-3" type="submit">Checkout</button>
+                                <button class="btn btn-primary mt-3" type="submit">Thanh Toán</button>
                             </a>
                         </form>
                     </div>
