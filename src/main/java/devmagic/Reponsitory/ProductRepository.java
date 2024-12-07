@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
-    @Query("SELECT p FROM Product p WHERE p.description LIKE %?1%")
+    // Tìm sản phẩm theo mô tả (description) hoặc tên (name)
+    @Query("SELECT p FROM Product p WHERE p.description LIKE %?1% OR p.name LIKE %?1%")
     List<Product> searchProduct(String keyword);
 
     @Query("SELECT p FROM Product p WHERE p.category.categoryId = ?1")
