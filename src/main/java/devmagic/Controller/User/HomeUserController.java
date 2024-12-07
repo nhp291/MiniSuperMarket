@@ -59,7 +59,6 @@ public class HomeUserController {
             @RequestParam(name = "minPrice", required = false) Double minPrice,
             @RequestParam(name = "maxPrice", required = false) Double maxPrice,
             HttpServletRequest request) {
-
         // Lấy thông tin người dùng từ session
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
@@ -83,6 +82,11 @@ public class HomeUserController {
         if (keyword != null) {
             list = productService.seachProduct(keyword, pageNo);
             model.addAttribute("keyword", keyword);
+
+            // Kiểm tra xem có sản phẩm nào không
+            if (list.getContent().isEmpty()) {
+                model.addAttribute("noProductsMessage", "Không tìm thấy sản phẩm nào với từ khóa: " + keyword);
+            }
         } else if (minPrice != null || maxPrice != null) {
             list = productService.filterProductsByPrice(minPrice, maxPrice, pageNo);
             model.addAttribute("minPrice", minPrice);
