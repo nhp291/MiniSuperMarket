@@ -423,12 +423,11 @@
 
     <div id="site-header-search">
       <div id="site-header-search-container">
-          <form action="" autocomplete="on">
-            <input id="search" name="keyword" type="text" placeholder="Search..."><button id="search_submit" type="submit"><!--i class="icon-search"--><img class ="icon-header" src="https://img.icons8.com/ios-glyphs/20/666666/search--v1.png"/><!--/i--></button>
-          </form>
+            <form action="" autocomplete="on">
+              <input id="search" name="keyword" type="text" placeholder="Search..."><button id="search_submit" type="submit"><!--i class="icon-search"--><img class ="icon-header" src="https://img.icons8.com/ios-glyphs/20/666666/search--v1.png"/><!--/i--></button>
+            </form>
       </div>
     </div>
-
 
     <div id="site-header-auth-container">
       <div class="dropdown-center">
@@ -439,7 +438,7 @@
         </button>
 
         <!-- Hiển thị menu dropdown -->
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" sid="changePasswordForm" action="/Password/ChangePassword" method="POST">
           <!-- Khi đã đăng nhập -->
           <li th:if="${username != null}">
             <a th:href="@{/user/info}" class="dropdown-item">
@@ -447,7 +446,7 @@
             </a>
           </li>
           <li th:if="${username != null}">
-            <a th:href="@{/Password/ForgotPassword}"   class="dropdown-item">
+            <a th:href="@{/Password/ForgotPassword}" class="dropdown-item">
               <i class="bi bi-person-exclamation"></i> Quên Mật Khẩu
             </a>
           </li>

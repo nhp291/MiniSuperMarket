@@ -397,6 +397,9 @@
                             </div>
                         </div>
                     </form>
+                    <div th:if="${noProductsMessage}" class="alert alert-warning">
+                        <span th:text="${noProductsMessage}"></span>
+                    </div>
                     <div th:each="p : ${product}" class="col-4 col-sm-4 col-md-4 col-lg-3 mt-3 mb-5 d-flex justify-content-center">
                         <div class="con">
                             <div class="card_box">
@@ -410,19 +413,19 @@
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
-                                                <h5 class="text-danger mb-0" >[[${p.sale}]].đ</h5>
+                                                <h5 class="text-danger mb-0" >[[${p.sale}]]đ</h5>
                                                 <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
                                                     [[${p.price}]].đ</h6>
                                             </div>
                                             <div th:unless="${p.sale != null}">
-                                                <h5 class="text-danger mb-0">[[${p.price}]].đ</h5>
+                                                <h5 class="text-danger mb-0">[[${p.price}]]đ</h5>
                                             </div>
                                         </div>
                                         <h5 th:text="${p.description}" class="card-text"></h5>
                                         <h6 class="text-success">Sản phẩm bán trong ngày</h6>
                                         <div class="d-grid gap-2 d-md-block">
                                             <!-- Form thêm vào giỏ hàng -->
-                                            <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">
+                                            <form class="addToCartForm" data-product-id="[[${p.productId}]]">
                                                 <input type="hidden" name="productId" th:value="${p.productId}"/>
                                                 <input type="hidden" name="quantity" value="1"/>
                                                 <!-- Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng -->
@@ -435,10 +438,14 @@
                                                         th:if="${p.stockQuantity <= 0 and username != null}" disabled>
                                                     Hết hàng
                                                 </button>
-                                                <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>
+                                                <!-- Nút "Đăng nhập" hiển thị khi chưa đăng nhập -->
+                                                <button type="button" class="btn btn-secondary"
+                                                        th:if="${username == null}" disabled>
+                                                    Đăng nhập
+                                                </button>
                                             </form>
 
-                                            <div id="cartMessage" style="position: fixed; bottom: 20px; right: 20px; display: none; background-color: green; color: white; padding: 10px; border-radius: 5px; z-index: 9999;">
+                                            <div id="cartMessage" style="position: fixed; bottom: 20px; left: 20px; display: none; background-color: green; color: white; padding: 10px; border-radius: 5px; z-index: 9999;">
                                                 Sản phẩm đã được thêm vào giỏ hàng!
                                             </div>
                                         </div>
@@ -456,34 +463,28 @@
                             <li th:if="${currenPage > 1}" class="page-item">
                                 <a class="page-link" th:href="@{'?pageNo='+${currenPage - 1}}">Trước</a>
                             </li>
-
                             <!-- Trang đầu tiên -->
                             <li th:if="${currenPage > 3}" class="page-item">
                                 <a class="page-link" th:href="@{'?pageNo=1'}">1</a>
                             </li>
-
                             <!-- Dấu "..." phía trước -->
                             <li th:if="${currenPage > 4}" class="page-item disabled">
                                 <span class="page-link">...</span>
                             </li>
-
                             <!-- Các số trang động -->
                             <li th:each="i : ${#numbers.sequence(currenPage - 2 < 1 ? 1 : currenPage - 2, currenPage + 2 > totalPage ? totalPage : currenPage + 2)}"
                                 th:classappend="${currenPage == i ? 'active' : ''}" class="page-item">
                                 <a th:href="@{${keyword != null && keyword != '' ? '?keyword=' + keyword + '&' : '?'} + 'pageNo=' + ${i}}"
                                    class="page-link" th:text="${i}"></a>
                             </li>
-
                             <!-- Dấu "..." phía sau -->
                             <li th:if="${currenPage < totalPage - 3}" class="page-item disabled">
                                 <span class="page-link">...</span>
                             </li>
-
                             <!-- Trang cuối cùng -->
                             <li th:if="${currenPage < totalPage - 2}" class="page-item">
                                 <a class="page-link" th:href="@{'?pageNo='+${totalPage}}" th:text="${totalPage}"></a>
                             </li>
-
                             <!-- Nút "Sau" -->
                             <li th:if="${currenPage < totalPage}" class="page-item">
                                 <a class="page-link" th:href="@{'?pageNo='+${currenPage + 1}}">Sau</a>
@@ -532,13 +533,25 @@
                                                     <h5 th:text="${p.description}" class="card-text"></h5>
                                                     <h6 class="text-success">Sản phẩm bán trong ngày</h6>
                                                     <div class="d-grid gap-2 d-md-block">
-                                                        <button type="button" class="btn btn-primary add-to-cart"
-                                                                th:if="${username != null}">Mua Ngay
-                                                        </button>
-
-                                                        <button type="button" class="btn btn-secondary"
-                                                                th:if="${username == null}" disabled>Đăng nhập
-                                                        </button>
+                                                        <form class="addToCartForm" data-product-id="[[${p.productId}]]">
+                                                            <input type="hidden" name="productId" th:value="${p.productId}"/>
+                                                            <input type="hidden" name="quantity" value="1"/>
+                                                            <!-- Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng -->
+                                                            <button type="submit" class="btn btn-primary"
+                                                                    th:if="${p.stockQuantity > 0 and username != null}">
+                                                                Thêm vào giỏ hàng
+                                                            </button>
+                                                            <!-- Nút "Hết hàng" hiển thị khi sản phẩm hết hàng -->
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    th:if="${p.stockQuantity <= 0 and username != null}" disabled>
+                                                                Hết hàng
+                                                            </button>
+                                                            <!-- Nút "Đăng nhập" hiển thị khi chưa đăng nhập -->
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    th:if="${username == null}" disabled>
+                                                                Đăng nhập
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -637,13 +650,25 @@
                                                         <h5 th:text="${p.description}" class="card-text"></h5>
                                                         <h6 class="text-success">Sản phẩm bán trong ngày</h6>
                                                         <div class="d-grid gap-2 d-md-block">
-                                                            <button type="button" class="btn btn-primary add-to-cart"
-                                                                    th:if="${username != null}">Mua Ngay
-                                                            </button>
-
-                                                            <button type="button" class="btn btn-secondary"
-                                                                    th:if="${username == null}" disabled>Đăng nhập
-                                                            </button>
+                                                            <form class="addToCartForm" data-product-id="[[${p.productId}]]">
+                                                                <input type="hidden" name="productId" th:value="${p.productId}"/>
+                                                                <input type="hidden" name="quantity" value="1"/>
+                                                                <!-- Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng -->
+                                                                <button type="submit" class="btn btn-primary"
+                                                                        th:if="${p.stockQuantity > 0 and username != null}">
+                                                                    Thêm vào giỏ hàng
+                                                                </button>
+                                                                <!-- Nút "Hết hàng" hiển thị khi sản phẩm hết hàng -->
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        th:if="${p.stockQuantity <= 0 and username != null}" disabled>
+                                                                    Hết hàng
+                                                                </button>
+                                                                <!-- Nút "Đăng nhập" hiển thị khi chưa đăng nhập -->
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        th:if="${username == null}" disabled>
+                                                                    Đăng nhập
+                                                                </button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -700,13 +725,25 @@
                                                 <h5 th:text="${p.description}" class="card-text"></h5>
                                                 <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
                                                 <div class="d-grid gap-2 d-md-block">
-                                                    <button type="button" class="btn btn-primary add-to-cart"
-                                                            th:if="${username != null}">Mua Ngay
-                                                    </button>
-
-                                                    <button type="button" class="btn btn-secondary"
-                                                            th:if="${username == null}" disabled>Đăng nhập
-                                                    </button>
+                                                    <form class="addToCartForm" data-product-id="[[${p.productId}]]">
+                                                        <input type="hidden" name="productId" th:value="${p.productId}"/>
+                                                        <input type="hidden" name="quantity" value="1"/>
+                                                        <!-- Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng -->
+                                                        <button type="submit" class="btn btn-primary"
+                                                                th:if="${p.stockQuantity > 0 and username != null}">
+                                                            Thêm vào giỏ hàng
+                                                        </button>
+                                                        <!-- Nút "Hết hàng" hiển thị khi sản phẩm hết hàng -->
+                                                        <button type="button" class="btn btn-secondary"
+                                                                th:if="${p.stockQuantity <= 0 and username != null}" disabled>
+                                                            Hết hàng
+                                                        </button>
+                                                        <!-- Nút "Đăng nhập" hiển thị khi chưa đăng nhập -->
+                                                        <button type="button" class="btn btn-secondary"
+                                                                th:if="${username == null}" disabled>
+                                                            Đăng nhập
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

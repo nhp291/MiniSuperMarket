@@ -2,8 +2,12 @@ package devmagic.Controller.Admin;
 
 import devmagic.Model.Account;
 import devmagic.Service .AccountService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.SecureRandom;
 import java.util.Optional;
 
 @Controller
@@ -22,6 +27,9 @@ public class PasswordController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender emailSender;
 
     // Hiển thị form thay đổi mật khẩu
     @GetMapping("/ChangePassword")
@@ -112,6 +120,65 @@ public class PasswordController {
         model.addAttribute("username", username);
 
         return "ForgotPassword";
+    }
+    // Xử lý khi người dùng gửi form quên mật khẩu
+    @PostMapping("/ForgotPassword")
+    public String forgotPassword(
+            @RequestParam("email") String email,
+            Model model) {
+
+        // Tìm tài khoản dựa trên email
+        Optional<Account> accountOptional = accountService.getAccountByEmail(email);
+        if (accountOptional.isEmpty()) {
+            model.addAttribute("errorMessage", "Tài khoản không tồn tại.");
+            return "ForgotPassword";
+        }
+
+        Account account = accountOptional.get();
+
+        // Tạo mật khẩu mới ngẫu nhiên
+        String newPassword = generateRandomPassword(6);
+
+        // Mã hóa mật khẩu mới
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        account.setPassword(encodedPassword);
+        accountService.saveAccount(account); // Lưu mật khẩu mới vào cơ sở dữ liệu
+
+        // Gửi email thông báo mật khẩu mới
+        try {
+            sendEmail(account.getEmail(), newPassword);
+        } catch (MessagingException e) {
+            model.addAttribute("errorMessage", "Không thể gửi email. Vui lòng thử lại.");
+            return "ForgotPassword";
+        }
+
+        // Thêm thông báo thành công và chuyển hướng đến trang đăng nhập
+        model.addAttribute("successMessage", "Mật khẩu mới đã được gửi qua email. Vui lòng đăng nhập lại.");
+        return "redirect:/user/login";
+    }
+
+    // Tạo mật khẩu ngẫu nhiên
+    private String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(chars.length());
+            password.append(chars.charAt(index));
+        }
+        return password.toString();
+    }
+
+    // Gửi email thông báo mật khẩu mới
+    private void sendEmail(String to, String newPassword) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(to);
+        helper.setSubject("Mật khẩu mới của bạn");
+        helper.setText("Mật khẩu mới của bạn là: " + newPassword);
+
+        emailSender.send(message);
     }
 
 }

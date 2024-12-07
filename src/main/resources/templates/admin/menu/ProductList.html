@@ -56,36 +56,46 @@
                             <div class="row">
                                 <div class="col-lg-12 col-sm-12">
                                     <div class="row">
+                                        <!-- Category Filter -->
                                         <div class="col-lg col-sm-6 col-12">
                                             <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>Category</option>
-                                                    <option>Computers</option>
-                                                    <option>Fruits</option>
+                                                <select class="form-select" id="categoryFilter" name="categoryId">
+                                                    <option value="">-- Chọn danh mục --</option>
+                                                    <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.categoryName}"
+                                                            th:selected="${category.categoryId == categoryId}"></option>
                                                 </select>
                                             </div>
                                         </div>
+
+                                        <!-- Brand Filter -->
                                         <div class="col-lg col-sm-6 col-12">
                                             <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>Brand</option>
-                                                    <option>N/D</option>
+                                                <select class="form-select" id="brandFilter" name="brandId">
+                                                    <option value="">-- Chọn thương hiệu --</option>
+                                                    <option th:each="brand : ${brands}" th:value="${brand.brandId}" th:text="${brand.brandName}"
+                                                            th:selected="${brand.brandId == brandId}"></option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg col-sm-6 col-12 ">
-                                            <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>Price</option>
-                                                    <option>150.00</option>
-                                                </select>
+
+                                        <!-- Search Bar -->
+                                        <div class="col-lg col-sm-6 col-12">
+                                            <div class="search-input">
+                                                <form th:action="@{/Products/ProductList}" method="get">
+                                                    <input type="text" name="searchQuery" class="form-control" placeholder="Nhập tên sản phẩm...">
+                                                    <button type="submit" class="btn btn-searchset">
+                                                        <img src="/admin/img/icons/search-white.svg" alt="Search">
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
+
+                                        <!-- Search Button -->
                                         <div class="col-lg-1 col-sm-6 col-12">
                                             <div class="form-group">
-                                                <a class="btn btn-filters ms-auto">
+                                                <button type="submit" class="btn btn-filters">
                                                     <img src="/admin/img/icons/search-whites.svg" alt="img">
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

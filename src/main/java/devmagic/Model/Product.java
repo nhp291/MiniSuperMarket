@@ -28,10 +28,10 @@
         @Column(name = "description")
         private String description;
 
-        @Column(name = "price", precision = 7, scale = 3, nullable = false)
+        @Column(name = "price", precision = 7, scale = 3,nullable = false)
         @NotNull(message = "Giá sản phẩm không được để trống")
         @DecimalMin(value = "0.0", inclusive = false, message = "Giá sản phẩm phải lớn hơn hoặc bằng 0")
-        private BigDecimal price;
+        private BigDecimal price;   
 
         @Column(name = "sale", precision = 7, scale = 3)
         private BigDecimal sale;
@@ -61,7 +61,7 @@
         private Warehouse warehouse;
 
 
+
         @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<ProductImage> images = new ArrayList<>();
 
-    }

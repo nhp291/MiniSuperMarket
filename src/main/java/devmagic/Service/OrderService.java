@@ -26,6 +26,12 @@ public class OrderService {
         this.productRepository = productRepository;
     }
 
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll().stream()
+                .filter(order -> !order.isDeleted())
+                .collect(Collectors.toList());
+    }
+
     // Lấy danh sách đơn hàng không bị xóa
     public List<Order> getAllActiveOrders() {
         return orderRepository.findAll().stream()
@@ -54,12 +60,22 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    // Xóa đơn hàng (đánh dấu là đã xóa)
+    // Soft Delete: Đánh dấu đơn hàng là đã xóa
+//    public void markOrderAsDeleted(Integer id) {
+//        Order order = orderRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Order not found"));
+//
+//        order.setDeleted(true);
+//        orderRepository.save(order);  // Lưu lại thay đổi vào cơ sở dữ liệu
+//    }
+
+    // Hard Delete: Xóa đơn hàng khỏi cơ sở dữ liệu
     public void deleteOrder(Integer id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        order.setDeleted(true);
-        orderRepository.save(order);
+        if (orderRepository.existsById(id)) {
+            orderRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Order not found");
+        }
     }
 
     // Tổng số đơn hàng
