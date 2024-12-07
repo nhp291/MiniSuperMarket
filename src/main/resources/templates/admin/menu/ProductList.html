@@ -107,37 +107,71 @@
                                 <th>Giá</th>
                                 <th>Giảm giá</th>
                                 <th>Số lượng</th>
+                                <th>Đơn vị</th>
+                                <th>Xuất xứ</th>
                                 <th></th>
                             </tr>
                             </thead>
 
                             <tbody  th:each="product : ${products}">
-                                <tr>
-                                    <td>
-                                        <div th:if="${product.images != null}" th:each="image : ${product.images}">
-                                            <img th:src="@{'/Image/imageUrl/' + ${image.imageUrl}}" alt="Image" style="width: 50px; height: auto;" />
-                                        </div>
-                                    </td>
-                                    <td th:text="${product.name}">Tên sản phẩm</td>
-                                    <td th:text="${product.category.categoryName}">Danh mục</td>
-                                    <td th:text="${product.brand.brandName}">Thương hiệu</td>
-                                    <td th:text="${product.warehouse.warehouseName}">kho</td>
-                                    <td th:text="${product.description}">Mô tả</td>
-                                    <td th:text="${product.price}">Giá</td>
-                                    <td th:text="${product.sale != null ? product.sale : 0}">Giảm giá</td>
-                                    <td th:text="${product.stockQuantity}">Số lượng</td>
-                                    <td>
-                                        <a class="btn " th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">
-                                            <img src="/admin/img/icons/edit.svg" alt="img">
-                                        </a>
-                                        <a class="btn " th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">
-                                            <img src="/admin/img/icons/delete.svg" alt="img">
-                                        </a>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>
+                                    <div th:if="${product.images != null}" th:each="image : ${product.images}">
+                                        <img th:src="@{'/Image/imageUrl/' + ${image.imageUrl}}" alt="Image" style="width: 50px; height: auto;" />
+                                    </div>
+                                </td>
+                                <td th:text="${product.name}">Tên sản phẩm</td>
+                                <td th:text="${product.category.categoryName}">Danh mục</td>
+                                <td th:text="${product.brand.brandName}">Thương hiệu</td>
+                                <td th:text="${product.warehouse.warehouseName}">kho</td>
+                                <td th:text="${product.description}">Mô tả</td>
+                                <td th:text="${product.price}">Giá</td>
+                                <td th:text="${product.sale != null ? product.sale : 0}">Giảm giá</td>
+                                <td th:text="${product.stockQuantity}">Số lượng</td>
+                                <td th:text="${product.unit}">Đơn vị</td>
+                                <td th:text="${product.origin}">Xuất xứ</td>
+                                <td>
+                                    <a class="btn " th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">
+                                        <img src="/admin/img/icons/edit.svg" alt="img">
+                                    </a>
+                                    <a class="btn " th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">
+                                        <img src="/admin/img/icons/delete.svg" alt="img">
+                                    </a>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Phân trang -->
+                    <div class="pagination-wrapper text-center mt-2">
+                        <!-- Nút Đầu Trang -->
+                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">
+                            <a th:href="@{/Products/ProductList(page=0)}"><i class="bi bi-chevron-double-left"></i></a>
+                        </span>
+
+                        <!-- Nút Trước -->
+                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">
+                            <a th:href="@{/Products/ProductList(page=${currentPage - 1})}"><i class="bi bi-chevron-compact-left"></i></a>
+                        </span>
+
+                        <!-- Thông Tin Phân Trang -->
+                        <span class="pagination-info btn btn-info text-light">
+                            Trang <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
+                        </span>
+
+                        <!-- Nút Tiếp -->
+                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">
+                            <a th:href="@{/Products/ProductList(page=${currentPage + 1})}"><i class="bi bi-chevron-compact-right"></i></a>
+                        </span>
+
+                        <!-- Nút Cuối Trang -->
+                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">
+                            <a th:href="@{/Products/ProductList(page=${totalPages - 1})}"><i class="bi bi-chevron-double-right"></i></a>
+                        </span>
+                    </div>
+
+
                 </div>
             </div>
 

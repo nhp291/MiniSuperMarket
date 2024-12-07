@@ -8,6 +8,7 @@ import devmagic.Reponsitory.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class CartService {
     }
 
     public List<CartItemDTO> getUpdatedCart(Integer accountId) {
-        return getCartItemDTOs(accountId);  // Trả về danh sách sản phẩm trong giỏ hàng dưới dạng DTO
+        return getCartItemDTOs(accountId); // Trả về danh sách sản phẩm trong giỏ hàng dưới dạng DTO
     }
 
     // Find cart item by account and product
@@ -53,10 +54,10 @@ public class CartService {
     }
 
     // Calculate the total price of cart items
-    public double calculateTotalPrice(List<CartItemDTO> cartItems) {
+    public BigDecimal calculateTotalPrice(List<CartItemDTO> cartItems) {
         return cartItems.stream()
-                .mapToDouble(cart -> cart.getPrice() * cart.getQuantity())
-                .sum();
+                .map(cart -> cart.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Calculate the total quantity of items in the cart
@@ -74,7 +75,7 @@ public class CartService {
             String imageUrl = cart.getProduct().getImages().get(0).getImageUrl(); // Giả sử hình ảnh đầu tiên là hình chính
             String productName = cart.getProduct().getName();
             int quantity = cart.getQuantity();
-            double price = cart.getPrice();
+            BigDecimal price = cart.getPrice();
             Product product = cart.getProduct(); // Lấy đối tượng Product từ Cart
             cartItemDTOs.add(new CartItemDTO(imageUrl, productName, quantity, price, product));
         }

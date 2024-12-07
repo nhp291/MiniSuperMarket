@@ -1,18 +1,22 @@
 package devmagic.Controller.Admin;
 
 import devmagic.Dto.ProductDTO;
-import devmagic.Model.Product;
-import devmagic.Model.ProductImage;
+import devmagic.Model.*;
 import devmagic.Reponsitory.*;
 import devmagic.Service.ProductService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -44,16 +48,28 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/ProductList")
-    public String viewProductList(Model model) {
-        List<Product> products = productRepository.findAll();
-        model.addAttribute("products", products);
+    public String viewProductList(Model model,
+                                  @RequestParam(value = "page", defaultValue = "0") int page,
+                                  @RequestParam(value = "size", defaultValue = "10") int size) {
+        // Sử dụng Pageable để phân trang và sắp xếp theo tên sản phẩm
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+
+        // Lấy dữ liệu phân trang
+        Page<Product> productPage = productRepository.findAll(pageable);
+
+        // Thêm dữ liệu vào model
+        model.addAttribute("products", productPage.getContent());
         model.addAttribute("pageTitle", "Product List");
         model.addAttribute("viewName", "admin/menu/ProductList");
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("totalItems", productPage.getTotalElements());
+
         return "admin/layout";
     }
 
     @GetMapping("/AddProduct")
-    public String addProductForm(Model model) {
+    public String createProductForm(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("productDTO", new ProductDTO());
         model.addAttribute("categories", categoryRepository.findAll());
@@ -65,32 +81,61 @@ public class ProductController {
     }
 
     @PostMapping("/AddProduct")
-    public String addProduct(@ModelAttribute @Valid ProductDTO productDTO,
-                             @RequestParam("images") List<MultipartFile> files,
-                             Model model) throws IOException {
-
-        if (productDTO.getBrandId() == null || !brandRepository.existsById(productDTO.getBrandId())) {
-            model.addAttribute("error", "Thương hiệu không hợp lệ");
+    public String createProduct(@ModelAttribute @Valid ProductDTO productDTO,
+                                @RequestParam(value = "images", required = false) List<MultipartFile> files,
+                                Model model) {
+        if (files == null || files.isEmpty() || files.stream().allMatch(MultipartFile::isEmpty)) {
+            model.addAttribute("error", "Vui lòng tải lên ít nhất một hình ảnh.");
+            model.addAttribute("productDTO", productDTO);
             model.addAttribute("categories", categoryRepository.findAll());
             model.addAttribute("warehouses", warehouseRepository.findAll());
             model.addAttribute("brands", brandRepository.findAll());
-            return "admin/menu/AddProduct"; // Trở lại form nếu có lỗi
+            model.addAttribute("pageTitle", "Add Product");
+            model.addAttribute("viewName", "admin/menu/AddProduct");
+            return "admin/layout";
+        }else {
+            for (MultipartFile file : files) {
+                System.out.println("Đã nhận file: " + file.getOriginalFilename());
+            }
         }
 
-        Product product = new Product();
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setPrice(new BigDecimal(productDTO.getPrice()));
-        product.setSale(new BigDecimal(productDTO.getSale()));
-        product.setStockQuantity(productDTO.getStockQuantity());
+        try {
+            Category category = categoryRepository.findById(productDTO.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Danh mục không tồn tại"));
+            Warehouse warehouse = warehouseRepository.findById(productDTO.getWarehouseId())
+                    .orElseThrow(() -> new IllegalArgumentException("Kho hàng không tồn tại"));
+            Brand brand = brandRepository.findById(productDTO.getBrandId())
+                    .orElseThrow(() -> new IllegalArgumentException("Thương hiệu không tồn tại"));
 
-        product.setCategory(categoryRepository.findById(productDTO.getCategoryId()).orElse(null));
-        product.setWarehouse(warehouseRepository.findById(productDTO.getWarehouseId()).orElse(null));
-        product.setBrand(brandRepository.findById(productDTO.getBrandId()).orElse(null));
+            Product product = productService.convertToProduct(productDTO, category, warehouse, brand);
+            Product savedProduct = productRepository.save(product);
 
-        Product savedProduct = productService.createProduct(product, files);
+            for (MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    String fileName = productService.saveImage(file); // Gọi saveImage từ ProductService
+                    ProductImage productImage = new ProductImage();
+                    productImage.setProduct(savedProduct);
+                    productImage.setImageUrl(fileName); // Lưu tên file vào database
+                    productImageRepository.save(productImage);
+                }
+            }
 
-        return "redirect:/Products/ProductList";
+            return "redirect:/Products/ProductList";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", "Lỗi: " + e.getMessage());
+        } catch (IOException e) {
+            model.addAttribute("error", "Đã xảy ra lỗi trong quá trình lưu ảnh: " + e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("error", "Đã xảy ra lỗi không xác định: " + e.getMessage());
+        }
+
+        model.addAttribute("productDTO", productDTO);
+        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("warehouses", warehouseRepository.findAll());
+        model.addAttribute("brands", brandRepository.findAll());
+        model.addAttribute("pageTitle", "Add Product");
+        model.addAttribute("viewName", "admin/menu/AddProduct");
+        return "admin/layout";
     }
 
     @GetMapping("/EditProduct/{id}")
@@ -108,6 +153,10 @@ public class ProductController {
             productDTO.setWarehouseId(product.getWarehouse().getWarehouseId());
             productDTO.setBrandId(product.getBrand().getBrandId());
 
+            // Thêm các trường unit và origin
+            productDTO.setUnit(product.getUnit());
+            productDTO.setOrigin(product.getOrigin());
+
             model.addAttribute("productDTO", productDTO);
             model.addAttribute("images", product.getImages());
             model.addAttribute("categories", categoryRepository.findAll());
@@ -121,10 +170,13 @@ public class ProductController {
         return "redirect:/Products/ProductList";
     }
 
+
     @PostMapping("/EditProduct/{id}")
-    public String editProduct(@PathVariable("id") int id, @ModelAttribute @Valid ProductDTO productDTO,
-                              @RequestParam("imageFiles") List<MultipartFile> imageFiles,
-                              Model model) throws IOException {
+    public String updateProduct(@PathVariable("id") int id, @ModelAttribute @Valid ProductDTO productDTO,
+                                @RequestParam(value = "imageFiles", required = false) List<MultipartFile> imageFiles,
+                                Model model) throws IOException {
+
+        // Kiểm tra tính hợp lệ của productDTO
         if (productDTO.getBrandId() == null || !brandRepository.existsById(productDTO.getBrandId())) {
             model.addAttribute("error", "Thương hiệu không hợp lệ");
             model.addAttribute("categories", categoryRepository.findAll());
@@ -146,27 +198,23 @@ public class ProductController {
             existingProduct.setDescription(productDTO.getDescription());
             existingProduct.setWarehouse(warehouseRepository.findById(productDTO.getWarehouseId()).orElse(null));
             existingProduct.setBrand(brandRepository.findById(productDTO.getBrandId()).orElse(null));
+
+            // Cập nhật Unit và Origin
+            existingProduct.setUnit(productDTO.getUnit());
+            existingProduct.setOrigin(productDTO.getOrigin());
+
+            // Lưu sản phẩm đã cập nhật
             productRepository.save(existingProduct);
 
-            // Xử lý hình ảnh
-            List<ProductImage> existingImages = productImageRepository.findByProduct_ProductId(id);
+            // Nếu có hình ảnh mới được tải lên
+            if (imageFiles != null && imageFiles.stream().anyMatch(file -> !file.isEmpty())) {
+                // Xóa các hình ảnh cũ chỉ khi có hình ảnh mới
+                List<ProductImage> existingImages = productImageRepository.findByProduct_ProductId(id);
+                productImageRepository.deleteAll(existingImages);
 
-            // Lưu hình ảnh mới và cập nhật tên hình ảnh cũ
-            for (MultipartFile file : imageFiles) {
-                if (!file.isEmpty()) {
-                    String fileName = file.getOriginalFilename();
-                    Path imagePath = Paths.get("src/main/resources/static/Image/imageUrl/" + fileName);
-
-                    if (Files.exists(imagePath)) {
-                        // Nếu hình ảnh đã tồn tại trong thư mục, chỉ cập nhật DB
-                        if (existingImages.stream().noneMatch(img -> img.getImageUrl().equals(fileName))) {
-                            ProductImage newImage = new ProductImage();
-                            newImage.setImageUrl(fileName);
-                            newImage.setProduct(existingProduct);
-                            productImageRepository.save(newImage);
-                        }
-                    } else {
-                        // Nếu hình ảnh mới, lưu vào thư mục và DB
+                // Lưu hình ảnh mới
+                for (MultipartFile file : imageFiles) {
+                    if (!file.isEmpty()) {
                         String savedFileName = productService.saveImage(file);
                         ProductImage newImage = new ProductImage();
                         newImage.setImageUrl(savedFileName);
@@ -182,7 +230,6 @@ public class ProductController {
         model.addAttribute("error", "Sản phẩm không tồn tại");
         return "redirect:/Products/ProductList";
     }
-
 
     @Transactional
     @GetMapping("/DeleteProduct/{id}")

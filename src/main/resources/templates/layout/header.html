@@ -451,6 +451,11 @@
               <i class="bi bi-person-exclamation"></i> Quên Mật Khẩu
             </a>
           </li>
+          <li th:if="${username != null}">
+            <a th:href="@{/cart/paymenthistory}" class="dropdown-item">
+              <i class="bi bi-person-exclamation"></i> Lịch sử mua hàng
+            </a>
+          </li>
 
           <!-- Khi tài khoản là Admin -->
           <li th:if="${role == 'ROLE_Admin'}">

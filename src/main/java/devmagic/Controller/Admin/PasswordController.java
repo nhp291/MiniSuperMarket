@@ -34,7 +34,7 @@ public class PasswordController {
         }
 
         model.addAttribute("username", account.getUsername());
-        return "UpdatePassword"; // Đảm bảo tên file template đúng
+        return "UpdatePassword"; // Đảm bảo template phù hợp
     }
 
 
@@ -47,28 +47,31 @@ public class PasswordController {
             RedirectAttributes redirectAttributes,
             Model model) {
 
-        // Kiểm tra mật khẩu xác nhận
+        // Xác nhận mật khẩu mới và mật khẩu xác nhận
         if (!newPassword.equals(newPasswordConfirm)) {
             model.addAttribute("errorMessage", "Mật khẩu xác nhận không trùng khớp.");
+            model.addAttribute("username", username); // Truyền lại username để hiển thị
             return "UpdatePassword";
         }
 
-        // Tìm tài khoản người dùng theo username/email
+        // Tìm tài khoản người dùng
         Optional<Account> accountOptional = accountService.getAccountByUsername(username);
         if (accountOptional.isEmpty()) {
             model.addAttribute("errorMessage", "Tài khoản không tồn tại.");
+            model.addAttribute("username", username); // Truyền lại username để hiển thị
             return "UpdatePassword";
         }
 
         Account account = accountOptional.get();
 
-        // Kiểm tra mật khẩu hiện tại có đúng không
+        // Kiểm tra mật khẩu hiện tại
         if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
             model.addAttribute("errorMessage", "Mật khẩu hiện tại không đúng.");
+            model.addAttribute("username", username); // Truyền lại username để hiển thị
             return "UpdatePassword";
         }
 
-        // Mã hóa và cập nhật mật khẩu mới
+        // Mã hóa mật khẩu mới và cập nhật
         String encodedPassword = passwordEncoder.encode(newPassword);
         account.setPassword(encodedPassword);
         accountService.saveAccount(account);
@@ -76,7 +79,7 @@ public class PasswordController {
         // Thêm thông báo thành công
         redirectAttributes.addFlashAttribute("successMessage", "Mật khẩu đã thay đổi thành công.");
 
-        // Chuyển hướng sang trang đăng nhập
+        // Chuyển hướng đến trang đăng nhập
         return "redirect:/user/login";
     }
 

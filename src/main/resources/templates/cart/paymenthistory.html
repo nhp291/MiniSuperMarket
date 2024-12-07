@@ -1,6 +1,5 @@
-
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,90 +11,138 @@
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
         }
+
         .history-box {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 30px;
+            padding: 20px;
             border: 1px solid #ddd;
             border-radius: 10px;
             background-color: #fff;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             animation: fadeIn 1s ease-in-out;
         }
+
         .history-title {
             text-align: center;
             font-size: 28px;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             color: #333;
             animation: slideInDown 1s ease-in-out;
         }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
         .table thead th {
             background-color: #007bff;
             color: #fff;
             border-color: #007bff;
             animation: fadeIn 1.5s ease-in-out;
         }
+
         .table tbody tr {
             animation: fadeInUp 1s ease-in-out;
         }
+
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
+
         .btn-view {
             color: #007bff;
             text-decoration: none;
             animation: pulse 2s infinite;
         }
+
         .btn-view:hover {
             text-decoration: underline;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
+
         @keyframes slideInDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
+
         @keyframes fadeInUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
+
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
     </style>
     <div class="container mt-5">
-        <h3 class="text-center mb-4">Lịch Sử Hóa Đơn</h3>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Mã Hóa Đơn</th>
-                <th>Ngày Mua</th>
-                <th>Phương Thức Thanh Toán</th>
-                <th>Trạng Thái</th>
-                <th>Chi Tiết</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Lặp qua danh sách orders -->
-            <tr th:each="order : ${orders}">
-                <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></td>
-                <td th:text="${order.orderId}"></td>
-                <td th:text="${order.paymentMethod}"></td>
-                <td th:text="${order.paymentStatus}"></td>
-                <td>
-                    <a th:href="'/invoice/' + ${order.orderId}" class="btn btn-primary btn-sm">Xem</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="history-box">
+            <h3 class="history-title">Lịch Sử Hóa Đơn</h3>
+            <!-- Thêm lớp table-responsive -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>Mã Hóa Đơn</th>
+                        <th>Ngày Mua</th>
+                        <th>Phương Thức Thanh Toán</th>
+                        <th>Trạng Thái</th>
+                        <th>Chi Tiết</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Lặp qua danh sách orders -->
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.orderId}"></td> <!-- Mã hóa đơn -->
+                        <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></td> <!-- Ngày mua -->
+                        <td th:text="${order.paymentMethod}"></td> <!-- Phương thức thanh toán -->
+                        <td th:text="${order.paymentStatus}"></td> <!-- Trạng thái -->
+                        <td>
+                            <a th:href="@{/invoice/{orderId}(orderId=${order.orderId})}" class="btn btn-primary btn-sm">Xem</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </main>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

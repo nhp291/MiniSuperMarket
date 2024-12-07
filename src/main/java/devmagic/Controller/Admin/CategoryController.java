@@ -4,6 +4,9 @@ import devmagic.Model.Category;
 import devmagic.Service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,9 +30,16 @@ public class CategoryController {
 
     // Hiển thị danh sách danh mục
     @GetMapping("/CategoryList")
-    public String categoryList(Model model) {
-        List<Category> categories = categoryService.getAllCategories();
-        model.addAttribute("categories", categories);
+    public String categoryList(@RequestParam(defaultValue = "1") int page, Model model) {
+        int pageSize = 10; // Number of categories per page
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+
+        // Get the paginated categories
+        Page<Category> categoryPage = categoryService.getCategoriesPage(pageable);
+
+        model.addAttribute("categories", categoryPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", categoryPage.getTotalPages());
         model.addAttribute("pageTitle", "Danh sách danh mục");
         model.addAttribute("viewName", "admin/menu/CategoryList");
         return "admin/layout";
