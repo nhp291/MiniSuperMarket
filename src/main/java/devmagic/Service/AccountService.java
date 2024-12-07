@@ -177,4 +177,9 @@ public class AccountService {
         return accountRepository.findAll(pageable); // This will automatically handle pagination
     }
 
+    // Thêm phương thức tìm tài khoản theo email
+    public Optional<Account> getAccountByEmail(String email) {
+        return accountRepository.findByEmail(email);
+    }
+
 }
