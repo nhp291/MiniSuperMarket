@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -28,6 +30,12 @@ public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
+
+
+    @Autowired
+    public OrderController(OrderService orderService) {
+        this.ordersService = orderService;
+    }
 
     // Queue để gửi sự kiện từ server đến client qua SSE
     private final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
@@ -99,16 +107,34 @@ public class OrderController {
         }
     }
 
-    // Xóa đơn hàng (đánh dấu là đã xóa)
+    // Endpoint cho Soft Delete: Đánh dấu đơn hàng là đã xóa
+//    @PutMapping("/{id}/mark-deleted")
+//    public ModelAndView markOrderAsDeleted(@PathVariable Integer id) {
+//        try {
+//            ordersService.markOrderAsDeleted(id);
+//            // Chuyển hướng về trang danh sách đơn hàng
+//            return new ModelAndView("redirect:/orders/OrderList");
+//        } catch (RuntimeException e) {
+//            // Nếu không tìm thấy đơn hàng, vẫn trả về lỗi
+//            return new ModelAndView("redirect:/orders/OrderList?error=Order not found");
+//        }
+//    }
+
+
+    // Endpoint cho Hard Delete: Xóa hẳn đơn hàng khỏi cơ sở dữ liệu
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Integer id) {
+    public ModelAndView deleteOrder(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
             ordersService.deleteOrder(id);
-            return ResponseEntity.ok("Order deleted successfully");
+//            redirectAttributes.addFlashAttribute("message", "Order deleted successfully.");
+            return new ModelAndView("redirect:/Orders/OrderList");  // Sử dụng redirect đúng
+
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Order not found.");
+            return new ModelAndView("redirect:/Orders/OrderList");  // Sử dụng redirect đúng
         }
     }
+
 
     // Tổng số đơn hàng
     @GetMapping("/orders/total")
@@ -145,10 +171,8 @@ public class OrderController {
 
     // Cập nhật trạng thái thanh toán và gửi SSE cho frontend
     @PostMapping("/{orderId}/change-payment-status")
-    public String changePaymentStatus(
-            @PathVariable int orderId,
-            @RequestParam String paymentStatus,
-            Model model) {
+    public String changePaymentStatus( @PathVariable int orderId,
+            @RequestParam String paymentStatus, Model model) {
         try {
             // Kiểm tra giá trị paymentStatus không null và hợp lệ
             if (paymentStatus == null || paymentStatus.isEmpty()) {

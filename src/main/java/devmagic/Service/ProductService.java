@@ -35,11 +35,9 @@ public class ProductService {
 
     private final String UPLOAD_DIRECTORY = "./Image/imageUrl/"; // Thư mục lưu trữ ảnh
 
-
     public List<Product> findAll() {
         return productRepository.findAll();
     }
-
 
     public Product findById(Integer id) {
         return productRepository.findById(id).get();
@@ -68,8 +66,6 @@ public class ProductService {
         return new PageImpl<Product>(list, pageable, this.searchProduct(keyword).size());
     }
 
-
-
     public Page<Product> getFiveAll(Integer pageable) {
         Pageable page = PageRequest.of(pageable +8, 8);
         return this.productRepository.findAll(page);
@@ -90,6 +86,7 @@ public class ProductService {
         if (maxPrice == null) maxPrice = Double.MAX_VALUE;
         return productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
     }
+
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
@@ -206,5 +203,36 @@ public class ProductService {
         return product;
     }
 
+    public Page<Product> findBySearchCatBrand(String search, Integer cat, Integer brand, Pageable pageable) {
+        return productRepository.findByNameContainingAndCategory_CategoryIdAndBrand_BrandId(search, cat, brand, pageable);
+    }
+
+    public Page<Product> findBySearchCat(String search, Integer cat, Pageable pageable) {
+        return productRepository.findByNameContainingAndCategory_CategoryId(search, cat, pageable);
+    }
+
+    public Page<Product> findBySearchBrand(String search, Integer brand, Pageable pageable) {
+        return productRepository.findByNameContainingAndBrand_BrandId(search, brand, pageable);
+    }
+
+    public Page<Product> findBySearch(String search, Pageable pageable) {
+        return productRepository.findByNameContaining(search, pageable);
+    }
+
+    public Page<Product> findByCatBrand(Integer cat, Integer brand, Pageable pageable) {
+        return productRepository.findByCategory_CategoryIdAndBrand_BrandId(cat, brand, pageable);
+    }
+
+    public Page<Product> findByCat(Integer cat, Pageable pageable) {
+        return productRepository.findByCategory_CategoryId(cat, pageable);
+    }
+
+    public Page<Product> findByBrand(Integer brand, Pageable pageable) {
+        return productRepository.findByBrand_BrandId(brand, pageable);
+    }
+
+    public Page<Product> getAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
 
 }
