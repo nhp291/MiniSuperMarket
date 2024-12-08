@@ -272,11 +272,11 @@
                 return;
             }
 
-            // Gửi số lượng cập nhật đến máy chủ
-            const itemId = cartItem.getAttribute('data-item-id');
-            updateCartItemInDatabase(itemId, quantity)
-                .then(() => updateOrderSummary());
-        }
+        //     // Gửi số lượng cập nhật đến máy chủ
+        //     const itemId = cartItem.getAttribute('data-item-id');
+        //     updateCartItemInDatabase(itemId, quantity)
+        //         .then(() => updateOrderSummary());
+        // }
 
         // Gửi yêu cầu cập nhật số lượng sản phẩm tới máy chủ
         function updateCartItemInDatabase(itemId, quantity) {
