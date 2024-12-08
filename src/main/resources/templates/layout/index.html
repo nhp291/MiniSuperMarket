@@ -108,6 +108,18 @@
         });
     });
 
+    function updateCartQuantity() {
+        fetch('/cart/getTotalQuantity')
+            .then(response => response.json())
+            .then(data => {
+                var badge = document.getElementById("cartBadge");
+                badge.innerText = data.totalQuantity;  // Cập nhật số lượng vào badge
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Gọi hàm này khi trang tải hoặc sau khi thêm/xóa sản phẩm
+    updateCartQuantity();
 </script>
 <style>
 

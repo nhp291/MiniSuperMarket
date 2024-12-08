@@ -387,7 +387,7 @@
 </style>
 <header id="site-header">
   <div id="site-header-container">
-    <a >
+    <a th:href="@{/layout/Home}">
       <img src="/Image/imageProfile/logo.jpg" alt="Logo" width="90px">
     </a>
 
@@ -484,8 +484,15 @@
         </ul>
       </div>
     </div>
-
-    <a  th:href="@{/cart/shoppingcart}"><button  type="button" class="btn btn-light"><i class="bi bi-cart"></i><span> Giỏ Hàng</span></button></a>
+    <a th:href="@{/cart/shoppingcart}" class="text-decoration-none">
+      <button type="button" class="btn btn-light position-relative">
+        <i class="bi bi-cart"></i>
+        Giỏ Hàng
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              th:text="${totalQuantity}">
+        </span>
+      </button>
+    </a>
 
     <script>
       // Loại bỏ query string nếu có
