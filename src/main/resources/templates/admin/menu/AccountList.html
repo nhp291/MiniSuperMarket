@@ -3,6 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>Account List</title>
+    <style>
+        button[disabled] {
+            opacity: 1.5; /* Làm mờ nút */
+            cursor: not-allowed; /* Hiển thị con trỏ không được phép */
+        }
+    </style>
 </head>
 <body>
 <div class="main-wrapper" th:fragment="content">
@@ -96,14 +102,16 @@
                                 <td th:text="${account.address != null ? account.address : 'N/A'}"></td>
                                 <td th:text="${account.role != null ? account.role.roleName : 'N/A'}"></td>
                                 <td>
-                                    <a class=" btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">
-                                        <img src="/admin/img/icons/edit.svg" alt="img">
+                                    <a class="btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">
+                                        <img src="/admin/img/icons/edit.svg" alt="Edit">
                                     </a>
-                                    <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" style="display:inline;">
-                                        <button class=" btn" type="submit">
-                                            <img src="/admin/img/icons/delete.svg" alt="img">
-                                        </button>
-                                    </form>
+
+                                    <!-- Nút xóa: Disabled nếu vai trò là Admin -->
+                                    <button class="btn btn-delete"
+                                            th:disabled="${account.role != null and account.role.roleName == 'Admin'}"
+                                            th:onclick="'confirm(\'Bạn có chắc muốn xóa tài khoản này?\') ? window.location.href=\'/Accounts/delete/' + ${account.accountId} + '\' : \'\' '">
+                                        <img src="/admin/img/icons/delete.svg" alt="Delete">
+                                    </button>
                                 </td>
                             </tr>
                             </tbody>

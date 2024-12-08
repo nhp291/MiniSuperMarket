@@ -2,9 +2,7 @@ package devmagic.Controller.Admin;
 
 import devmagic.Model.Account;
 import devmagic.Reponsitory.ProductRepository;
-import devmagic.Service.AccountService;
-import devmagic.Service.BrandService;
-import devmagic.Service.CategoryService;
+import devmagic.Service.*;
 import devmagic.Utils.BaseController;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 
 @Controller
 @RequestMapping("/Admin")
@@ -37,6 +37,12 @@ public class HomeController extends BaseController {
 
     @Autowired
     private BrandService brandService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private WarehouseService warehouseService;
 
     @GetMapping("/Home")
     public String Home(Model model, HttpSession session) {
@@ -63,11 +69,32 @@ public class HomeController extends BaseController {
         long brandCount = brandService.getTotalBrands();
         model.addAttribute("brandCount", brandCount);
 
+        long totalOrders = orderService.getTotalOrders();
+        System.out.println("Total Orders: " + totalOrders); // In giá trị ra console
+        model.addAttribute("totalOrders", totalOrders);
+
+        // Kiểm tra giá trị totalRevenue
+        BigDecimal totalRevenue = orderService.getTotalRevenue();
+        System.out.println("Total Revenue: " + totalRevenue);  // Kiểm tra giá trị trước khi định dạng
+
+        if (totalRevenue != null) {
+            DecimalFormat df = new DecimalFormat("#,###.000");  // Định dạng số với 3 chữ số sau dấu thập phân
+            String formattedRevenue = df.format(totalRevenue);  // Chuyển BigDecimal thành String đã định dạng
+            model.addAttribute("totalRevenue", formattedRevenue);
+        } else {
+            model.addAttribute("totalRevenue", "0.000");
+        }
+
+//        // Thêm warehouseId vào đây
+//        Integer warehouseId = 1; // Giả sử bạn có ID kho
+//        Integer totalStockInWarehouse = warehouseService.getTotalStockInWarehouse(warehouseId);  // Truyền warehouseId vào
+//        System.out.println("Total Stock in Warehouse: " + totalStockInWarehouse); // In giá trị ra console
+//        model.addAttribute("totalOrders", totalStockInWarehouse);
+
         model.addAttribute("pageTitle", "Home Page");
         model.addAttribute("viewName", "admin/index");
         return "admin/layout";
     }
-
 
     @GetMapping("/MyProfile")
     public String MyProfile(Model model, HttpSession session) {
