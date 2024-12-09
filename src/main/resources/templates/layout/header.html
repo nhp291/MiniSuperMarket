@@ -488,9 +488,8 @@
       <button type="button" class="btn btn-light position-relative">
         <i class="bi bi-cart"></i>
         Giỏ Hàng
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              th:text="${totalQuantity}">
-        </span>
+        <span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              th:text="${totalQuantity}"></span>
       </button>
     </a>
 

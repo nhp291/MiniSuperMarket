@@ -79,7 +79,6 @@
         $('.addToCartForm').submit(function (event) {
             event.preventDefault(); // Ngăn hành vi submit mặc định
 
-            // Lấy thông tin từ form hiện tại
             var form = $(this); // Form đang được submit
             var productId = form.find("input[name='productId']").val();
             var quantity = form.find("input[name='quantity']").val();
@@ -99,27 +98,28 @@
                         .fadeIn()
                         .delay(3000)
                         .fadeOut();
+
+                    // Cập nhật badge số lượng giỏ hàng
+                    updateCartQuantity();
                 },
                 error: function (xhr, status, error) {
-                    // Xử lý lỗi nếu có
                     alert("Đã có lỗi xảy ra: " + xhr.responseText);
                 }
             });
         });
+
+        // Hàm cập nhật số lượng giỏ hàng
+        function updateCartQuantity() {
+            fetch('/cart/getTotalQuantity')
+                .then(response => response.json())
+                .then(data => {
+                    var badge = document.getElementById("cartBadge");
+                    badge.innerText = data.totalQuantity; // Cập nhật số lượng
+                })
+                .catch(error => console.error('Error:', error));
+        }
     });
 
-    function updateCartQuantity() {
-        fetch('/cart/getTotalQuantity')
-            .then(response => response.json())
-            .then(data => {
-                var badge = document.getElementById("cartBadge");
-                badge.innerText = data.totalQuantity;  // Cập nhật số lượng vào badge
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    // Gọi hàm này khi trang tải hoặc sau khi thêm/xóa sản phẩm
-    updateCartQuantity();
 </script>
 <style>
 

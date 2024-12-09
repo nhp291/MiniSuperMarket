@@ -112,9 +112,18 @@ public class HomeUserController {
 
     @GetMapping("/cart/getTotalQuantity")
     @ResponseBody
-    public Map<String, Integer> getTotalQuantity(@RequestParam("accountId") Integer accountId) {
-        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
+    public Map<String, Integer> getTotalQuantity(HttpServletRequest request) {
+        // Lấy accountId từ session
+        Integer accountId = getAccountIdFromSession(request);
+
         Map<String, Integer> response = new HashMap<>();
+        if (accountId == null) {
+            response.put("totalQuantity", 0); // Nếu không tìm thấy accountId, trả về 0
+            return response;
+        }
+
+        // Tính tổng số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
         response.put("totalQuantity", totalQuantity);
         return response;
     }
@@ -176,9 +185,11 @@ public class HomeUserController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
-        int totalQuantity = cartService.calculateTotalQuantity(
-                cartService.getCartItemDTOs(accountId)
-        );
+
+        // Lấy số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
+
+        // Truyền số lượng vào model để sử dụng trong template
         model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
