@@ -33,7 +33,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -63,7 +65,11 @@ public class HomeUserController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
+        // Lấy số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
 
+        // Truyền số lượng vào model để sử dụng trong template
+        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
@@ -104,6 +110,15 @@ public class HomeUserController {
         return "layout/Home";
     }
 
+    @GetMapping("/cart/getTotalQuantity")
+    @ResponseBody
+    public Map<String, Integer> getTotalQuantity(@RequestParam("accountId") Integer accountId) {
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
+        Map<String, Integer> response = new HashMap<>();
+        response.put("totalQuantity", totalQuantity);
+        return response;
+    }
+    
     @PostMapping("/cart/shoppingcart")
     @ResponseBody
     public ResponseEntity<?> addaToCart(@RequestParam("productId") Integer productId,
@@ -161,7 +176,10 @@ public class HomeUserController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
-
+        int totalQuantity = cartService.calculateTotalQuantity(
+                cartService.getCartItemDTOs(accountId)
+        );
+        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
