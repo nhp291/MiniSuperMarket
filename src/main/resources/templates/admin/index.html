@@ -36,7 +36,7 @@
             <span><img src="/admin/img/icons/dash2.svg" alt="img"></span>
           </div>
           <div class="dash-widgetcontent">
-            <h5><span class="counters" th:attr="data-count=${totalOrders}">12345</span></h5>
+            <h5><span class="counters" th:text="${totalOrders}">12345</span></h5>
             <h6>Tổng đơn hàng</h6>
           </div>
         </div>
@@ -75,7 +75,7 @@
              th:onclick="'window.location.href=' + '\'' + @{/Accounts/AccountList} + '\''"
              style="cursor: pointer;">
           <div class="dash-counts">
-            <h4> <span class="counters" th:attr="data-count=${totalAccounts}">12345</span></h4>
+            <h4> <span class="counters" th:text="${totalAccounts}">12345</span></h4>
             <h5>Tài khoản</h5>
           </div>
           <div class="dash-imgs">
@@ -90,7 +90,7 @@
              th:onclick="'window.location.href=' + '\'' + @{/Products/ProductList} + '\''"
         >
           <div class="dash-counts">
-            <h4> <span class="counters" th:attr="data-count=${productCount}">12345</span></h4>
+            <h4> <span class="counters" th:text="${productCount}">12345</span></h4>
             <h5>Sản phẩm</h5>
           </div>
           <div class="dash-imgs">
@@ -105,7 +105,7 @@
              th:onclick="'window.location.href=' + '\'' + @{/Categories/CategoryList} + '\''"
         >
           <div class="dash-counts">
-            <h4> <span class="counters" th:attr="data-count=${categoryCount}">12345</span></h4>
+            <h4> <span class="counters" th:text="${categoryCount}">12345</span></h4>
             <h5>Phân loại</h5>
           </div>
           <div class="dash-imgs">
@@ -120,7 +120,7 @@
              th:onclick="'window.location.href=' + '\'' + @{/Brand/BrandList} + '\''"
         >
           <div class="dash-counts">
-            <h4> <span class="counters" th:attr="data-count=${brandCount}">12345</span></h4>
+            <h4> <span class="counters" th:text="${brandCount}">12345</span></h4>
             <h5>Thương hiệu</h5>
           </div>
           <div class="dash-imgs">

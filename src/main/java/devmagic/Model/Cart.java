@@ -29,5 +29,19 @@ public class Cart {
     private int quantity;
 
     @Column(name = "price", precision = 7, scale = 3, nullable = false)
-    private BigDecimal price; // Thay đổi kiểu thành BigDecimal
+    private BigDecimal price; // Giá của 1 sản phẩm
+
+    @Transient
+    private BigDecimal totalPrice; // Tổng giá của sản phẩm trong giỏ (không lưu trong DB)
+
+    @Transient
+    private int totalQuantity; // Tổng số lượng sản phẩm trong giỏ (không lưu trong DB)
+
+    public BigDecimal getTotalPrice() {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    public void updateTotalQuantity(int additionalQuantity) {
+        this.totalQuantity += additionalQuantity;
+    }
 }

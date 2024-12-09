@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,12 +59,19 @@ public class ProductService {
     }
 
     public Page<Product> seachProduct(String keyword, Integer pageNo) {
-        List list = this.searchProduct(keyword);
-        Pageable pageable = PageRequest.of(pageNo, 8);
+        List<Product> list = this.searchProduct(keyword);
+        Pageable pageable = PageRequest.of(pageNo - 1, 8);  // Xử lý phân trang
         Integer start = (int) pageable.getOffset();
-        Integer end = (int) ((pageable.getOffset() + pageable.getPageSize()) > list.size() ? list.size() : pageable.getOffset() + pageable.getPageSize());
-        list = list.subList(start, end);
-        return new PageImpl<Product>(list, pageable, this.searchProduct(keyword).size());
+        Integer end = Math.min((int) ((pageable.getOffset() + pageable.getPageSize())), list.size()); // Đảm bảo 'end' không vượt quá 'list.size()'
+
+        // Kiểm tra điều kiện trước khi lấy sublist
+        if (start < end) {
+            list = list.subList(start, end);
+        } else {
+            list = new ArrayList<>();  // Nếu không có sản phẩm nào trong phạm vi, trả về danh sách rỗng
+        }
+
+        return new PageImpl<>(list, pageable, this.searchProduct(keyword).size());
     }
 
     public Page<Product> getFiveAll(Integer pageable) {
