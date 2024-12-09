@@ -278,6 +278,26 @@
                     <span th:errors="*{address}"></span>
                 </div>
             </div>
+            <div class="form-group">
+                <label for="verification-code">Mã xác nhận</label>
+                <div style="display: flex; gap: 10px;">
+                    <input
+                            type="text"
+                            id="verification-code"
+                            name="verificationCode"
+                            style="flex: 3; padding: 12px; border-radius: 8px;"
+                            placeholder="Nhập mã xác nhận">
+                    <button
+                            type="button"
+                            class="btn btn-secondary"
+                            style="flex: 1;"
+                            onclick="sendVerificationCode()">Gửi mã</button>
+                </div>
+                <div th:if="${verificationError}" class="error-message" style="color: red; margin-top: 5px;">
+                    <span th:text="${verificationError}"></span>
+                </div>
+            </div>
+
             <div>
                 <button type="submit" class="btn">Đăng Ký</button>
             </div>
@@ -306,6 +326,27 @@
         setTimeout(() => {
             window.location.href = '/user/login';
         }, 3000);
+    }
+    function sendVerificationCode() {
+        const email = document.getElementById('email').value;
+        if (!email) {
+            alert('Vui lòng nhập email trước khi gửi mã.');
+            return;
+        }
+
+        fetch('/user/sendVerificationCode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        }).then(response => {
+            if (response.ok) {
+                alert('Mã xác nhận đã được gửi đến email của bạn.');
+            } else {
+                alert('Có lỗi xảy ra khi gửi mã xác nhận. Vui lòng thử lại.');
+            }
+        });
     }
 </script>
 </body>

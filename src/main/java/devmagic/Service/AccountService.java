@@ -185,7 +185,12 @@ public class AccountService {
         return accountRepository.existsByUsername(username);
     }
     // Trong AccountService.java
+
+    public Optional<Account> findByEmail(String email) {
+        return accountRepository.findByEmail(email); // Gọi phương thức từ repository
+    }
+
     public boolean emailExists(String email) {
-        return accountRepository.existsByEmail(email); // Thay đổi phương thức tìm kiếm theo cách phù hợp
+        return accountRepository.findByEmail(email).isPresent(); // Kiểm tra xem email đã tồn tại chưa
     }
 }
