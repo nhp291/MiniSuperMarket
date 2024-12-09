@@ -10,80 +10,102 @@
   <div class="content">
     <div class="row">
 
+      <!-- Tổng doanh thu-->
       <div class="col-lg-3 col-sm-6 col-12">
-        <div class="dash-widget">
+        <div class="dash-widget"
+             th:onclick="'window.location.href=' + '\'' + @{/Orders/OrderList} + '\''"
+        >
           <div class="dash-widgetimg">
             <span><img src="/admin/img/icons/dash1.svg" alt="img"></span>
           </div>
           <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="307144.00">$307,144.00</span></h5>
-            <h6>Tổng tiền</h6>
+            <h5>
+               <span class="counters" th:text="${totalRevenue}" >12345</span> đ
+            </h5>
+            <h6>Tổng doanh thu</h6>
           </div>
         </div>
       </div>
 
+      <!--Tổng đơn hàng-->
       <div class="col-lg-3 col-sm-6 col-12">
-        <div class="dash-widget dash1">
+        <div class="dash-widget dash1"
+             th:onclick="'window.location.href=' + '\'' + @{/Orders/OrderList} + '\''"
+        >
           <div class="dash-widgetimg">
             <span><img src="/admin/img/icons/dash2.svg" alt="img"></span>
           </div>
           <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="4385.00">$4,385.00</span></h5>
+            <h5><span class="counters" th:attr="data-count=${totalOrders}">12345</span></h5>
             <h6>Tổng đơn hàng</h6>
           </div>
         </div>
       </div>
 
+      <!--Số lượng hàng trong kho-->
       <div class="col-lg-3 col-sm-6 col-12">
-        <div class="dash-widget dash2">
-          <div class="dash-widgetimg">
-            <span><img src="/admin/img/icons/dash3.svg" alt="img"></span>
-          </div>
-          <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="385656.50">385,656.50</span></h5>
-            <h6>Total Sale Amount</h6>
-          </div>
-        </div>
+<!--        <div class="dash-widget dash2">-->
+<!--          <div class="dash-widgetimg">-->
+<!--            <span><img src="/admin/img/icons/dash3.svg" alt="img"></span>-->
+<!--          </div>-->
+<!--          <div class="dash-widgetcontent">-->
+<!--            <h5>-->
+<!--              <span class="counters" th:attr="data-count=${totalStock}">123345</span>-->
+<!--            </h5>-->
+<!--            <h6>Số lượng hàng trong kho</h6>-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
 
       <div class="col-lg-3 col-sm-6 col-12">
-        <div class="dash-widget dash3">
-          <div class="dash-widgetimg">
-            <span><img src="/admin/img/icons/dash4.svg" alt="img"></span>
-          </div>
-          <div class="dash-widgetcontent">
-            <h5>$<span class="counters" data-count="40000.00">400.00</span></h5>
-            <h6>Total Sale Amount</h6>
-          </div>
-        </div>
+<!--        <div class="dash-widget dash3">-->
+<!--          <div class="dash-widgetimg">-->
+<!--            <span><img src="/admin/img/icons/dash4.svg" alt="img"></span>-->
+<!--          </div>-->
+<!--          <div class="dash-widgetcontent">-->
+<!--            <h5><span class="counters" data-count="40000.00">400.00</span></h5>-->
+<!--            <h6>Total Sale Amount</h6>-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
 
+      <!--   tài khoản   -->
       <div class="col-lg-3 col-sm-6 col-12 d-flex">
-        <div class="dash-count">
+        <div class="dash-count"
+             th:onclick="'window.location.href=' + '\'' + @{/Accounts/AccountList} + '\''"
+             style="cursor: pointer;">
           <div class="dash-counts">
-            <h4 th:text="${totalAccounts}"></h4>
+            <h4> <span class="counters" th:attr="data-count=${totalAccounts}">12345</span></h4>
             <h5>Tài khoản</h5>
-          </div>
-          <div class="dash-imgs">
-            <i data-feather="user"></i>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-sm-6 col-12 d-flex">
-        <div class="dash-count das1">
-          <div class="dash-counts">
-            <h4 th:text="${productCount}">0</h4> <!-- Hiển thị số lượng sản phẩm -->
-            <h5>Sản phẩm</h5>
           </div>
           <div class="dash-imgs">
             <i data-feather="user-check"></i>
           </div>
         </div>
       </div>
+
+      <!--   sản phẩm   -->
       <div class="col-lg-3 col-sm-6 col-12 d-flex">
-        <div class="dash-count das2">
+        <div class="dash-count das1"
+             th:onclick="'window.location.href=' + '\'' + @{/Products/ProductList} + '\''"
+        >
           <div class="dash-counts">
-            <h4 th:text="${categoryCount}"></h4>
+            <h4> <span class="counters" th:attr="data-count=${productCount}">12345</span></h4>
+            <h5>Sản phẩm</h5>
+          </div>
+          <div class="dash-imgs">
+            <i data-feather="user"></i>
+          </div>
+        </div>
+      </div>
+
+      <!--   phân loại   -->
+      <div class="col-lg-3 col-sm-6 col-12 d-flex">
+        <div class="dash-count das2"
+             th:onclick="'window.location.href=' + '\'' + @{/Categories/CategoryList} + '\''"
+        >
+          <div class="dash-counts">
+            <h4> <span class="counters" th:attr="data-count=${categoryCount}">12345</span></h4>
             <h5>Phân loại</h5>
           </div>
           <div class="dash-imgs">
@@ -91,10 +113,14 @@
           </div>
         </div>
       </div>
+
+      <!--   thương hiệu   -->
       <div class="col-lg-3 col-sm-6 col-12 d-flex">
-        <div class="dash-count das3">
+        <div class="dash-count das3"
+             th:onclick="'window.location.href=' + '\'' + @{/Brand/BrandList} + '\''"
+        >
           <div class="dash-counts">
-            <h4 th:text="${brandCount}"></h4>
+            <h4> <span class="counters" th:attr="data-count=${brandCount}">12345</span></h4>
             <h5>Thương hiệu</h5>
           </div>
           <div class="dash-imgs">
@@ -102,6 +128,7 @@
           </div>
         </div>
       </div>
+
     </div>
 
     <div class="row">
@@ -143,8 +170,7 @@
         </div>
       </div>
 
-
-
+      <!--   --   -->
       <div class="col-lg-5 col-sm-12 col-12 d-flex">
         <div class="card flex-fill">
           <div class="card-header pb-0 d-flex justify-content-between align-items-center">
@@ -153,7 +179,7 @@
           </div>
           <div class="card-body">
             <div class="table-responsive dataview">
-              <div id="donut-chart" class="chart-set"></div>
+              <div id="role-chart" class="chart-set"></div>
             </div>
           </div>
         </div>

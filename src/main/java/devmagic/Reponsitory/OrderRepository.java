@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -22,7 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     // Tổng doanh thu từ các đơn hàng
     @Query("SELECT SUM(od.price * od.quantity) FROM Order o JOIN o.orderDetails od WHERE o.isDeleted = false")
-    Double calculateTotalRevenue();
+    BigDecimal calculateTotalRevenue();
 
     // Lấy danh sách đơn hàng theo tháng
     @Query("SELECT o FROM Order o WHERE FUNCTION('MONTH', o.orderDate) = :month AND o.isDeleted = false")

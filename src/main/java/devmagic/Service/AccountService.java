@@ -103,8 +103,6 @@ public class AccountService {
         logger.info("Account saved successfully: {}", account.getUsername());
     }
 
-
-
     public Optional<Account> getAccountById(Integer id) {
         if (id == null) {
             logger.warn("ID không được để null!");
@@ -173,6 +171,7 @@ public class AccountService {
         Pageable pageable = PageRequest.of(page, size);
         return accountRepository.findAll(pageable);
     }
+
     public Page<Account> getAllAccountsPage(Pageable pageable) {
         return accountRepository.findAll(pageable); // This will automatically handle pagination
     }

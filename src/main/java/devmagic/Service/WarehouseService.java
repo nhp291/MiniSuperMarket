@@ -42,4 +42,10 @@ public class WarehouseService {
         return warehouseRepository.findByWarehouseNameContainingIgnoreCase(warehouseName, pageable);
     }
 
+    public Warehouse findById(Integer id) {
+        return warehouseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Warehouse not found with ID: " + id));
+    }
+
+
 }
