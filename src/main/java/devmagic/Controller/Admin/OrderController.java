@@ -188,4 +188,11 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    // Thống kê trạng thái thanh toán
+    @GetMapping("/payment-status-stats")
+    @ResponseBody
+    public Map<String, Long> getPaymentStatusStats() {
+        return ordersService.getPaymentStatusStatistics();
+    }
+
 }
