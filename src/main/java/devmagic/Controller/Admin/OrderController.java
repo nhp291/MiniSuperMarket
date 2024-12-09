@@ -15,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -99,7 +101,6 @@ public class OrderController {
         }
     }
 
-    // Xóa đơn hàng (đánh dấu là đã xóa)
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@PathVariable Integer id) {
         try {
@@ -116,17 +117,6 @@ public class OrderController {
         try {
             Long totalOrders = ordersService.getTotalOrders();
             return ResponseEntity.ok(totalOrders);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
-        }
-    }
-
-    // Tổng doanh thu
-    @GetMapping("/orders/revenue")
-    public ResponseEntity<Double> getTotalRevenue() {
-        try {
-            Double revenue = ordersService.getTotalRevenue();
-            return ResponseEntity.ok(revenue);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }
@@ -150,32 +140,26 @@ public class OrderController {
             @RequestParam String paymentStatus,
             Model model) {
         try {
-            // Kiểm tra giá trị paymentStatus không null và hợp lệ
             if (paymentStatus == null || paymentStatus.isEmpty()) {
                 throw new IllegalArgumentException("Payment status cannot be null or empty");
             }
 
-            // Cập nhật trạng thái thanh toán
             ordersService.updatePaymentStatus(orderId, paymentStatus);
 
-            // Lấy lại danh sách đơn hàng sau khi cập nhật
             List<Order> orders = ordersService.getAllOrders();
             model.addAttribute("orders", orders);
 
-            // Thêm thông báo thành công
             model.addAttribute("message", "Payment status updated successfully!");
         } catch (Exception e) {
-            // Thêm thông báo lỗi
             model.addAttribute("error", "Failed to update payment status: " + e.getMessage());
         }
 
         model.addAttribute("pageTitle", "Order List Page");
         model.addAttribute("viewName", "admin/menu/OrderList");
-        return "admin/layout"; // Trả về lại trang danh sách
+        return "admin/layout";
     }
 
     public void updatePaymentStatus(int orderId, String paymentStatus) {
-        // Kiểm tra đơn hàng có tồn tại hay không
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
 
         // Kiểm tra trạng thái hợp lệ
@@ -193,4 +177,12 @@ public class OrderController {
     public ResponseEntity<String> handleException(RuntimeException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
+
+    // Thống kê trạng thái thanh toán
+    @GetMapping("/payment-status-stats")
+    @ResponseBody
+    public Map<String, Long> getPaymentStatusStats() {
+        return ordersService.getPaymentStatusStatistics();
+    }
+
 }

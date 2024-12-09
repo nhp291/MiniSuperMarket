@@ -64,26 +64,38 @@
               <h6 class="text-secondary">Loại</h6>
             </div>
             <div class="col-7">
-              <h6>kg</h6>
+              <h6>[[${item.unit}]]</h6>
             </div>
           </div>
           <div class="row my-3">
             <div class="col-4">
-              <h6 class="text-secondary">Số Lượng</h6>
+              <h6 class="text-secondary">Số Lượng Kho</h6>
             </div>
             <div class="col-7">
-              <h6 >[[${item.stockQuantity}]]</h6>
+              <h6 class="stock-quantity" data-stock="[[${item.stockQuantity}]]">[[${item.stockQuantity}]]</h6>
             </div>
           </div>
-          <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">
-            <input type="hidden" name="productId" th:value="${item.productId}"/>
-            <input type="hidden" name="quantity" value="1"/>
-            <!-- Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng -->
+          <div class="row my-3">
+            <div class="col-4">
+              <h6 class="text-secondary">Số Lượng Mua</h6>
+            </div>
+            <div class="col-7">
+              <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">
+                <input type="hidden" name="productId" th:value="${item.productId}" />
+              <div class="col quantity-controls">
+                <a href="#" class="text-decoration-none" onclick="updateQuantity(this, -1)">-</a>
+                <input type="number" class="border px-2 quantity-input" name="quantity" value="1" min="1" onchange="updateQuantityInput(this)" />
+                <a href="#" class="text-decoration-none" onclick="updateQuantity(this, 1)">+</a>
+              </div>
+            </div>
+          </div>
+
+            <!-- Giá trị quantity được truyền từ input điều chỉnh số lượng -->
+
             <button type="submit" class="btn btn-primary"
                     th:if="${item.stockQuantity > 0 and username != null}">
               Thêm vào giỏ hàng
             </button>
-            <!-- Nút "Hết hàng" hiển thị khi sản phẩm hết hàng -->
             <button type="button" class="btn btn-secondary"
                     th:if="${item.stockQuantity <= 0 and username != null}" disabled>
               Hết hàng
@@ -128,7 +140,7 @@
               <h6> Xuất Xứ </h6>
             </div>
             <div class="col-9">
-              <h6>Việt Nam</h6>
+              <h6>[[${item.origin}]]</h6>
             </div>
             <hr>
           </div>
@@ -162,64 +174,62 @@
           </div>
         </div>
       </div>
-      <h2 class="mt-5">Sản phẩm liên quan</h2>
-      <!--          <div th:each="p:${item.productId}">-->
-      <!--            <a th:href="@{|/product/detail/${item.category.categoryId}|}"> [[${item.category.categoryName}]]</a>-->
-      <div class="container-fluid">
-        <div class="row">
-          <div th:each="p : ${product2.subList(0, 4)}"
-               class="col-4 col-sm-4 col-md-4 col-lg-3 my-5 d-flex justify-content-center">
-            <div class="con">
-              <div class="card_box">
-                <div>
-                  <a th:href="@{|/product/detail/${p.productId}|}">
-                    <div th:if="${p.images != null and p.images.size() > 0}">
-                      <img th:src="@{'/Image/imageUrl/' + ${p.images[0].imageUrl}}"
-                           class="card-img-top "/>
-                    </div>
-                  </a>
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
-                        <h5 class="text-danger mb-0">[[${p.sale}]].đ</h5>
-                        <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
-                          [[${p.price}]].đ</h6>
-                      </div>
-                      <div th:unless="${p.sale != null}">
-                        <h5 class="text-danger mb-0 ">[[${p.price}]].đ</h5>
-                      </div>
-                    </div>
-                    <h5 th:text="${p.description}" class="card-text"></h5>
-                    <h6 class="text-success ">Sản phẩm bán trong ngày</h6>
-                    <div class="d-grid gap-2 d-md-block">
-<!--                      <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">-->
-<!--                        <input type="hidden" name="productId" th:value="${item.productId}"/>-->
-<!--                        <input type="hidden" name="quantity" value="1"/>-->
-<!--                        &lt;!&ndash; Nút "Thêm vào giỏ hàng" chỉ hiển thị nếu sản phẩm còn hàng &ndash;&gt;-->
-<!--                        <button type="submit" class="btn btn-primary"-->
-<!--                                th:if="${item.stockQuantity > 0 and username != null}">-->
-<!--                          Thêm vào giỏ hàng-->
-<!--                        </button>-->
-
-<!--                        &lt;!&ndash; Nút "Hết hàng" hiển thị khi sản phẩm hết hàng &ndash;&gt;-->
-<!--                        <button type="button" class="btn btn-secondary"-->
-<!--                                th:if="${item.stockQuantity <= 0 and username != null}" disabled>-->
-<!--                          Hết hàng-->
-<!--                        </button>-->
-<!--                        <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>-->
-<!--                      </form>-->
-                    </div>
-                  </div>
-                </div>
-                <span th:if="${p.sale != null}"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <h5 class="text-center text-primary mt-5"><a th:href="@{/layout/Product}">Xem tất cả</a></h5>
-      </div>
     </div>
   </div>
+  <script>
+    // Hàm cập nhật số lượng khi nhấp vào dấu + hoặc -
+    function updateQuantity(link, change) {
+      const inputField = link.closest('.quantity-controls').querySelector('.quantity-input');
+      let currentQuantity = parseInt(inputField.value);
+      const stockQuantity = parseInt(document.querySelector('.stock-quantity').innerText);  // Lấy số lượng kho từ DOM
+
+      // Cập nhật số lượng và kiểm tra nếu số lượng nhỏ hơn 1 hoặc lớn hơn số lượng kho
+      currentQuantity += change;
+      if (currentQuantity < 1) {
+        currentQuantity = 1;
+      } else if (currentQuantity > stockQuantity) {
+        currentQuantity = stockQuantity; // Đảm bảo số lượng mua không vượt quá số lượng kho
+      }
+
+      // Cập nhật giá trị input
+      inputField.value = currentQuantity;
+
+      // Hiển thị thông báo cho người dùng (có thể sử dụng thông báo nhỏ ở góc)
+      showFeedback('Số lượng đã được cập nhật!');
+    }
+
+    // Hàm xử lý thay đổi số lượng khi người dùng nhập thủ công
+    function updateQuantityInput(input) {
+      let currentQuantity = parseInt(input.value);
+      const stockQuantity = parseInt(document.querySelector('.stock-quantity').innerText);  // Lấy số lượng kho từ DOM
+
+      // Kiểm tra nếu giá trị nhập không hợp lệ hoặc nhỏ hơn 1 hoặc lớn hơn số lượng kho
+      if (isNaN(currentQuantity) || currentQuantity < 1) {
+        currentQuantity = 1;
+      } else if (currentQuantity > stockQuantity) {
+        currentQuantity = stockQuantity; // Đảm bảo số lượng mua không vượt quá số lượng kho
+      }
+
+      input.value = currentQuantity;
+
+      // Hiển thị thông báo cho người dùng
+      showFeedback('Số lượng đã được cập nhật!');
+    }
+
+    // Hàm hiển thị phản hồi (thông báo) cho người dùng
+    function showFeedback(message) {
+      const feedback = document.createElement('div');
+      feedback.classList.add('feedback-message');
+      feedback.innerText = message;
+
+      document.body.appendChild(feedback);
+
+      // Sau 3 giây, ẩn thông báo
+      setTimeout(() => {
+        feedback.remove();
+      }, 3000);
+    }
+  </script>
 </main>
 </body>
 </html>

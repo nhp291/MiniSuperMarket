@@ -2,11 +2,13 @@ package devmagic.Controller.User;
 
 import devmagic.Dto.CartItemDTO;
 import devmagic.Model.*;
+import devmagic.Reponsitory.CartRepository;
 import devmagic.Service.CartService;
 import devmagic.Service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -24,11 +28,13 @@ public class CartController {
 
     private final CartService cartService;
     private final OrderService orderService;
+    private final CartRepository cartRepository;
 
     @Autowired
-    public CartController(CartService cartService, OrderService orderService) {
+    public CartController(CartService cartService, OrderService orderService, CartRepository cartRepository) {
         this.cartService = cartService;
         this.orderService = orderService;
+        this.cartRepository = cartRepository;
     }
 
     // Hiển thị giỏ hàng
@@ -36,87 +42,121 @@ public class CartController {
     public String shoppingCart(HttpServletRequest request, Model model) {
         Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
-            return "redirect:/user/login";  // Nếu không có accountId thì chuyển hướng đến trang login
+            return "redirect:/user/login";
         }
 
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
 
-        if (username != null) {
-            model.addAttribute("username", username);
-            model.addAttribute("role", role);
-        }
-
+        model.addAttribute("username", username);
+        model.addAttribute("role", role);
         model.addAttribute("accountId", accountId);
 
-        // Lấy thông tin giỏ hàng
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
+
+        // Cập nhật giá sản phẩm sử dụng giá sale (nếu có)
+        cartItems.forEach(this::updatePriceWithSale);
+
         BigDecimal totalPrice = cartService.calculateTotalPrice(cartItems);
         int totalQuantity = cartService.calculateTotalQuantity(cartItems);
 
-        // Truyền dữ liệu vào model
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("totalQuantity", totalQuantity);
 
-        return "cart/shoppingcart";  // Trả về trang giỏ hàng
+        return "cart/shoppingcart";
     }
 
     // Cập nhật số lượng sản phẩm trong giỏ hàng
-    @PostMapping("/updateQuantity")
-    @ResponseBody
-    public String updateQuantity(@RequestParam("id") Integer cartId,
-                                 @RequestParam("quantity") Integer quantity) {
-        if (cartId == null || quantity == null || quantity <= 0) {
-            return "error=invalid_quantity";  // Kiểm tra số lượng hợp lệ
-        }
+    @PostMapping("/update-quantity")
+    public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Integer> body, HttpServletRequest request) {
+        Integer productId = body.get("productId");
+        Integer quantity = body.get("quantity");
 
-        Cart cart = cartService.findById(cartId);
-        if (cart == null) {
-            return "error=cart_not_found";  // Nếu không tìm thấy giỏ hàng
-        }
-        cart.setQuantity(quantity);  // Cập nhật số lượng sản phẩm
-        cartService.save(cart);  // Lưu vào database
-        return "success";  // Trả về thành công
-    }
-
-    // Xóa sản phẩm khỏi giỏ hàng
-    @PostMapping("/removeItem")
-    @ResponseBody
-    public String removeItem(@RequestParam("id") Integer cartId) {
-        if (cartId == null) {
-            return "error=invalid_id";  // Kiểm tra id hợp lệ
-        }
-
-        Cart cart = cartService.findById(cartId);
-        if (cart == null) {
-            return "error=cart_not_found";  // Nếu không tìm thấy giỏ hàng
-        }
-
-        cartService.deleteById(cartId);  // Xóa sản phẩm khỏi database
-        return "success";  // Trả về thành công
-    }
-
-    // Xử lý khi người dùng nhấn nút "Checkout"
-    @PostMapping("/checkout")
-    public String checkout(HttpServletRequest request, Model model,
-                           @RequestParam("paymentMethod") String paymentMethod) {
         Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
-            return "redirect:/user/login";  // Nếu không có accountId thì chuyển hướng đến trang login
+            return ResponseEntity.status(401).build(); // Không có quyền
         }
 
-        // Lấy thông tin giỏ hàng
+        Optional<Cart> cartOpt = cartRepository.findByAccount_AccountIdAndProduct_ProductId(accountId, productId);
+        if (cartOpt.isPresent()) {
+            Cart cart = cartOpt.get();
+            Product product = cart.getProduct();
+
+            // Kiểm tra số lượng tồn kho và điều kiện hợp lệ
+            if (quantity > 0 && quantity <= product.getStockQuantity()) {
+                cart.setQuantity(quantity);
+                cartRepository.save(cart);
+
+                // Tính toán giá mới và tổng tiền
+                List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
+                cartItems.forEach(this::updatePriceWithSale);
+
+                BigDecimal totalPrice = cartService.calculateTotalPrice(cartItems);
+                int totalQuantity = cartService.calculateTotalQuantity(cartItems);
+
+                BigDecimal newPrice = calculateEffectivePrice(product).multiply(BigDecimal.valueOf(quantity));
+
+                return ResponseEntity.ok(Map.of(
+                        "success", true,
+                        "newPrice", newPrice,
+                        "totalPrice", totalPrice,
+                        "totalQuantity", totalQuantity
+                ));
+            }
+        }
+        return ResponseEntity.ok(Map.of("success", false));
+    }
+
+    @PostMapping("/remove-item")
+    public ResponseEntity<?> removeItem(@RequestBody Map<String, Integer> body, HttpServletRequest request) {
+        Integer productId = body.get("productId");
+
+        Integer accountId = getAccountIdFromSession(request);
+        if (accountId == null) {
+            return ResponseEntity.status(401).build(); // Không có quyền
+        }
+
+        Optional<Cart> cartOpt = cartRepository.findByAccount_AccountIdAndProduct_ProductId(accountId, productId);
+        if (cartOpt.isPresent()) {
+            cartRepository.delete(cartOpt.get());
+
+            // Tính toán lại tổng tiền và tổng số lượng
+            List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
+            cartItems.forEach(this::updatePriceWithSale);
+
+            BigDecimal totalPrice = cartService.calculateTotalPrice(cartItems);
+            int totalQuantity = cartService.calculateTotalQuantity(cartItems);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "totalPrice", totalPrice,
+                    "totalQuantity", totalQuantity
+            ));
+        }
+        return ResponseEntity.ok(Map.of("success", false));
+    }
+
+    // Checkout
+    @PostMapping("/checkout")
+    public String checkout(HttpServletRequest request, Model model, @RequestParam("paymentMethod") String paymentMethod) {
+        Integer accountId = getAccountIdFromSession(request);
+        if (accountId == null) {
+            return "redirect:/user/login";
+        }
+
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
         if (cartItems.isEmpty()) {
-            return "redirect:/cart/shoppingcart";  // Nếu giỏ hàng trống thì chuyển hướng lại trang giỏ hàng
+            model.addAttribute("message", "Giỏ hàng trống.");
+            return "redirect:/cart/shoppingcart";
         }
 
-        // Tạo đơn hàng mới
+        cartItems.forEach(this::updatePriceWithSale);
+
         Order order = new Order();
         order.setAccount(new Account(accountId));
         order.setOrderDate(new Date());
-        order.setPaymentStatus("Pending");
+        order.setPaymentStatus("Thành Công");
         order.setPaymentMethod(paymentMethod);
 
         order.setOrderDetails(cartItems.stream().map(cartItem -> {
@@ -128,21 +168,31 @@ public class CartController {
             return orderDetail;
         }).collect(Collectors.toList()));
 
-        // Lưu đơn hàng và chi tiết đơn hàng vào database, đồng thời cập nhật số lượng sản phẩm trong kho
         orderService.createOrder(order);
-
-        // Xóa giỏ hàng sau khi tạo đơn hàng
         cartService.clearCart(accountId);
 
-        // Tính tổng giá trị đơn hàng
         BigDecimal totalOrderPrice = order.getOrderDetails().stream()
                 .map(orderDetail -> orderDetail.getPrice().multiply(BigDecimal.valueOf(orderDetail.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Truyền dữ liệu đơn hàng vào model để hiển thị trên trang invoice
         model.addAttribute("order", order);
         model.addAttribute("totalOrderPrice", totalOrderPrice);
-        return "cart/thankyou";  // Trả về trang cảm ơn
+        return "cart/thankyou";
+    }
+
+    // Helper: Cập nhật giá sản phẩm với giá sale (nếu có)
+    private void updatePriceWithSale(CartItemDTO cartItem) {
+        Product product = cartItem.getProduct();
+        BigDecimal effectivePrice = calculateEffectivePrice(product);
+        cartItem.setPrice(effectivePrice);
+        cartItem.calculateTotalPrice();
+    }
+
+    // Helper: Tính giá hiệu quả (sale hoặc giá gốc)
+    private BigDecimal calculateEffectivePrice(Product product) {
+        return (product.getSale() != null && product.getSale().compareTo(BigDecimal.ZERO) > 0)
+                ? product.getSale()
+                : product.getPrice();
     }
 
     private Integer getAccountIdFromSession(HttpServletRequest request) {
@@ -185,13 +235,5 @@ public class CartController {
         }
         return null;
     }
-
-    @GetMapping("/backToShop")
-    public String backToShop(HttpServletRequest request) {
-        Integer accountId = getAccountIdFromSession(request);
-        if (accountId == null) {
-            return "redirect:/user/login";
-        }
-        return "redirect:/layout/Home";
-    }
 }
+

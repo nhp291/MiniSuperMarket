@@ -10,7 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,15 +63,6 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    // Soft Delete: Đánh dấu đơn hàng là đã xóa
-//    public void markOrderAsDeleted(Integer id) {
-//        Order order = orderRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Order not found"));
-//
-//        order.setDeleted(true);
-//        orderRepository.save(order);  // Lưu lại thay đổi vào cơ sở dữ liệu
-//    }
-
     // Hard Delete: Xóa đơn hàng khỏi cơ sở dữ liệu
     public void deleteOrder(Integer id) {
         if (orderRepository.existsById(id)) {
@@ -84,8 +78,16 @@ public class OrderService {
     }
 
     // Tổng doanh thu
-    public Double getTotalRevenue() {
+    public BigDecimal getTotalRevenue() {
         return orderRepository.calculateTotalRevenue();
+    }
+
+    // Phương thức trả về cả tổng đơn hàng và doanh thu
+    public Map<String, Object> getTotalOrdersAndRevenue() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalOrders", getTotalOrders());
+        result.put("totalRevenue", getTotalRevenue());
+        return result;
     }
 
     // Doanh thu theo tháng
@@ -117,6 +119,17 @@ public class OrderService {
     public Order findById(int orderId) {
         return orderRepository.findById(orderId).orElse(null);
     }
+
+    // Thống kê trạng thái thanh toán
+    public Map<String, Long> getPaymentStatusStatistics() {
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("pending", orderRepository.countByPaymentStatus("pending"));
+        stats.put("completed", orderRepository.countByPaymentStatus("completed"));
+        stats.put("cancelled", orderRepository.countByPaymentStatus("cancelled"));
+        System.out.println("Thống kê trạng thái thanh toán: " + stats);
+        return stats;
+    }
+
 
 
 }
