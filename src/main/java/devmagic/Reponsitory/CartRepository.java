@@ -24,3 +24,4 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     // Tìm mục giỏ hàng theo productId (nếu cần sử dụng riêng)
     List<Cart> findAllByProduct_ProductId(Integer productId);
 }
+
