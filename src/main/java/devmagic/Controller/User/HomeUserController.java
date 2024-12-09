@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -33,7 +34,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections; 
+import java.util.HashMap; 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -273,20 +276,45 @@ public class HomeUserController {
 
     @GetMapping("user/register")
     public String registerForm(Model model) {
-        model.addAttribute("account", new Account());
+        model.addAttribute("account", new Account()); // Đảm bảo tạo một đối tượng Account mới
         return "user/register"; // Trả về trang đăng ký
     }
 
     @PostMapping("user/register")
     public String register(@Valid @ModelAttribute("account") Account account,
                            BindingResult result,
-                           @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
-                           RedirectAttributes redirectAttributes,
                            Model model) throws IOException {
 
+        // Kiểm tra tên đăng nhập đã tồn tại chưa
+        if (accountService.usernameExists(account.getUsername())) {
+            result.rejectValue("username", "error.username", "Tên đăng nhập đã tồn tại!");
+        }
+
+        // Kiểm tra email đã tồn tại chưa
+        if (accountService.emailExists(account.getEmail())) {
+            result.rejectValue("email", "error.email", "Email đã được sử dụng!"); // Thêm thông báo lỗi cho email
+        }
+
+        // Kiểm tra mật khẩu có khớp không
+        if (!account.getPassword().equals(account.getConfirmPassword())) {
+            result.rejectValue("confirmPassword", "error.confirmPassword", "Mật khẩu xác nhận không khớp!");
+        }
+
+        // Kiểm tra định dạng email
+        if (!account.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            result.rejectValue("email", "error.email", "Email không hợp lệ!");
+        }
+
+        // Kiểm tra số điện thoại (ví dụ: chỉ cho phép số)
+        if (!account.getPhoneNumber().matches("^[0-9]*$")) {
+            result.rejectValue("phoneNumber", "error.phoneNumber", "Số điện thoại chỉ chứa chữ số!");
+        }
+
         // Kiểm tra lỗi nhập liệu
-        if (validateAccount(account, result)) {
-            return "user/register";
+        if (result.hasErrors()) {
+            model.addAttribute("account", account); // Gửi lại dữ liệu nhập về form
+            model.addAttribute("error", "Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin.");
+            return "user/register"; // Trả về trang đăng ký cùng thông báo lỗi
         }
 
         // Gán vai trò mặc định USER (ID = 2)
@@ -294,35 +322,16 @@ public class HomeUserController {
                 .orElseThrow(() -> new RuntimeException("Role mặc định không tồn tại."));
         account.setRole(defaultRole);
 
-        // Xử lý ảnh đại diện
+        // Gán ảnh đại diện mặc định
         String defaultImage = "User.png"; // Nếu không upload ảnh, dùng ảnh mặc định
         account.setImageUrl(defaultImage);
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            String uploadDir = "src/main/resources/static/Image/imageProfile/";
-            Path uploadPath = Paths.get(uploadDir);
-
-            // Tạo thư mục nếu chưa tồn tại
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            // Lưu file ảnh vào thư mục
-            try (InputStream inputStream = imageFile.getInputStream()) {
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-                account.setImageUrl(fileName); // Lưu tên ảnh vào database
-            } catch (IOException e) {
-                model.addAttribute("error", "Không thể lưu tệp hình ảnh.");
-                return "user/register";
-            }
-        }
 
         // Lưu thông tin tài khoản
         try {
             accountService.saveAccount(account);
             return "redirect:/user/register?success=true"; // Chuyển hướng với tham số success
         } catch (Exception e) {
+            model.addAttribute("account", account); // Gửi lại dữ liệu nhập về form
             model.addAttribute("error", "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.");
             return "user/register";
         }
@@ -376,31 +385,4 @@ public class HomeUserController {
         }
         return null;
     }
-
-    private boolean validateAccount (Account account, BindingResult result){
-            boolean hasErrors = false;
-
-            if (accountService.isUsernameExist(account.getUsername())) {
-                result.rejectValue("username", "error.account", "Tên đăng nhập đã tồn tại.");
-                hasErrors = true;
-            }
-
-            if (accountService.isEmailExist(account.getEmail())) {
-                result.rejectValue("email", "error.account", "Email đã tồn tại.");
-                hasErrors = true;
-            }
-
-            if (!account.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{6,}$")) {
-                result.rejectValue("password", "error.account", "Mật khẩu phải có ít nhất 6 ký tự, gồm chữ thường, chữ hoa và ký tự đặc biệt.");
-                hasErrors = true;
-            }
-
-            if (account.getPhoneNumber() == null || !account.getPhoneNumber().matches("^\\d{10,15}$")) {
-                result.rejectValue("phoneNumber", "error.account", "Số điện thoại phải là số, từ 10 đến 15 ký tự.");
-                hasErrors = true;
-            }
-
-            return hasErrors;
-
-        }
-    }
+}

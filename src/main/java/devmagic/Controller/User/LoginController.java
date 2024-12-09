@@ -21,65 +21,77 @@ public class LoginController {
     @Autowired
     private AccountService accountService;
 
+    // Hiển thị trang đăng nhập
     @RequestMapping("/user/login")
-    public String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
+    public String loginPage(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "success", required = false) String success,
+                            Model model) {
+        // Truyền thông báo lỗi hoặc thành công (nếu có)
         if (error != null) {
-            model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không chính xác!");
+            model.addAttribute("error", error);
+        }
+        if (success != null) {
+            model.addAttribute("success", success);
         }
         return "user/login";
     }
 
-    // Thêm phương thức này để xử lý đăng nhập thành công
+    // Xử lý đăng nhập
     @PostMapping("/login")
     public String login(@RequestParam("username") String username,
                         @RequestParam("password") String password,
                         Model model, HttpSession session, HttpServletResponse response,
                         RedirectAttributes redirectAttributes) {
-        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-            model.addAttribute("error", "Tên đăng nhập và mật khẩu không được để trống!");
-            return "user/login";
-        }
-
-        // Lấy tài khoản từ dịch vụ
-        Optional<Account> accountOpt = accountService.findByUsername(username);
-
-        if (accountOpt.isPresent()) {
-            Account account = accountOpt.get();
-            if (account.getRole() == null) {
-                model.addAttribute("error", "Tài khoản của bạn chưa được gán vai trò.");
-                return "user/login";
+        try {
+            if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+                model.addAttribute("error", "Tên đăng nhập và mật khẩu không được để trống!");
+                return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
             }
 
-            // Lưu thông tin tài khoản vào session
-            session.setAttribute("accountId", account.getAccountId());
-            session.setAttribute("username", account.getUsername());
-            session.setAttribute("role", account.getRole().getRoleName());
+            Optional<Account> accountOpt = accountService.findByUsername(username);
 
-            // Tạo cookies cho username và accountId
-            Cookie usernameCookie = new Cookie("username", account.getUsername());
-            usernameCookie.setMaxAge(7 * 24 * 60 * 60); // Cookie tồn tại trong 7 ngày
-            usernameCookie.setPath("/");
-            response.addCookie(usernameCookie);
+            if (accountOpt.isPresent()) {
+                Account account = accountOpt.get();
 
-            Cookie accountIdCookie = new Cookie("accountId", String.valueOf(account.getAccountId()));
-            accountIdCookie.setMaxAge(7 * 24 * 60 * 60);
-            accountIdCookie.setPath("/");
-            response.addCookie(accountIdCookie);
+                if (account.getRole() == null) {
+                    model.addAttribute("error", "Tài khoản của bạn chưa được gán vai trò.");
+                    return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
+                }
 
-            redirectAttributes.addFlashAttribute("success", "Đăng nhập thành công!");
+                if (!account.getPassword().equals(password)) {
+                    model.addAttribute("error", "Mật khẩu không chính xác!");
+                    return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
+                }
 
-            System.out.println("Role: " + account.getRole().getRoleName()); // Kiểm tra vai trò
+                session.setAttribute("accountId", account.getAccountId());
+                session.setAttribute("username", account.getUsername());
+                session.setAttribute("role", account.getRole().getRoleName());
 
-            // Kiểm tra vai trò và điều hướng tới trang Admin hoặc User
-            if ("Admin".equals(account.getRole().getRoleName())) {
-                return "redirect:/Admin/Home"; // Dẫn tới trang Admin
+                Cookie usernameCookie = new Cookie("username", account.getUsername());
+                usernameCookie.setMaxAge(7 * 24 * 60 * 60);
+                usernameCookie.setPath("/");
+                response.addCookie(usernameCookie);
+
+                Cookie accountIdCookie = new Cookie("accountId", String.valueOf(account.getAccountId()));
+                accountIdCookie.setMaxAge(7 * 24 * 60 * 60);
+                accountIdCookie.setPath("/");
+                response.addCookie(accountIdCookie);
+
+                redirectAttributes.addAttribute("success", "Đăng nhập thành công!");
+
+                if ("Admin".equals(account.getRole().getRoleName())) {
+                    return "redirect:/Admin/Home";
+                } else {
+                    return "redirect:/layout/Home";
+                }
             } else {
-                return "redirect:/layout/Home"; // Dẫn tới trang Home của người dùng
+                model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không chính xác!");
+                return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
             }
-        } else {
-            model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không chính xác!");
-            return "user/login";
+        } catch (Exception e) {
+            model.addAttribute("error", "Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại sau!");
+            e.printStackTrace();
+            return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
         }
     }
-
 }
