@@ -232,31 +232,51 @@
             <div class="form-group">
                 <label for="username">Tên đăng nhập *</label>
                 <input type="text" id="username" th:field="*{username}" required>
-                <div th:if="${#fields.hasErrors('username')}" style="color: red;">
+                <div th:if="${#fields.hasErrors('username')}" class="error-message">
                     <span th:errors="*{username}"></span>
                 </div>
             </div>
+
             <div class="form-group">
                 <label for="password">Mật khẩu *</label>
                 <input type="password" id="password" th:field="*{password}" required>
                 <span class="eye-icon" onclick="togglePassword('password')">👁️</span>
+                <div th:if="${#fields.hasErrors('password')}" class="error-message">
+                    <span th:errors="*{password}"></span>
+                </div>
             </div>
+
             <div class="form-group">
                 <label for="confirm-password">Xác nhận mật khẩu *</label>
                 <input type="password" id="confirm-password" th:field="*{confirmPassword}" required>
                 <span class="eye-icon" onclick="togglePassword('confirm-password')">👁️</span>
+                <div th:if="${#fields.hasErrors('confirmPassword')}" class="error-message">
+                    <span th:errors="*{confirmPassword}"></span>
+                </div>
             </div>
+
             <div class="form-group">
                 <label for="email">Email *</label>
                 <input type="email" id="email" th:field="*{email}" required>
+                <div th:if="${#fields.hasErrors('email')}" class="error-message">
+                    <span th:errors="*{email}"></span>
+                </div>
             </div>
+
             <div class="form-group">
                 <label for="phone">Số điện thoại *</label>
                 <input type="text" id="phone" th:field="*{phoneNumber}" required>
+                <div th:if="${#fields.hasErrors('phoneNumber')}" class="error-message">
+                    <span th:errors="*{phoneNumber}"></span>
+                </div>
             </div>
+
             <div class="form-group">
                 <label for="address">Địa chỉ</label>
                 <input type="text" id="address" th:field="*{address}">
+                <div th:if="${#fields.hasErrors('address')}" class="error-message">
+                    <span th:errors="*{address}"></span>
+                </div>
             </div>
             <div>
                 <button type="submit" class="btn">Đăng Ký</button>

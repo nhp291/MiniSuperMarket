@@ -261,6 +261,11 @@ public class HomeUserController {
             result.rejectValue("username", "error.username", "Tên đăng nhập đã tồn tại!");
         }
 
+        // Kiểm tra email đã tồn tại chưa
+        if (accountService.emailExists(account.getEmail())) {
+            result.rejectValue("email", "error.email", "Email đã được sử dụng!"); // Thêm thông báo lỗi cho email
+        }
+
         // Kiểm tra mật khẩu có khớp không
         if (!account.getPassword().equals(account.getConfirmPassword())) {
             result.rejectValue("confirmPassword", "error.confirmPassword", "Mật khẩu xác nhận không khớp!");
@@ -278,6 +283,7 @@ public class HomeUserController {
 
         // Kiểm tra lỗi nhập liệu
         if (result.hasErrors()) {
+            model.addAttribute("account", account); // Gửi lại dữ liệu nhập về form
             model.addAttribute("error", "Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin.");
             return "user/register"; // Trả về trang đăng ký cùng thông báo lỗi
         }
@@ -296,10 +302,13 @@ public class HomeUserController {
             accountService.saveAccount(account);
             return "redirect:/user/register?success=true"; // Chuyển hướng với tham số success
         } catch (Exception e) {
+            model.addAttribute("account", account); // Gửi lại dữ liệu nhập về form
             model.addAttribute("error", "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.");
             return "user/register";
         }
     }
+
+
     @GetMapping("/ForgotPassword")
     public String ForgotPassword(Model model) {
         return "ForgotPassword";

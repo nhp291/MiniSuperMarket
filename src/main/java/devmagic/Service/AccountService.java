@@ -177,4 +177,16 @@ public class AccountService {
         return accountRepository.findAll(pageable); // This will automatically handle pagination
     }
 
+    public Optional<Account> getAccountByEmail(String email) {
+        return accountRepository.findByEmail(email);
+    }
+
+    public boolean usernameExists(String username) {
+        return accountRepository.existsByUsername(username);
+    }
+    // Trong AccountService.java
+    public boolean emailExists(String email) {
+        return accountRepository.existsByEmail(email); // Thay đổi phương thức tìm kiếm theo cách phù hợp
+    }
+
 }
