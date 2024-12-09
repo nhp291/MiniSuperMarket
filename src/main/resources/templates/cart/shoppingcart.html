@@ -198,6 +198,12 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Kiểm tra nếu giỏ hàng trống -->
+                    <div th:if="${cartItems.isEmpty()}">
+                        <div class=" text-center mt-4">
+                            Giỏ hàng trống, vui lòng thêm sản phẩm trước khi thanh toán.
+                        </div>
+                    </div>
                     <div class="cart-item row align-items-center"
                          th:each="item : ${cartItems}"
                          th:data-product-id="${item.product.productId}">
@@ -260,7 +266,7 @@
 
                     <div class="row mt-4">
                         <form action="/cart/checkout" method="post">
-                            <input type="hidden" name="paymentMethod" id="paymentMethod" value="Cash">
+                            <input type="hidden" name="paymentMethod" id="paymentMethod" value="Tiền Mặt">
                             <button class="btn btn-primary w-100" type="submit">Thanh Toán</button>
                         </form>
                     </div>
@@ -293,7 +299,7 @@
                         if (!errorMessage) {
                             const errorContainer = document.createElement('div');
                             errorContainer.classList.add('error-message');
-                            errorContainer.textContent = "Số lượng trong kho không đủ.";
+                            errorContainer.textContent = "Số lượng trong kho không đủ đáp ứng yêu cầu của bạn";
                             this.closest('.cart-item').appendChild(errorContainer);
                         }
                     } else {
@@ -343,6 +349,19 @@
                     .catch(error => console.error('Lỗi:', error));
             }
         });
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kiểm tra nếu giỏ hàng trống
+            const totalQuantity = parseInt(document.querySelector('.total-quantity')?.innerText || '0');
+            const checkoutButton = document.querySelector('.btn-primary[type="submit"]');
+
+            if (totalQuantity === 0) {
+                // Vô hiệu hóa nút Thanh Toán
+                checkoutButton.disabled = true;
+                checkoutButton.textContent = "Giỏ hàng trống";
+                checkoutButton.classList.add('btn-secondary');
+            }
+        });
+
 
     </script>
 

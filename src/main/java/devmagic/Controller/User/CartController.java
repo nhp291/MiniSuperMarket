@@ -156,7 +156,7 @@ public class CartController {
         Order order = new Order();
         order.setAccount(new Account(accountId));
         order.setOrderDate(new Date());
-        order.setPaymentStatus("Completed");
+        order.setPaymentStatus("Thành Công");
         order.setPaymentMethod(paymentMethod);
 
         order.setOrderDetails(cartItems.stream().map(cartItem -> {

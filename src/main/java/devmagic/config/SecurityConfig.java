@@ -53,7 +53,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/user/login", "/layout/**", "/product/**","/user/**", "/user/register", "/css/**", "/js/**", "/Image/**").permitAll()
+                        .requestMatchers("/user/login", "/layout/**", "/product/**", "/user/**", "/user/register", "/css/**", "/js/**", "/Image/**").permitAll()
                         .requestMatchers("/Admin/**").hasRole("Admin")
                         .anyRequest().authenticated()
                 )
@@ -61,7 +61,10 @@ public class SecurityConfig {
                         .loginPage("/user/login")
                         .loginProcessingUrl("/login")
                         .successHandler(authenticationSuccessHandler())
-                        .failureUrl("/user/login?error=true")
+                        .failureHandler((request, response, exception) -> {
+                            request.setAttribute("error", "Tên đăng nhập hoặc mật khẩu không chính xác!");
+                            request.getRequestDispatcher("/user/login").forward(request, response);
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout

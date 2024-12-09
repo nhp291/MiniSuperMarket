@@ -3,19 +3,17 @@ package devmagic.Controller.Admin;
 import devmagic.Model.Order;
 import devmagic.Reponsitory.OrderRepository;
 import devmagic.Service.OrderService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,12 +30,6 @@ public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
-
-
-    @Autowired
-    public OrderController(OrderService orderService) {
-        this.ordersService = orderService;
-    }
 
     // Queue để gửi sự kiện từ server đến client qua SSE
     private final BlockingQueue<String> eventQueue = new LinkedBlockingQueue<>();
@@ -109,17 +101,13 @@ public class OrderController {
         }
     }
 
-    //Xóa hẳn đơn hàng khỏi cơ sở dữ liệu
     @DeleteMapping("/{id}")
-    public ModelAndView deleteOrder(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+    public ResponseEntity<String> deleteOrder(@PathVariable Integer id) {
         try {
             ordersService.deleteOrder(id);
-//            redirectAttributes.addFlashAttribute("message", "Order deleted successfully.");
-            return new ModelAndView("redirect:/Orders/OrderList");  // Sử dụng redirect đúng
-
+            return ResponseEntity.ok("Order deleted successfully");
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", "Order not found.");
-            return new ModelAndView("redirect:/Orders/OrderList");  // Sử dụng redirect đúng
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -147,8 +135,10 @@ public class OrderController {
 
     // Cập nhật trạng thái thanh toán và gửi SSE cho frontend
     @PostMapping("/{orderId}/change-payment-status")
-    public String changePaymentStatus( @PathVariable int orderId,
-            @RequestParam String paymentStatus, Model model) {
+    public String changePaymentStatus(
+            @PathVariable int orderId,
+            @RequestParam String paymentStatus,
+            Model model) {
         try {
             if (paymentStatus == null || paymentStatus.isEmpty()) {
                 throw new IllegalArgumentException("Payment status cannot be null or empty");
@@ -185,7 +175,7 @@ public class OrderController {
     // Xử lý ngoại lệ
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleException(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     // Thống kê trạng thái thanh toán

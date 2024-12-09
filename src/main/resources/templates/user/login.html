@@ -6,7 +6,6 @@
     <title>Trang Đăng Nhập</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         .login-container {
             max-width: 900px;
@@ -72,6 +71,16 @@
             transition: all 0.4s ease;
         }
 
+        .alert-danger {
+            font-size: 14px; /* Kích thước nhỏ */
+            padding: 8px 12px; /* Khoảng cách vừa phải */
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f8d7da; /* Nền màu nhẹ */
+            color: #721c24; /* Chữ màu đậm */
+            border: 1px solid #f5c6cb; /* Đường viền mềm mại */
+        }
+
         @media (max-width: 992px) {
             .login-container {
                 flex-direction: column;
@@ -93,17 +102,18 @@
         <!-- Phần phải -->
         <div class="right-section">
             <h3 class="mb-4">Đăng Nhập Ngay</h3>
-            <!-- Hiển thị lỗi từ backend -->
-            <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+
+            <!-- Hiển thị thông báo lỗi từ backend -->
+            <div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
 
             <!-- Biểu mẫu đăng nhập -->
             <form action="/login" method="post">
                 <div class="form-floating mb-4">
-                    <input class="form-control" id="email" name="username" placeholder="Tên đăng nhập" type="text">
+                    <input class="form-control" id="email" name="username" placeholder="Tên đăng nhập" type="text" required>
                     <label for="email">Tên đăng nhập</label>
                 </div>
                 <div class="form-floating mb-4 position-relative">
-                    <input class="form-control" id="password" name="password" placeholder="Mật khẩu" type="password">
+                    <input class="form-control" id="password" name="password" placeholder="Mật khẩu" type="password" required>
                     <label for="password">Mật khẩu</label>
                     <span class="toggle-password" onclick="togglePassword()" style="position: absolute; right: 20px; top: 15px; cursor: pointer;">
                         <i class="bi bi-eye" id="togglePasswordIcon"></i>
