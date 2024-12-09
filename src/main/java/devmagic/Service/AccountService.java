@@ -188,5 +188,4 @@ public class AccountService {
     public boolean emailExists(String email) {
         return accountRepository.existsByEmail(email); // Thay đổi phương thức tìm kiếm theo cách phù hợp
     }
-
 }
