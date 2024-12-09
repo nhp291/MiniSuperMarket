@@ -76,4 +76,5 @@ public class WarehouseController {
         warehouseService.deleteWarehouse(id);
         return "redirect:/Warehouses/";  // Redirect after deletion
     }
+
 }

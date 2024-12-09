@@ -5,6 +5,8 @@ import devmagic.Service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +33,7 @@ public class PaymenthistoryController {
             return "redirect:/user/login";
         }
 
-        String username = getAuthenticatedUsername(request);
+        String username = getAuthenticatedUsername();
         model.addAttribute("username", username != null ? username : "");
 
         List<Order> orders = orderService.getOrdersByAccountId(accountId);
@@ -61,9 +63,13 @@ public class PaymenthistoryController {
         return null;
     }
 
-    private String getAuthenticatedUsername(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Object usernameObj = session.getAttribute("username");
-        return (usernameObj instanceof String) ? (String) usernameObj : null;
+    private String getAuthenticatedUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() &&
+                !"anonymousUser".equals(authentication.getPrincipal())) {
+            return authentication.getName();
+        }
+        return null;
     }
 }
+

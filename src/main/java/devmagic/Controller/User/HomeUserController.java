@@ -35,8 +35,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collections; 
+import java.util.HashMap; 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -66,7 +68,11 @@ public class HomeUserController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
+        // Lấy số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
 
+        // Truyền số lượng vào model để sử dụng trong template
+        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
@@ -107,6 +113,24 @@ public class HomeUserController {
         return "layout/Home";
     }
 
+    @GetMapping("/cart/getTotalQuantity")
+    @ResponseBody
+    public Map<String, Integer> getTotalQuantity(HttpServletRequest request) {
+        // Lấy accountId từ session
+        Integer accountId = getAccountIdFromSession(request);
+
+        Map<String, Integer> response = new HashMap<>();
+        if (accountId == null) {
+            response.put("totalQuantity", 0); // Nếu không tìm thấy accountId, trả về 0
+            return response;
+        }
+
+        // Tính tổng số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
+        response.put("totalQuantity", totalQuantity);
+        return response;
+    }
+    
     @PostMapping("/cart/shoppingcart")
     @ResponseBody
     public ResponseEntity<?> addaToCart(@RequestParam("productId") Integer productId,
@@ -165,6 +189,11 @@ public class HomeUserController {
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
 
+        // Lấy số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
+
+        // Truyền số lượng vào model để sử dụng trong template
+        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
