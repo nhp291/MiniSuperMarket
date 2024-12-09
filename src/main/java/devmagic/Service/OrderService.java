@@ -120,5 +120,16 @@ public class OrderService {
         return orderRepository.findById(orderId).orElse(null);
     }
 
+    // Thống kê trạng thái thanh toán
+    public Map<String, Long> getPaymentStatusStatistics() {
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("pending", orderRepository.countByPaymentStatus("pending"));
+        stats.put("completed", orderRepository.countByPaymentStatus("completed"));
+        stats.put("cancelled", orderRepository.countByPaymentStatus("cancelled"));
+        System.out.println("Thống kê trạng thái thanh toán: " + stats);
+        return stats;
+    }
+
+
 
 }

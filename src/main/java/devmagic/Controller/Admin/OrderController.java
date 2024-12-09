@@ -177,4 +177,12 @@ public class OrderController {
     public ResponseEntity<String> handleException(RuntimeException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
+
+    // Thống kê trạng thái thanh toán
+    @GetMapping("/payment-status-stats")
+    @ResponseBody
+    public Map<String, Long> getPaymentStatusStats() {
+        return ordersService.getPaymentStatusStatistics();
+    }
+
 }
