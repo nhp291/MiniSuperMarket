@@ -62,7 +62,6 @@ public class LoginController {
                     model.addAttribute("error", "Mật khẩu không chính xác!");
                     return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
                 }
-
                 session.setAttribute("accountId", account.getAccountId());
                 session.setAttribute("username", account.getUsername());
                 session.setAttribute("role", account.getRole().getRoleName());
