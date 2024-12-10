@@ -156,7 +156,7 @@ public class CartController {
         Order order = new Order();
         order.setAccount(new Account(accountId));
         order.setOrderDate(new Date());
-        order.setPaymentStatus("Thành Công");
+        order.setPaymentStatus("COMPLETED");
         order.setPaymentMethod(paymentMethod);
 
         order.setOrderDetails(cartItems.stream().map(cartItem -> {
@@ -235,5 +235,23 @@ public class CartController {
         }
         return null;
     }
+    @PostMapping("/save-gift")
+    public ResponseEntity<?> saveGiftToSession(@RequestBody Map<String, String> body, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String giftResult = body.get("result");
+
+        if (giftResult != null && !giftResult.isEmpty()) {
+            session.setAttribute("giftResult", giftResult); // Lưu kết quả vào session
+            return ResponseEntity.ok(Map.of("success", true));
+        }
+
+        return ResponseEntity.ok(Map.of("success", false));
+    }
+    // Serve spinning wheel page
+    @GetMapping("/spinningwheel")
+    public String showSpinningWheelPage() {
+        return "cart/spinningwheel"; // View name tương ứng với spinningwheel.html
+    }
+
 }
 
