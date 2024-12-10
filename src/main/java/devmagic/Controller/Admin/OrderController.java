@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -51,7 +52,7 @@ public class OrderController {
                             @RequestParam(value = "page", defaultValue = "0") int page,
                             @RequestParam(value = "size", defaultValue = "10") int size) {
         // Phân trang
-        Pageable pageable = PageRequest.of(page, size, Sort.by("orderDate").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("orderDate")));
         Page<Order> ordersPage = ordersService.getOrdersByPage(pageable);
 
         // Thêm thông tin phân trang vào model
@@ -122,33 +123,26 @@ public class OrderController {
         }
     }
 
-    // Doanh thu theo tháng
-    @GetMapping("/orders/revenue-by-month")
-    public ResponseEntity<List<Object[]>> getRevenueByMonth() {
-        try {
-            List<Object[]> revenueByMonth = ordersService.getRevenueByMonth();
-            return ResponseEntity.ok(revenueByMonth);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
-        }
-    }
-
     // Cập nhật trạng thái thanh toán và gửi SSE cho frontend
     @PostMapping("/{orderId}/change-payment-status")
     public String changePaymentStatus(
             @PathVariable int orderId,
             @RequestParam String paymentStatus,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             Model model) {
         try {
-            if (paymentStatus == null || paymentStatus.isEmpty()) {
-                throw new IllegalArgumentException("Payment status cannot be null or empty");
-            }
-
+            // Cập nhật trạng thái thanh toán cho đơn hàng
             ordersService.updatePaymentStatus(orderId, paymentStatus);
 
-            List<Order> orders = ordersService.getAllOrders();
-            model.addAttribute("orders", orders);
+            // Lấy danh sách đơn hàng với phân trang
+            Page<Order> ordersPage = ordersService.getOrdersByPage(PageRequest.of(page, size, Sort.by(Sort.Order.desc("orderDate"))));
 
+            // Thêm dữ liệu vào model
+            model.addAttribute("orders", ordersPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", ordersPage.getTotalPages());
+            model.addAttribute("pageSize", size);
             model.addAttribute("message", "Payment status updated successfully!");
         } catch (Exception e) {
             model.addAttribute("error", "Failed to update payment status: " + e.getMessage());
@@ -160,17 +154,14 @@ public class OrderController {
     }
 
     public void updatePaymentStatus(int orderId, String paymentStatus) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
-
-        // Kiểm tra trạng thái hợp lệ
-        if (!List.of("PENDING", "PROCESSING", "COMPLETED", "CANCELLED").contains(paymentStatus)) {
-            throw new IllegalArgumentException("Invalid payment status: " + paymentStatus);
+        Optional<Order> orderOpt = orderRepository.findById(orderId);
+        if (orderOpt.isPresent()) {
+            Order order = orderOpt.get();
+            order.setPaymentStatus(paymentStatus);
+            orderRepository.save(order);
         }
-
-        // Cập nhật trạng thái thanh toán
-        order.setPaymentStatus(paymentStatus);
-        orderRepository.save(order);
     }
+
 
     // Xử lý ngoại lệ
     @ExceptionHandler(RuntimeException.class)

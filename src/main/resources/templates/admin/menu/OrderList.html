@@ -69,11 +69,20 @@
                                 <td th:text="${order.orderDetails[0].quantity}">Số lượng</td>
                                 <td>
                                     <form th:action="@{/Orders/{orderId}/change-payment-status(orderId=${order.orderId})}" method="post">
+                                        <input type="hidden" name="page" th:value="${currentPage}" />
+                                        <input type="hidden" name="size" th:value="${pageSize}" />
                                         <select name="paymentStatus" th:value="${order.paymentStatus != null ? order.paymentStatus : 'PENDING'}" onchange="this.form.submit()">
-                                            <option value="PENDING" th:selected="${order.paymentStatus == 'PENDING'}">Chờ xử lý</option>
-                                            <option value="PROCESSING" th:selected="${order.paymentStatus == 'PROCESSING'}">Đang xử lý</option>
-                                            <option value="COMPLETED" th:selected="${order.paymentStatus == 'COMPLETED'}">Hoàn thành</option>
-                                            <option value="CANCELLED" th:selected="${order.paymentStatus == 'CANCELLED'}">Hủy bỏ</option>
+                                            <!-- Chờ xử lý (PENDING) -->
+                                            <option value="PENDING" th:selected="${order.paymentStatus == 'PENDING'}"
+                                                    th:disabled="${order.paymentStatus != 'PENDING'}">Chờ xử lý</option>
+
+                                            <!-- Hoàn thành (COMPLETED) -->
+                                            <option value="COMPLETED" th:selected="${order.paymentStatus == 'COMPLETED'}"
+                                                    th:disabled="${order.paymentStatus != 'PENDING'}">Hoàn thành</option>
+
+                                            <!-- Hủy bỏ (CANCELLED) -->
+                                            <option value="CANCELLED" th:selected="${order.paymentStatus == 'CANCELLED'}"
+                                                    th:disabled="${order.paymentStatus == 'CANCELLED'}">Hủy bỏ</option>
                                         </select>
                                     </form>
                                 </td>
@@ -93,32 +102,32 @@
                             </tbody>
                         </table>
                     </div>
-<!--                    <div class="pagination-wrapper text-center mt-2">-->
-<!--                        &lt;!&ndash; Nút Đầu Trang &ndash;&gt;-->
-<!--                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">-->
-<!--                            <a th:href="@{/Orders/OrderList(page=0, size=${pageSize})}"><i class="bi bi-chevron-double-left"></i></a>-->
-<!--                        </span>-->
+                    <div class="pagination-wrapper text-center mt-2">
+                        <!-- Nút Đầu Trang -->
+                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">
+                            <a th:href="@{/Orders/OrderList(page=0, size=${pageSize})}"><i class="bi bi-chevron-double-left"></i></a>
+                        </span>
 
-<!--                        &lt;!&ndash; Nút Trước &ndash;&gt;-->
-<!--                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">-->
-<!--                            <a th:href="@{/Orders/OrderList(page=${currentPage - 1}, size=${pageSize})}"><i class="bi bi-chevron-compact-left"></i></a>-->
-<!--                        </span>-->
+                        <!-- Nút Trước -->
+                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">
+                            <a th:href="@{/Orders/OrderList(page=${currentPage - 1}, size=${pageSize})}"><i class="bi bi-chevron-compact-left"></i></a>
+                        </span>
 
-<!--                        &lt;!&ndash; Thông Tin Phân Trang &ndash;&gt;-->
-<!--                        <span class="pagination-info btn btn-info text-light">-->
-<!--                            Trang <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>-->
-<!--                        </span>-->
+                        <!-- Thông Tin Phân Trang -->
+                        <span class="pagination-info btn btn-info text-light">
+                            Trang <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
+                        </span>
 
-<!--                        &lt;!&ndash; Nút Tiếp &ndash;&gt;-->
-<!--                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">-->
-<!--                            <a th:href="@{/Orders/OrderList(page=${currentPage + 1}, size=${pageSize})}"><i class="bi bi-chevron-compact-right"></i></a>-->
-<!--                        </span>-->
+                        <!-- Nút Tiếp -->
+                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">
+                            <a th:href="@{/Orders/OrderList(page=${currentPage + 1}, size=${pageSize})}"><i class="bi bi-chevron-compact-right"></i></a>
+                        </span>
 
-<!--                        &lt;!&ndash; Nút Cuối Trang &ndash;&gt;-->
-<!--                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">-->
-<!--                            <a th:href="@{/Orders/OrderList(page=${totalPages - 1}, size=${pageSize})}"><i class="bi bi-chevron-double-right"></i></a>-->
-<!--                        </span>-->
-<!--                    </div>-->
+                        <!-- Nút Cuối Trang -->
+                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">
+                            <a th:href="@{/Orders/OrderList(page=${totalPages - 1}, size=${pageSize})}"><i class="bi bi-chevron-double-right"></i></a>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
