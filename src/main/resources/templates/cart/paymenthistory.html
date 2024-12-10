@@ -20,7 +20,6 @@
             border-radius: 10px;
             background-color: #fff;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 1s ease-in-out;
         }
 
         .history-title {
@@ -29,92 +28,69 @@
             font-weight: bold;
             margin-bottom: 20px;
             color: #333;
-            animation: slideInDown 1s ease-in-out;
         }
 
-        .table-responsive {
+        .table-container {
             overflow-x: auto;
+        }
+
+        .table {
+            table-layout: auto; /* Điều chỉnh kích thước cột theo nội dung */
+            width: 100%; /* Chiếm toàn bộ chiều rộng */
+            border-collapse: collapse;
         }
 
         .table thead th {
             background-color: #007bff;
-            color: #fff;
-            border-color: #007bff;
-            animation: fadeIn 1.5s ease-in-out;
+            color: white;
+            text-align: center;
+            position: sticky; /* Giữ cố định tiêu đề */
+            top: 0;
+            z-index: 1; /* Đảm bảo tiêu đề luôn ở trên */
+            white-space: nowrap; /* Không xuống dòng tiêu đề */
         }
 
-        .table tbody tr {
-            animation: fadeInUp 1s ease-in-out;
+        .table tbody td {
+            text-align: center;
+            word-wrap: break-word; /* Cắt dòng nếu chữ dài */
+            overflow-wrap: break-word;
         }
 
+        /* Thêm giới hạn chiều cao và thanh cuộn */
+        .table-container {
+            max-height: 400px; /* Chiều cao tối đa bảng */
+            overflow-y: auto; /* Thanh cuộn dọc */
+        }
+
+        /* Đảm bảo dòng hover dễ nhìn */
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
 
-        .btn-view {
-            color: #007bff;
-            text-decoration: none;
-            animation: pulse 2s infinite;
-        }
-
-        .btn-view:hover {
-            text-decoration: underline;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
+        /* Responsive cho thiết bị nhỏ */
+        @media (max-width: 768px) {
+            .history-box {
+                padding: 15px;
             }
 
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideInDown {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
+            .history-title {
+                font-size: 24px;
             }
 
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
+            .table {
+                font-size: 14px; /* Thu nhỏ font chữ */
             }
 
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-
-            100% {
-                transform: scale(1);
+            .table tbody td {
+                white-space: normal; /* Cho phép xuống dòng trên thiết bị nhỏ */
             }
         }
     </style>
     <div class="container mt-5">
         <div class="history-box">
             <h3 class="history-title">Lịch Sử Hóa Đơn</h3>
-            <!-- Thêm lớp table-responsive -->
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
+            <div class="table-container">
+                <table class="table table-bordered">
                     <thead>
                     <tr>
                         <th>Mã Hóa Đơn</th>
