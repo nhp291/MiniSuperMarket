@@ -8,6 +8,7 @@ import devmagic.Model.Role;
 import devmagic.Reponsitory.RoleRepository;
 import devmagic.Service.AccountService;
 import devmagic.Service.CartService;
+import devmagic.Service.EmailService;
 import devmagic.Service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -34,15 +35,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Collections; 
-import java.util.HashMap; 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class HomeUserController {
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ProductService productService;
@@ -56,6 +54,8 @@ public class HomeUserController {
     @Autowired
     private RoleRepository roleRepository;
 
+    private static final Map<String, String> verificationCodes = new HashMap<>();
+
     @RequestMapping("/layout/Home")
     public String Home(
             Model model,
@@ -68,11 +68,7 @@ public class HomeUserController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
-        // Lấy số lượng sản phẩm trong giỏ hàng
-        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
 
-        // Truyền số lượng vào model để sử dụng trong template
-        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
@@ -113,24 +109,6 @@ public class HomeUserController {
         return "layout/Home";
     }
 
-    @GetMapping("/cart/getTotalQuantity")
-    @ResponseBody
-    public Map<String, Integer> getTotalQuantity(HttpServletRequest request) {
-        // Lấy accountId từ session
-        Integer accountId = getAccountIdFromSession(request);
-
-        Map<String, Integer> response = new HashMap<>();
-        if (accountId == null) {
-            response.put("totalQuantity", 0); // Nếu không tìm thấy accountId, trả về 0
-            return response;
-        }
-
-        // Tính tổng số lượng sản phẩm trong giỏ hàng
-        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
-        response.put("totalQuantity", totalQuantity);
-        return response;
-    }
-    
     @PostMapping("/cart/shoppingcart")
     @ResponseBody
     public ResponseEntity<?> addaToCart(@RequestParam("productId") Integer productId,
@@ -189,11 +167,6 @@ public class HomeUserController {
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
 
-        // Lấy số lượng sản phẩm trong giỏ hàng
-        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
-
-        // Truyền số lượng vào model để sử dụng trong template
-        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
@@ -274,6 +247,40 @@ public class HomeUserController {
         return "user/contact";
     }
 
+    @PostMapping("/user/sendVerificationCode")
+    @ResponseBody
+    public ResponseEntity<?> sendVerificationCode(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        if (!StringUtils.hasText(email)) {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Email không được để trống!"));
+        }
+
+        // Sinh mã xác nhận ngẫu nhiên
+        String verificationCode = String.valueOf(new Random().nextInt(999999));
+        verificationCodes.put(email, verificationCode);
+
+        // Gửi mã qua email (bạn cần tích hợp thư viện gửi email, ví dụ: JavaMailSender)
+        try {
+            emailService.sendEmail(email, "Mã xác nhận của bạn", "Mã xác nhận: " + verificationCode);
+            return ResponseEntity.ok(new ResponseMessage("Mã xác nhận đã được gửi."));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ResponseMessage("Không thể gửi mã xác nhận."));
+        }
+    }
+
+    @PostMapping("/user/verifyCode")
+    @ResponseBody
+    public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String code = request.get("code");
+
+        if (verificationCodes.containsKey(email) && verificationCodes.get(email).equals(code)) {
+            verificationCodes.remove(email); // Xóa mã sau khi xác nhận
+            return ResponseEntity.ok(new ResponseMessage("Mã xác nhận chính xác!"));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Mã xác nhận không hợp lệ."));
+        }
+    }
     @GetMapping("user/register")
     public String registerForm(Model model) {
         model.addAttribute("account", new Account()); // Đảm bảo tạo một đối tượng Account mới
@@ -282,17 +289,20 @@ public class HomeUserController {
 
     @PostMapping("user/register")
     public String register(@Valid @ModelAttribute("account") Account account,
+                           @RequestParam("verificationCode") String verificationCode,
                            BindingResult result,
                            Model model) throws IOException {
+        String email = account.getEmail();
 
-        // Kiểm tra tên đăng nhập đã tồn tại chưa
-        if (accountService.usernameExists(account.getUsername())) {
-            result.rejectValue("username", "error.username", "Tên đăng nhập đã tồn tại!");
+        // Kiểm tra mã xác nhận
+        if (!verificationCodes.containsKey(email) ||
+                !verificationCodes.get(email).equals(verificationCode)) {
+            model.addAttribute("verificationError", "Mã xác nhận không chính xác!"); // Thêm thông báo lỗi
         }
 
         // Kiểm tra email đã tồn tại chưa
         if (accountService.emailExists(account.getEmail())) {
-            result.rejectValue("email", "error.email", "Email đã được sử dụng!"); // Thêm thông báo lỗi cho email
+            result.rejectValue("email", "error.email", "Email đã được sử dụng!");
         }
 
         // Kiểm tra mật khẩu có khớp không
@@ -305,13 +315,13 @@ public class HomeUserController {
             result.rejectValue("email", "error.email", "Email không hợp lệ!");
         }
 
-        // Kiểm tra số điện thoại (ví dụ: chỉ cho phép số)
+        // Kiểm tra số điện thoại
         if (!account.getPhoneNumber().matches("^[0-9]*$")) {
             result.rejectValue("phoneNumber", "error.phoneNumber", "Số điện thoại chỉ chứa chữ số!");
         }
 
-        // Kiểm tra lỗi nhập liệu
-        if (result.hasErrors()) {
+        // Kiểm tra lỗi nhập liệu hoặc lỗi mã xác nhận
+        if (result.hasErrors() || model.containsAttribute("verificationError")) {
             model.addAttribute("account", account); // Gửi lại dữ liệu nhập về form
             model.addAttribute("error", "Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin.");
             return "user/register"; // Trả về trang đăng ký cùng thông báo lỗi
@@ -336,6 +346,7 @@ public class HomeUserController {
             return "user/register";
         }
     }
+
 
 
     @GetMapping("/ForgotPassword")
