@@ -34,17 +34,20 @@ public class PasswordController {
     // Hiển thị form thay đổi mật khẩu
     @GetMapping("/ChangePassword")
     public String changePassword(HttpSession session, Model model) {
-        // Lấy thông tin tài khoản từ session
+        // Check if there is an authenticated user in the session
         Account account = (Account) session.getAttribute("Admin");
+        if (account == null) {
+            account = (Account) session.getAttribute("User");
+        }
+
         if (account == null) {
             model.addAttribute("errorMessage", "Bạn cần đăng nhập để thay đổi mật khẩu.");
             return "redirect:/user/login";
         }
 
         model.addAttribute("username", account.getUsername());
-        return "UpdatePassword"; // Đảm bảo template phù hợp
+        return "UpdatePassword";
     }
-
 
     @PostMapping("/ChangePassword")
     public String handleChangePassword(
@@ -53,7 +56,8 @@ public class PasswordController {
             @RequestParam("newPassword") String newPassword,
             @RequestParam("newPasswordConfirm") String newPasswordConfirm,
             RedirectAttributes redirectAttributes,
-            Model model) {
+            Model model,
+            HttpSession session) { // Thêm HttpSession vào tham số
 
         // Xác nhận mật khẩu mới và mật khẩu xác nhận
         if (!newPassword.equals(newPasswordConfirm)) {
@@ -84,6 +88,13 @@ public class PasswordController {
         account.setPassword(encodedPassword);
         accountService.saveAccount(account);
 
+        // Cập nhật lại thông tin tài khoản vào session
+        if (session.getAttribute("Admin") != null) {
+            session.setAttribute("Admin", account); // Cập nhật thông tin Admin trong session
+        } else if (session.getAttribute("User") != null) {
+            session.setAttribute("User", account); // Cập nhật thông tin User trong session
+        }
+
         // Thêm thông báo thành công
         redirectAttributes.addFlashAttribute("successMessage", "Mật khẩu đã thay đổi thành công.");
 
@@ -101,8 +112,7 @@ public class PasswordController {
         if (username == null || username.isEmpty()) {
             Account account = (Account) session.getAttribute("Admin");
             if (account == null) {
-                model.addAttribute("errorMessage", "Bạn cần đăng nhập hoặc cung cấp tên đăng nhập.");
-                return "redirect:/user/login"; // Chuyển hướng đến trang đăng nhập nếu không có session
+                account = (Account) session.getAttribute("User");
             }
             username = account.getUsername(); // Lấy username từ tài khoản trong session
         }
@@ -125,7 +135,8 @@ public class PasswordController {
     @PostMapping("/ForgotPassword")
     public String forgotPassword(
             @RequestParam("email") String email,
-            Model model) {
+            Model model,
+            HttpSession session) { // Thêm HttpSession vào tham số
 
         // Tìm tài khoản dựa trên email
         Optional<Account> accountOptional = accountService.getAccountByEmail(email);
@@ -143,6 +154,13 @@ public class PasswordController {
         String encodedPassword = passwordEncoder.encode(newPassword);
         account.setPassword(encodedPassword);
         accountService.saveAccount(account); // Lưu mật khẩu mới vào cơ sở dữ liệu
+
+        // Cập nhật lại thông tin tài khoản vào session
+        if (session.getAttribute("Admin") != null) {
+            session.setAttribute("Admin", account); // Cập nhật thông tin Admin trong session
+        } else if (session.getAttribute("User") != null) {
+            session.setAttribute("User", account); // Cập nhật thông tin User trong session
+        }
 
         // Gửi email thông báo mật khẩu mới
         try {
