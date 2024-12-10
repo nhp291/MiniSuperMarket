@@ -125,19 +125,15 @@ public class OrderService {
         return stats;
     }
 
-    // Doanh thu và đơn hàng theo ngày
-    public List<Object[]> getOrdersAndRevenueByDay() {
-        return orderRepository.getOrdersAndRevenueByDay();
+    public List<Object[]> getDailyStatistics() {
+        return orderRepository.getDailyStatistics();
     }
 
-    // Doanh thu theo tháng và năm
-    public List<Object[]> getRevenueByMonthAndYear() {
-        return orderRepository.getRevenueByMonthAndYear();
+    public List<Object[]> getMonthlyStatistics() {
+        return orderRepository.getMonthlyStatistics();
     }
 
-    // Doanh thu theo năm
-    public List<Object[]> getRevenueByYear() {
-        return orderRepository.getRevenueByYear();
+    public List<Object[]> getYearlyStatistics() {
+        return orderRepository.getYearlyStatistics();
     }
-
 }

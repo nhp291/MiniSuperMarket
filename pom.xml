@@ -116,7 +116,6 @@
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
-            <version>1.6.7</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>

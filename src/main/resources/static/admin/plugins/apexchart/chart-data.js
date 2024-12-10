@@ -281,29 +281,54 @@ $(document).ready(function() {
     }
 
     // Biểu đồ cột chồng thể hiện doanh thu và mua hàng
-    if ($('#sales_charts').length > 0) {
-        var salesCharts = {
-            chart: { height: 350, type: 'bar', stacked: true, toolbar: { show: false } },
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    legend: { position: 'bottom' }
-                }
-            }],
-            plotOptions: { bar: { horizontal: false } },
-            series: [{
-                name: 'Sales', data: [30, 40, 45, 50, 49, 60, 70, 91]
-            }, {
-                name: 'Purchase', data: [25, 38, 41, 34, 33, 48, 56, 71]
-            }],
-            xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-            },
-            yaxis: { title: { text: 'Amount' } }
-        };
-        var chart = new ApexCharts(document.querySelector("#sales_charts"), salesCharts);
-        chart.render();
+    if ($('#order-stats-chart').length > 0) {
+        $('#order-stats-chart').html('<p>Đang tải dữ liệu...</p>');
+
+        $.get('/Orders/order-stats', function (data) {
+            if (data && data.daily && data.monthly && data.yearly) {
+                var dailyData = data.daily.map(stat => ({ x: `Ngày ${new Date(stat[0]).toLocaleDateString('vi-VN')}`, y: stat[2] }));
+                var monthlyData = data.monthly.map(stat => ({ x: `Tháng ${stat[0]} / ${stat[1]}`, y: stat[3] }));
+                var yearlyData = data.yearly.map(stat => ({ x: `Năm ${stat[0]}`, y: stat[2] }));
+
+                $('#order-stats-chart').html('');
+                var options = {
+                    chart: {
+                        type: 'bar',
+                        height: 350,
+                        stacked: true,
+                        toolbar: { show: false }
+                    },
+                    series: [
+                        { name: 'Hàng ngày', data: dailyData },
+                        { name: 'Hàng tháng', data: monthlyData },
+                        { name: 'Hàng năm', data: yearlyData }
+                    ],
+                    xaxis: {
+                        categories: dailyData.map(d => d.x),
+                        labels: { style: { fontSize: '12px' } }
+                    },
+                    yaxis: { title: { text: 'Doanh thu (VNĐ)' } },
+                    legend: { position: 'bottom' },
+                    colors: ['#FFC107', '#28A745', '#007BFF'],
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            legend: { position: 'bottom' }
+                        }
+                    }]
+                };
+
+                var chart = new ApexCharts(document.querySelector("#order-stats-chart"), options);
+                chart.render();
+            } else {
+                $('#order-stats-chart').html('<p>Không có dữ liệu để hiển thị.</p>');
+            }
+        }).fail(function () {
+            $('#order-stats-chart').html('<p>Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.</p>');
+        });
+
     }
+
 
     // Biểu đồ trạng thái thanh toán (payment-status-chart)
     if ($('#payment-status-chart').length > 0) {

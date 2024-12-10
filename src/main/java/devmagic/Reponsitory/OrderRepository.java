@@ -36,33 +36,27 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Long countByPaymentStatus(@Param("paymentStatus") String paymentStatus);
 
     // Doanh thu theo tháng
-    @Query("SELECT FUNCTION('MONTH', o.orderDate) AS month, FUNCTION('YEAR', o.orderDate) AS year, " +
+    @Query("SELECT MONTH(o.orderDate) AS month, YEAR(o.orderDate) AS year, " +
             "SUM(od.price * od.quantity) AS revenue " +
             "FROM Order o JOIN o.orderDetails od " +
             "WHERE o.isDeleted = false " +
-            "GROUP BY FUNCTION('YEAR', o.orderDate), FUNCTION('MONTH', o.orderDate)")
+            "GROUP BY YEAR(o.orderDate), MONTH(o.orderDate)")
     List<Object[]> getRevenueByMonth();
 
     // Thống kê theo ngày
-    @Query("SELECT DATE(o.orderDate) AS date, COUNT(o) AS orderCount, SUM(od.price * od.quantity) AS revenue " +
-            "FROM Order o JOIN o.orderDetails od " +
-            "WHERE o.isDeleted = false " +
-            "GROUP BY DATE(o.orderDate) ORDER BY date")
-    List<Object[]> getOrdersAndRevenueByDay();
+    @Query("SELECT CAST(o.orderDate AS date) AS date, COUNT(o) AS totalOrders, SUM(od.price * od.quantity) AS totalRevenue " +
+            "FROM Order o JOIN o.orderDetails od WHERE o.isDeleted = false GROUP BY CAST(o.orderDate AS date) ORDER BY date")
+    List<Object[]> getDailyStatistics();
 
-    // Thống kê theo tháng và năm
-    @Query("SELECT FUNCTION('MONTH', o.orderDate) AS month, FUNCTION('YEAR', o.orderDate) AS year, " +
-            "SUM(od.price * od.quantity) AS revenue " +
-            "FROM Order o JOIN o.orderDetails od " +
-            "WHERE o.isDeleted = false " +
-            "GROUP BY FUNCTION('YEAR', o.orderDate), FUNCTION('MONTH', o.orderDate)")
-    List<Object[]> getRevenueByMonthAndYear();
+    // Thống kê theo tháng
+    @Query("SELECT YEAR(o.orderDate) AS year, MONTH(o.orderDate) AS month, COUNT(o) AS totalOrders, SUM(od.price * od.quantity) AS totalRevenue " +
+            "FROM Order o JOIN o.orderDetails od WHERE o.isDeleted = false GROUP BY YEAR(o.orderDate), MONTH(o.orderDate) ORDER BY year DESC, month DESC")
+    List<Object[]> getMonthlyStatistics();
 
-    // Thống kê doanh thu theo năm
-    @Query("SELECT FUNCTION('YEAR', o.orderDate) AS year, SUM(od.price * od.quantity) AS revenue " +
-            "FROM Order o JOIN o.orderDetails od " +
-            "WHERE o.isDeleted = false " +
-            "GROUP BY FUNCTION('YEAR', o.orderDate) ORDER BY year")
-    List<Object[]> getRevenueByYear();
+    // Thống kê theo năm
+    @Query("SELECT YEAR(o.orderDate) AS year, COUNT(o) AS totalOrders, SUM(od.price * od.quantity) AS totalRevenue " +
+            "FROM Order o JOIN o.orderDetails od WHERE o.isDeleted = false GROUP BY YEAR(o.orderDate) ORDER BY year DESC")
+    List<Object[]> getYearlyStatistics();
+
 
 }
