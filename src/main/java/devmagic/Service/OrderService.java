@@ -90,11 +90,6 @@ public class OrderService {
         return result;
     }
 
-    // Doanh thu theo tháng
-    public List<Object[]> getRevenueByMonth() {
-        return orderRepository.getRevenueByMonth();
-    }
-
     // Cập nhật trạng thái thanh toán
     public void updatePaymentStatus(int orderId, String paymentStatus) {
         // Kiểm tra đơn hàng có tồn tại hay không
@@ -130,6 +125,19 @@ public class OrderService {
         return stats;
     }
 
+    // Doanh thu và đơn hàng theo ngày
+    public List<Object[]> getOrdersAndRevenueByDay() {
+        return orderRepository.getOrdersAndRevenueByDay();
+    }
 
+    // Doanh thu theo tháng và năm
+    public List<Object[]> getRevenueByMonthAndYear() {
+        return orderRepository.getRevenueByMonthAndYear();
+    }
+
+    // Doanh thu theo năm
+    public List<Object[]> getRevenueByYear() {
+        return orderRepository.getRevenueByYear();
+    }
 
 }
