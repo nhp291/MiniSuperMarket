@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -174,6 +175,17 @@ public class OrderController {
     @ResponseBody
     public Map<String, Long> getPaymentStatusStats() {
         return ordersService.getPaymentStatusStatistics();
+    }
+
+
+    @GetMapping("/order-stats")
+    @ResponseBody
+    public Map<String, List<Object[]>> getOrderStatistics() {
+        Map<String, List<Object[]>> stats = new HashMap<>();
+        stats.put("daily", ordersService.getDailyStatistics());
+        stats.put("monthly", ordersService.getMonthlyStatistics());
+        stats.put("yearly", ordersService.getYearlyStatistics());
+        return stats;
     }
 
 }
