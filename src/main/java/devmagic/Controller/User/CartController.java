@@ -156,7 +156,7 @@ public class CartController {
         Order order = new Order();
         order.setAccount(new Account(accountId));
         order.setOrderDate(new Date());
-        order.setPaymentStatus("COMPLETED");
+        order.setPaymentStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
 
         order.setOrderDetails(cartItems.stream().map(cartItem -> {

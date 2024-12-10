@@ -281,28 +281,29 @@ $(document).ready(function() {
     }
 
     // Biểu đồ cột chồng thể hiện doanh thu và mua hàng
-    // Biểu đồ cột chồng thể hiện doanh thu và mua hàng
     if ($('#order-stats-chart').length > 0) {
         $('#order-stats-chart').html('<p>Đang tải dữ liệu...</p>');
-// Định dạng số liệu tiền tệ Việt Nam
+
+        // Định dạng số liệu tiền tệ Việt Nam
         function formatNumberVN(value) {
             return new Intl.NumberFormat('vi-VN').format(value);
         }
 
-// Cập nhật phần xử lý dữ liệu
+        // Xử lý dữ liệu từ API
         $.get('/Orders/order-stats', function (data) {
             if (data && data.daily && data.monthly && data.yearly) {
+                // Chuyển đổi dữ liệu
                 var dailyData = data.daily.map(stat => ({
                     x: `Ngày ${new Date(stat[0]).toLocaleDateString('vi-VN')}`,
-                    y: stat[2] * 1000 // Chuyển đổi từ nghìn sang triệu
+                    y: stat[2] * 1000 // Nhân 1000 để chuyển đổi giá trị từ nghìn sang đơn vị chính xác
                 }));
                 var monthlyData = data.monthly.map(stat => ({
                     x: `Tháng ${stat[1]} / ${stat[0]}`,
-                    y: stat[3] * 1000 // Chuyển đổi từ nghìn sang triệu
+                    y: stat[3] * 1000 // Nhân 1000 để đảm bảo đúng đơn vị
                 }));
                 var yearlyData = data.yearly.map(stat => ({
                     x: `Năm ${stat[0]}`,
-                    y: stat[2] * 1000 // Chuyển đổi từ nghìn sang triệu
+                    y: stat[2] * 1000 // Nhân 1000 để chuyển đổi đúng đơn vị
                 }));
 
                 // Cấu hình biểu đồ
@@ -319,21 +320,21 @@ $(document).ready(function() {
                         { name: 'Hàng năm', data: yearlyData }
                     ],
                     xaxis: {
-                        categories: dailyData.map(d => d.x), // Tên cột X
+                        categories: dailyData.map(d => d.x), // Danh sách tên cột X
                         labels: { style: { fontSize: '12px' } }
                     },
                     yaxis: {
                         title: { text: 'Doanh thu (VNĐ)' },
                         labels: {
                             formatter: function (value) {
-                                return formatNumberVN(value); // Hiển thị định dạng VNĐ
+                                return formatNumberVN(value); // Định dạng trục Y
                             }
                         }
                     },
                     tooltip: {
                         y: {
                             formatter: function (value) {
-                                return formatNumberVN(value) + ' VNĐ'; // Định dạng tiền trong tooltip
+                                return formatNumberVN(value) + ' VNĐ'; // Định dạng tooltip
                             }
                         }
                     },
@@ -347,6 +348,7 @@ $(document).ready(function() {
                     }]
                 };
 
+                // Render biểu đồ
                 var chart = new ApexCharts(document.querySelector("#order-stats-chart"), options);
                 chart.render();
             } else {
@@ -355,9 +357,7 @@ $(document).ready(function() {
         }).fail(function () {
             $('#order-stats-chart').html('<p>Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.</p>');
         });
-
     }
-
 
 
     // Biểu đồ trạng thái thanh toán (payment-status-chart)

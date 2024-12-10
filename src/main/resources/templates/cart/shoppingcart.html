@@ -98,14 +98,13 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 15px;
+            padding: 1px;
             cursor: pointer;
-            border-radius: 10px;
-            border: 2px solid transparent;
+            border-radius: 1px;
+            border: 1px solid transparent;
             background-color: #2a2e3c;
             transition: all 0.3s ease;
             text-align: center;
-            margin-bottom: 15px;
         }
 
         .radio-input label:hover {
@@ -124,7 +123,7 @@
         .back-to-shop-btn {
             position: absolute;
             left: 15px;
-            bottom: 15px;
+            bottom: 5px;
             background-color: #f0ad4e;
             color: #fff;
             padding: 10px 20px;
@@ -182,7 +181,7 @@
             }
 
             .cart-items {
-                max-height: 300px;
+                max-height: 100px;
                 /* Giảm chiều cao thanh cuộn trên màn hình nhỏ */
             }
 
@@ -210,7 +209,7 @@
         .category label {
             display: flex;
             align-items: center;
-            padding: 10px 20px;
+            padding: 1px;
             border-radius: 5px;
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
             cursor: pointer;
@@ -224,7 +223,7 @@
 
         .category label .imgContainer {
             width: 40px;
-            height: 40px;
+            height: 10px;
             margin-right: 15px;
             display: flex;
             justify-content: center;
@@ -362,16 +361,29 @@
                     <br>
                     <h5  style="color: black;"><b>Tóm Tắt Đơn Hàng</b></h5>
                     <div class="row mt-3">
-                        <div class="col"  style="color: black;">Tổng Số Lượng</div>
+                        <div class="col"  style="color: black;">Số Lượng</div>
                         <div class="col text-end total-quantity"  style="color: black;" th:text="${totalQuantity}">0</div>
                     </div>
-                    <div class="row">
-                        <div class="col"  style="color: black;">Tổng Tiền</div>
-                        <div class="col text-end"><span class="total-price"  style="color: black;"
-                                                                th:text="${totalPrice}">0.00</span></div>
+                    <div class="row mt-2">
+                        <div class="col"  style="color: black;"> Tổng Tiền</div>
+                        <div class="col text-end"><span class="total-price" th:text="${totalPrice}">0.00</span></div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col"  style="color: black;">VAT</div>
+                        <div class="col text-end total-quantity"  style="color: black;">0</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col"  style="color: black;">Voucher</div>
+                        <div class="col text-end total-quantity"  style="color: black;" >0</div>
+                    </div>
+                    <hr>
+                    <div class="row mt-2">
+                        <div class="col"  style="color: black;">Thành tiền</div>
+                        <div class="col text-end total-quantity"  style="color: black;" >0</div>
                     </div>
 
-                    <div class="row radio-input mt-4">
+
+                    <div class="row radio-input mt-2">
                         <div class="container">
                             <div class="title">
                                 <h4><span style="color: #202ae9">Chọn Phương thức Thanh toán</span></h4>
@@ -442,11 +454,11 @@
                         </div>
                     </div>
 
-                    <div class="row mt-4">
+                    <div class="row mt-2">
                         <!-- Form for payment submission -->
                         <form action="/cart/checkout" method="post">
                             <input type="hidden" name="paymentMethod" id="paymentMethod" value="Tiền Mặt">
-                            <button class="btn btn-primary w-100" type="submit">Thanh Toán</button>
+                            <button class="btn btn-primary w-100" type="submit">Đặt hàng</button>
                         </form>
 
                         <!-- Button to navigate to spinning wheel -->
