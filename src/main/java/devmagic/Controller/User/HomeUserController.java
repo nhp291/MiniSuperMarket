@@ -319,7 +319,7 @@ public class HomeUserController {
         // Kiểm tra mã xác nhận
         if (!verificationCodes.containsKey(email) ||
                 !verificationCodes.get(email).equals(verificationCode)) {
-            model.addAttribute("verificationError", "Mã xác nhận không chính xác!"); // Thêm thông báo lỗi
+            model.addAttribute("verificationError", "Mã xác nhận không chính xác!");
         }
 
         // Kiểm tra email đã tồn tại chưa
@@ -344,9 +344,9 @@ public class HomeUserController {
 
         // Kiểm tra lỗi nhập liệu hoặc lỗi mã xác nhận
         if (result.hasErrors() || model.containsAttribute("verificationError")) {
-            model.addAttribute("account", account); // Gửi lại dữ liệu nhập về form
+            model.addAttribute("account", account);
             model.addAttribute("error", "Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin.");
-            return "user/register"; // Trả về trang đăng ký cùng thông báo lỗi
+            return "user/register";
         }
 
         // Gán vai trò mặc định USER (ID = 2)
@@ -361,9 +361,10 @@ public class HomeUserController {
         // Lưu thông tin tài khoản
         try {
             accountService.saveAccount(account);
-            return "redirect:/user/register?success=true"; // Chuyển hướng với tham số success
+            model.addAttribute("successMessage", "Đăng ký thành công! Bạn có thể đăng nhập ngay.");
+            return "redirect:/user/register?success=true"; // Chuyển hướng đến trang đăng nhập
         } catch (Exception e) {
-            model.addAttribute("account", account); // Gửi lại dữ liệu nhập về form
+            model.addAttribute("account", account);
             model.addAttribute("error", "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.");
             return "user/register";
         }
