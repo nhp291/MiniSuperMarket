@@ -28,6 +28,7 @@ public class OrderDetail {
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(name = "price", precision = 7, scale = 3, nullable = false)
+    @Column(name = "price", precision = 12, scale = 2, nullable = false)
     private BigDecimal price;
+
 }

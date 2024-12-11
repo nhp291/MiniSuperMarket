@@ -6,6 +6,7 @@ import devmagic.Service.*;
 import devmagic.Utils.BaseController;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -42,7 +43,7 @@ public class HomeController extends BaseController {
     private OrderService orderService;
 
     @Autowired
-    private WarehouseService warehouseService;
+    private ProductService productService;
 
     @GetMapping("/Home")
     public String Home(Model model, HttpSession session) {
@@ -73,6 +74,12 @@ public class HomeController extends BaseController {
         System.out.println("Total Orders: " + totalOrders); // In giá trị ra console
         model.addAttribute("totalOrders", totalOrders);
 
+        long nearlyOutOfStockCount = productService.getNearlyOutOfStockProducts(Pageable.unpaged()).size();
+        model.addAttribute("nearlyOutOfStockCount", nearlyOutOfStockCount);
+
+        long outOfStockCount = productService.getOutOfStockProducts(Pageable.unpaged()).size();
+        model.addAttribute("outOfStockCount", outOfStockCount);
+
         // Kiểm tra giá trị totalRevenue
         BigDecimal totalRevenue = orderService.getTotalRevenue();
         System.out.println("Total Revenue: " + totalRevenue);  // Kiểm tra giá trị trước khi định dạng
@@ -84,12 +91,6 @@ public class HomeController extends BaseController {
         } else {
             model.addAttribute("totalRevenue", "0.000");
         }
-
-//        // Thêm warehouseId vào đây
-//        Integer warehouseId = 1; // Giả sử bạn có ID kho
-//        Integer totalStockInWarehouse = warehouseService.getTotalStockInWarehouse(warehouseId);  // Truyền warehouseId vào
-//        System.out.println("Total Stock in Warehouse: " + totalStockInWarehouse); // In giá trị ra console
-//        model.addAttribute("totalOrders", totalStockInWarehouse);
 
         model.addAttribute("pageTitle", "Home Page");
         model.addAttribute("viewName", "admin/index");

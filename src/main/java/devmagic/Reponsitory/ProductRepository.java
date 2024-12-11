@@ -37,5 +37,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Page<Product> findByNameContainingAndCategory_CategoryIdAndBrand_BrandId(String name, Integer categoryId, Integer brandId, Pageable pageable);
 
+    // Danh sách sản phẩm sắp hết hàng (<= 5 sản phẩm nhưng > 0)
+    @Query("SELECT p FROM Product p WHERE p.stockQuantity <= 5 AND p.stockQuantity > 0 ORDER BY p.stockQuantity ASC")
+    List<Product> findNearlyOutOfStockProducts(Pageable pageable);
 
+    // Danh sách sản phẩm đã hết hàng (stock = 0)
+    @Query("SELECT p FROM Product p WHERE p.stockQuantity = 0")
+    List<Product> findOutOfStockProducts(Pageable pageable);
 }

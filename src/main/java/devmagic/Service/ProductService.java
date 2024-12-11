@@ -243,4 +243,14 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
+    // Lấy danh sách sản phẩm gần hết hàng
+    public List<Product> getNearlyOutOfStockProducts(Pageable pageable) {
+        return productRepository.findNearlyOutOfStockProducts(pageable);
+    }
+
+    // Lấy danh sách sản phẩm hết hàng
+    public List<Product> getOutOfStockProducts(Pageable pageable) {
+        return productRepository.findOutOfStockProducts(pageable);
+    }
+
 }
