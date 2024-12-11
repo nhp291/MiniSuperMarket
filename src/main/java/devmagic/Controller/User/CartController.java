@@ -2,6 +2,7 @@ package devmagic.Controller.User;
 
 import devmagic.Dto.CartItemDTO;
 import devmagic.Model.*;
+import devmagic.Reponsitory.AccountRepository;
 import devmagic.Reponsitory.CartRepository;
 import devmagic.Service.CartService;
 import devmagic.Service.OrderService;
@@ -29,12 +30,14 @@ public class CartController {
     private final CartService cartService;
     private final OrderService orderService;
     private final CartRepository cartRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public CartController(CartService cartService, OrderService orderService, CartRepository cartRepository) {
+    public CartController(CartService cartService, OrderService orderService, CartRepository cartRepository, AccountRepository accountRepository) {
         this.cartService = cartService;
         this.orderService = orderService;
         this.cartRepository = cartRepository;
+        this.accountRepository = accountRepository;
     }
 
     // Hiển thị giỏ hàng
@@ -48,15 +51,24 @@ public class CartController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
 
+        // Lấy thông tin tài khoản từ database
+        Optional<Account> accountOpt = accountRepository.findById(accountId);
+        if (accountOpt.isEmpty()) {
+            return "redirect:/user/login";  // Nếu không tìm thấy tài khoản, chuyển hướng đến trang đăng nhập
+        }
+        Account account = accountOpt.get();
+
+        // Thêm thông tin tài khoản vào model để hiển thị
         model.addAttribute("username", username);
         model.addAttribute("role", role);
         model.addAttribute("accountId", accountId);
+        model.addAttribute("account", account);  // Truyền đối tượng Account vào model
 
+        // Lấy các sản phẩm trong giỏ hàng của người dùng
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
-
-        // Cập nhật giá sản phẩm sử dụng giá sale (nếu có)
         cartItems.forEach(this::updatePriceWithSale);
 
+        // Tính tổng giá trị và số lượng
         BigDecimal totalPrice = cartService.calculateTotalPrice(cartItems);
         int totalQuantity = cartService.calculateTotalQuantity(cartItems);
 
@@ -64,85 +76,30 @@ public class CartController {
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("totalQuantity", totalQuantity);
 
-        return "cart/shoppingcart";
+        return "cart/shoppingcart";  // Trả về view giỏ hàng
     }
 
-    // Cập nhật số lượng sản phẩm trong giỏ hàng
-    @PostMapping("/update-quantity")
-    public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Integer> body, HttpServletRequest request) {
-        Integer productId = body.get("productId");
-        Integer quantity = body.get("quantity");
-
-        Integer accountId = getAccountIdFromSession(request);
-        if (accountId == null) {
-            return ResponseEntity.status(401).build(); // Không có quyền
-        }
-
-        Optional<Cart> cartOpt = cartRepository.findByAccount_AccountIdAndProduct_ProductId(accountId, productId);
-        if (cartOpt.isPresent()) {
-            Cart cart = cartOpt.get();
-            Product product = cart.getProduct();
-
-            // Kiểm tra số lượng tồn kho và điều kiện hợp lệ
-            if (quantity > 0 && quantity <= product.getStockQuantity()) {
-                cart.setQuantity(quantity);
-                cartRepository.save(cart);
-
-                // Tính toán giá mới và tổng tiền
-                List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
-                cartItems.forEach(this::updatePriceWithSale);
-
-                BigDecimal totalPrice = cartService.calculateTotalPrice(cartItems);
-                int totalQuantity = cartService.calculateTotalQuantity(cartItems);
-
-                BigDecimal newPrice = calculateEffectivePrice(product).multiply(BigDecimal.valueOf(quantity));
-
-                return ResponseEntity.ok(Map.of(
-                        "success", true,
-                        "newPrice", newPrice,
-                        "totalPrice", totalPrice,
-                        "totalQuantity", totalQuantity
-                ));
-            }
-        }
-        return ResponseEntity.ok(Map.of("success", false));
-    }
-
-    @PostMapping("/remove-item")
-    public ResponseEntity<?> removeItem(@RequestBody Map<String, Integer> body, HttpServletRequest request) {
-        Integer productId = body.get("productId");
-
-        Integer accountId = getAccountIdFromSession(request);
-        if (accountId == null) {
-            return ResponseEntity.status(401).build(); // Không có quyền
-        }
-
-        Optional<Cart> cartOpt = cartRepository.findByAccount_AccountIdAndProduct_ProductId(accountId, productId);
-        if (cartOpt.isPresent()) {
-            cartRepository.delete(cartOpt.get());
-
-            // Tính toán lại tổng tiền và tổng số lượng
-            List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
-            cartItems.forEach(this::updatePriceWithSale);
-
-            BigDecimal totalPrice = cartService.calculateTotalPrice(cartItems);
-            int totalQuantity = cartService.calculateTotalQuantity(cartItems);
-
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "totalPrice", totalPrice,
-                    "totalQuantity", totalQuantity
-            ));
-        }
-        return ResponseEntity.ok(Map.of("success", false));
-    }
-
-    // Checkout
+    // Tiến hành thanh toán
     @PostMapping("/checkout")
-    public String checkout(HttpServletRequest request, Model model, @RequestParam("paymentMethod") String paymentMethod) {
+    public String checkout(HttpServletRequest request, Model model,
+                           @RequestParam("paymentMethod") String paymentMethod,
+                           @RequestParam(value = "email", required = false) String email,
+                           @RequestParam(value = "note", required = false) String note) {
         Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
             return "redirect:/user/login";
+        }
+
+        Optional<Account> accountOpt = accountRepository.findById(accountId);
+        if (accountOpt.isEmpty()) {
+            return "redirect:/user/login";
+        }
+        Account account = accountOpt.get();
+
+        // Cập nhật email nếu người dùng thay đổi
+        if (email != null && !email.equals(account.getEmail())) {
+            account.setEmail(email);
+            accountRepository.save(account);
         }
 
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
@@ -153,12 +110,14 @@ public class CartController {
 
         cartItems.forEach(this::updatePriceWithSale);
 
+        // Tạo đơn hàng mới
         Order order = new Order();
-        order.setAccount(new Account(accountId));
+        order.setAccount(account);
         order.setOrderDate(new Date());
         order.setPaymentStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
 
+        // Tạo chi tiết đơn hàng
         order.setOrderDetails(cartItems.stream().map(cartItem -> {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrder(order);
@@ -168,16 +127,29 @@ public class CartController {
             return orderDetail;
         }).collect(Collectors.toList()));
 
+        // Lưu đơn hàng
         orderService.createOrder(order);
+
+        // Lưu ghi chú nếu có
+        if (note != null && !note.isBlank()) {
+            List<Cart> carts = cartRepository.findByAccount_AccountId(accountId);
+            for (Cart cart : carts) {
+                cart.setNote(note);
+                cartRepository.save(cart);
+            }
+        }
+
+        // Xóa giỏ hàng sau khi đặt hàng thành công
         cartService.clearCart(accountId);
 
+        // Tính tổng giá trị đơn hàng
         BigDecimal totalOrderPrice = order.getOrderDetails().stream()
                 .map(orderDetail -> orderDetail.getPrice().multiply(BigDecimal.valueOf(orderDetail.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         model.addAttribute("order", order);
         model.addAttribute("totalOrderPrice", totalOrderPrice);
-        return "cart/thankyou";
+        return "cart/thankyou";  // Trang cảm ơn sau khi thanh toán thành công
     }
 
     // Helper: Cập nhật giá sản phẩm với giá sale (nếu có)
@@ -235,23 +207,4 @@ public class CartController {
         }
         return null;
     }
-    @PostMapping("/save-gift")
-    public ResponseEntity<?> saveGiftToSession(@RequestBody Map<String, String> body, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        String giftResult = body.get("result");
-
-        if (giftResult != null && !giftResult.isEmpty()) {
-            session.setAttribute("giftResult", giftResult); // Lưu kết quả vào session
-            return ResponseEntity.ok(Map.of("success", true));
-        }
-
-        return ResponseEntity.ok(Map.of("success", false));
-    }
-    // Serve spinning wheel page
-    @GetMapping("/spinningwheel")
-    public String showSpinningWheelPage() {
-        return "cart/spinningwheel"; // View name tương ứng với spinningwheel.html
-    }
-
 }
-
