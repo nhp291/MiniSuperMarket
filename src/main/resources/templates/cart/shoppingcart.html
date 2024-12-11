@@ -410,6 +410,7 @@
                     </div>
                     <!-- Thông tin khách hàng -->
                     <div class="customer-info">
+                        <hr>
                         <h5>Thông Tin Khách Hàng</h5>
                         <div class="row">
                             <!-- Số điện thoại -->
@@ -763,60 +764,10 @@
                 checkoutButton.classList.add('btn-secondary');
                 checkoutButton.classList.remove('btn-primary');
             }
-            document.getElementById('note').addEventListener('change', function() {
-                var note = this.value;
-
-                fetch('/cart/update-cart-note', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'note=' + encodeURIComponent(note)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Ghi chú đã được lưu!');
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-            document.getElementById('note').addEventListener('change', function() {
-                var note = this.value;
-
-                fetch('/cart/update-cart-note', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'note=' + encodeURIComponent(note)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Ghi chú đã được lưu!');
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-            // Vô hiệu hóa click vào các input số điện thoại và địa chỉ
-            document.getElementById("phone").addEventListener("click", function(event) {
-                event.preventDefault(); // Ngừng hành động mặc định của sự kiện
-            });
-            document.getElementById("address").addEventListener("click", function(event) {
-                event.preventDefault(); // Ngừng hành động mặc định của sự kiện
-            });
-
-            document.getElementById("phone").setAttribute("readonly", "true");
-            document.getElementById("phone").setAttribute("disabled", "true");
-            document.getElementById("address").setAttribute("readonly", "true");
-            document.getElementById("address").setAttribute("disabled", "true");
-
-
         });
-
     </script>
 </main>
 </body>
 
 </html>
+

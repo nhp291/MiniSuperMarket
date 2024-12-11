@@ -31,7 +31,7 @@ public class CartItemDTO {
             this.price = price;
         }
 
-        this.totalPrice = this.price.multiply(BigDecimal.valueOf(quantity));
+        this.calculateTotalPrice();
     }
 
     public void calculateTotalPrice() {

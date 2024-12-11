@@ -379,22 +379,22 @@
                         <h3>Sản Phẩm Nổi Bật</h3>
                     </div>
                     <form th:action="@{/layout/Home}" method="get" class="filter-form mb-4">
-                        <div class="row">
-                            <div class="col-12 col-sm-5 mb-2">
+                        <div class="col-12 col-sm-5 d-flex align-items-end">
+                            <div class="mx-2">
+                                <label for="minPrice">Giá tối thiểu:</label>
+                                <input type="number" id="minPrice" name="minPrice" class="form-control" min="0" placeholder="0">
                             </div>
-                            <div class="col-12 col-sm-2 mb-2">
+                            <div class="mx-2">
+                                <label for="maxPrice">Giá tối đa: </label>
+                                <input type="number" id="maxPrice" name="maxPrice" class="form-control" min="0" placeholder="0">
                             </div>
-                            <div class="col-12 col-sm-5 d-flex align-items-end">
-                                <div class="mx-2">
-                                    <label for="minPrice">Giá tối thiểu:</label>
-                                    <input type="number" id="minPrice" name="minPrice" class="form-control " min="0" th:value="${minPrice}" placeholder="0"></div>
-                                <div class="mx-2">
-                                    <label for="maxPrice">Giá tối đa: </label>
-                                    <input type="number" id="maxPrice" name="maxPrice" class="form-control " min="0"
-                                           th:value="${maxPrice}" placeholder="0">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Lọc</button>
-                            </div>
+                            <button type="submit" class="btn btn-primary" id="filterButton">Lọc</button>
+                        </div>
+                        <div id="min-error-message" style="color: red; display: none; font-size: 0.9rem; margin-top: 5px;">
+                            Giá tối thiểu không được lớn hơn giá tối đa.
+                        </div>
+                        <div id="max-error-message" style="color: red; display: none; font-size: 0.9rem; margin-top: 5px;">
+                            Bạn phải nhập giá tối đa trước khi lọc.
                         </div>
                     </form>
                     <div th:if="${noProductsMessage}" class="alert alert-warning">
@@ -792,8 +792,54 @@
             <!--   phạm vi quản lý -->
         </div>
     </div>
+    <script>
+        document.getElementById('filterButton').addEventListener('click', function (event) {
+            const minPrice = parseFloat(document.getElementById('minPrice').value);
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value);
+            const minErrorMessage = document.getElementById('min-error-message');
+            const maxErrorMessage = document.getElementById('max-error-message');
 
-</main>
+            // Reset the error messages
+            minErrorMessage.style.display = 'none';
+            maxErrorMessage.style.display = 'none';
+
+            // Check if maxPrice is empty
+            if (!isNaN(minPrice) && isNaN(maxPrice)) {
+                event.preventDefault(); // Prevent form submission
+                maxErrorMessage.style.display = 'block';
+
+                // Automatically hide the error message after 2 seconds
+                setTimeout(() => {
+                    maxErrorMessage.style.display = 'none';
+                }, 2000);
+                return;
+            }
+
+            // Check if minPrice is greater than maxPrice
+            if (!isNaN(minPrice) && (!isNaN(maxPrice) && minPrice > maxPrice)) {
+                event.preventDefault(); // Prevent form submission
+                minErrorMessage.style.display = 'block';
+
+                // Automatically hide the error message after 2 seconds
+                setTimeout(() => {
+                    minErrorMessage.style.display = 'none';
+                }, 2000);
+            }
+        });
+        // Optional: Hide error messages when user corrects input
+        document.getElementById('minPrice').addEventListener('input', function () {
+            document.getElementById('min-error-message').style.display = 'none';
+            document.getElementById('max-error-message').style.display = 'none';
+        });
+
+        document.getElementById('maxPrice').addEventListener('input', function () {
+            document.getElementById('min-error-message').style.display = 'none';
+            document.getElementById('max-error-message').style.display = 'none';
+        });
+    </script>
+
+
+        </main>
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>-->
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>-->
 </body>

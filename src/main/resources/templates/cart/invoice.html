@@ -88,8 +88,8 @@
                             <img src="/Image/logo.jpg" style="width:100%; max-width:300px;">
                         </td>
                         <td>
-                            Invoice #: <span th:text="${order.orderId}"></span><br>
-                            Created: <span th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></span><br>
+                            Mã hóa đơn: <span th:text="${order.orderId}"></span><br>
+                            Ngày tạo: <span th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></span><br>
                         </td>
                     </tr>
                 </table>
@@ -100,9 +100,9 @@
                 <table>
                     <tr>
                         <td>
-                            H3P<br>
-                            12345 Trường chinh<br>
-                            Tân bình, HCM
+                            DevMagic<br>
+                            Địa chỉ: Tòa T, Lầu 8, TP.HCM, Quận 12<br>
+                            Liên hệ: +84 0976260335
                         </td>
                         <td>
                             <span th:text="${order.account.username}"></span><br>
@@ -114,8 +114,8 @@
         </tr>
 
         <tr class="heading">
-            <td>Item</td>
-            <td>Price</td>
+            <td>Sản phẩm</td>
+            <td>Giá</td>
         </tr>
         <!-- Lặp qua danh sách chi tiết hóa đơn -->
         <tr class="item" th:each="detail : ${orderDetails}">
@@ -125,11 +125,11 @@
 
         <tr class="total">
             <td></td>
-            <td>Total: <span th:text="${total}"></span></td>
+            <td>Thành tiền: <span th:text="${total}"></span></td>
         </tr>
         <tr class="heading">
             <td>Liên hệ chúng tôi</td>
-            <td>QR Code</td>
+            <td>QR Liên hệ</td>
         </tr>
         <tr class="details">
             <td colspan="2" style="text-align: center;">
@@ -141,9 +141,9 @@
 
     </table>
     <div class="note">
-        Lưu ý: HĐ VAT chỉ xuất trong ngày. SĐT Góp Ý: 0363824426<br>
+        Lưu ý: HĐ VAT chỉ xuất trong ngày. SĐT Góp Ý: +84 0976260335<br>
         Cảm ơn Quý Khách hàng đã đồng ý với chính sách xử lí dữ liệu cá nhân của<br>
-        Chúng tôi tại: <a href="https://devmagic.datn.h3p">https://devmagic.datn.h3p</a>
+        Chúng tôi tại: <a href="http://localhost:8080/user/contact">http://localhost:8080/user/contact</a>
     </div>
 </div>
 </body>
