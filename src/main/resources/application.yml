@@ -1,0 +1,19 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 913612530095-k1tgctuvb8sgk2co8oi9quroq6j9jadv.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - profile
+              - email
+            redirect-uri: "http://localhost:8080/login/oauth2/code/google"  # Thay đổi thành URL chính xác của bạn
+          facebook:
+            client-id: your-facebook-client-id
+            client-secret: your-facebook-client-secret
+            scope:
+              - public_profile
+              - email
+            redirect-uri: "http://localhost:8080/login/oauth2/code/facebook"  # Thay đổi thành URL chính xác của bạn
