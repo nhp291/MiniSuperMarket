@@ -46,6 +46,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -85,6 +86,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
+            <version>24.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -103,6 +105,7 @@
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
+            <version>10.6.3</version>
         </dependency>
         <!-- Spring Boot Mail dependency -->
         <dependency>
