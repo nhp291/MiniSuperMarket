@@ -3,14 +3,13 @@
     import devmagic.Dto.ProductDTO;
     import devmagic.Model.*;
     import devmagic.Reponsitory.*;
+    import devmagic.Service.BrandService;
+    import devmagic.Service.CategoryService;
     import devmagic.Service.ProductService;
     import jakarta.transaction.Transactional;
     import jakarta.validation.Valid;
     import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.data.domain.Page;
-    import org.springframework.data.domain.PageRequest;
-    import org.springframework.data.domain.Pageable;
-    import org.springframework.data.domain.Sort;
+    import org.springframework.data.domain.*;
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.*;
@@ -47,35 +46,52 @@
         @Autowired
         private ProductService productService;
 
+        @Autowired
+        private BrandService brandService;
+
+        @Autowired
+        private CategoryService categoryService;
+
         @GetMapping("/ProductList")
         public String viewProductList(Model model,
                                       @RequestParam(value = "page", defaultValue = "0") int page,
                                       @RequestParam(value = "size", defaultValue = "10") int size,
                                       @RequestParam(value = "search", required = false) String search,
                                       @RequestParam(value = "cat", required = false) Integer cat,
-                                      @RequestParam(value = "brand", required = false) Integer brand) {
+                                      @RequestParam(value = "brand", required = false) Integer brand,
+                                      @RequestParam(value = "filter", required = false) String filter) {
 
             Pageable pageable = Pageable.ofSize(size).withPage(page);
             Page<Product> productPage;
+            System.out.println("Category ID: " + cat);
+            System.out.println("Brand ID: " + brand);
 
-            if (search != null && !search.isEmpty()) {
-                if (cat != null && brand != null) {
-                    productPage = productService.findBySearchCatBrand(search, cat, brand, pageable);
-                } else if (cat != null) {
-                    productPage = productService.findBySearchCat(search, cat, pageable);
-                } else if (brand != null) {
-                    productPage = productService.findBySearchBrand(search, brand, pageable);
-                } else {
-                    productPage = productService.findBySearch(search, pageable);
-                }
-            } else if (cat != null && brand != null) {
-                productPage = productService.findByCatBrand(cat, brand, pageable);
-            } else if (cat != null) {
-                productPage = productService.findByCat(cat, pageable);
-            } else if (brand != null) {
-                productPage = productService.findByBrand(brand, pageable);
+            // Kiểm tra các tùy chọn filter
+            if ("outOfStock".equals(filter)) {
+                productPage = new PageImpl<>(productService.getOutOfStockProducts(pageable));
+            } else if ("nearlyOutOfStock".equals(filter)) {
+                productPage = new PageImpl<>(productService.getNearlyOutOfStockProducts(pageable));
             } else {
-                productPage = productService.getAll(pageable);
+                // Xử lý các trường hợp tìm kiếm, lọc theo danh mục, thương hiệu
+                if (search != null && !search.isEmpty()) {
+                    if (cat != null && brand != null) {
+                        productPage = productService.findBySearchCatBrand(search, cat, brand, pageable);
+                    } else if (cat != null) {
+                        productPage = productService.findBySearchCat(search, cat, pageable);
+                    } else if (brand != null) {
+                        productPage = productService.findBySearchBrand(search, brand, pageable);
+                    } else {
+                        productPage = productService.findBySearch(search, pageable);
+                    }
+                } else if (cat != null && brand != null) {
+                    productPage = productService.findByCatBrand(cat, brand, pageable);
+                } else if (cat != null) {
+                    productPage = productService.findByCat(cat, pageable);
+                } else if (brand != null) {
+                    productPage = productService.findByBrand(brand, pageable);
+                } else {
+                    productPage = productService.getAll(pageable);
+                }
             }
 
             model.addAttribute("products", productPage.getContent());
@@ -87,6 +103,9 @@
             model.addAttribute("search", search);
             model.addAttribute("cat", cat);
             model.addAttribute("brand", brand);
+            model.addAttribute("filter", filter); // Truyền filter vào Model để giữ trạng thái khi thay đổi trang
+            model.addAttribute("categories", categoryService.getAllCategories()); // add categories to model
+            model.addAttribute("brands", brandService.getAllBrands()); // add brands to model
 
             return "admin/layout";
         }
