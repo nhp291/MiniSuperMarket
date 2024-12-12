@@ -153,8 +153,12 @@ public class CartController {
     }
 
     // Tiến hành thanh toán
+
     @PostMapping("/checkout")
-    public String checkout(HttpServletRequest request, Model model, @RequestParam("paymentMethod") String paymentMethod) {
+    public String checkout(HttpServletRequest request, Model model,
+                           @RequestParam("paymentMethod") String paymentMethod,
+                           @RequestParam(value = "note", required = false) String note) {
+
         Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
             return "redirect:/user/login";
@@ -175,6 +179,9 @@ public class CartController {
         order.setPaymentStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
 
+        // Set note vào đơn hàng (null nếu không có ghi chú)
+        order.setNote(note == null || note.isEmpty() ? null : note);
+
         // Tạo chi tiết đơn hàng
         order.setOrderDetails(cartItems.stream().map(cartItem -> {
             OrderDetail orderDetail = new OrderDetail();
@@ -185,7 +192,7 @@ public class CartController {
             return orderDetail;
         }).collect(Collectors.toList()));
 
-        // Lưu đơn hàng
+        // Lưu đơn hàng vào cơ sở dữ liệu
         orderService.createOrder(order);
         cartService.clearCart(accountId);
 
@@ -196,7 +203,6 @@ public class CartController {
 
         model.addAttribute("order", order);
         model.addAttribute("totalOrderPrice", totalOrderPrice);
-
 
         return "cart/thankyou";  // Trang cảm ơn sau khi thanh toán thành công
     }
