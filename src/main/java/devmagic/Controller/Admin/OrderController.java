@@ -144,7 +144,7 @@ public class OrderController {
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", ordersPage.getTotalPages());
             model.addAttribute("pageSize", size);
-            model.addAttribute("message", "Payment status updated successfully!");
+            model.addAttribute("message", "Cập nhật đơn hàng thành công!");
         } catch (Exception e) {
             model.addAttribute("error", "Failed to update payment status: " + e.getMessage());
         }

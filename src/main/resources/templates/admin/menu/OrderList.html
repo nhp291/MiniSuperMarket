@@ -90,13 +90,6 @@
                                 <td th:text="${order.account.address}">Địa chỉ</td>
                                 <td>
                                     <a th:href="@{/Orders/OrderDetail/{id}(id=${order.orderId})}"><img src="/admin/img/icons/eye.svg" alt="img"></a>
-                                    <!-- Hard Delete: Xóa hẳn đơn hàng khỏi cơ sở dữ liệu -->
-                                    <form th:action="@{/Orders/{orderId}(orderId=${order.orderId})}" method="post" style="display:inline;">
-                                        <input type="hidden" name="_method" value="delete" />
-                                        <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa hẳn đơn hàng này?')">
-                                            <img src="/admin/img/icons/delete.svg" alt="img" title="Xóa hẳn">
-                                        </button>
-                                    </form>
                                 </td>
                             </tr>
                             </tbody>

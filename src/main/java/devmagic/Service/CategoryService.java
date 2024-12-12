@@ -2,6 +2,8 @@ package devmagic.Service;
 
 import devmagic.Model.Category;
 import devmagic.Reponsitory.CategoryRepository;
+import devmagic.Reponsitory.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,9 @@ import java.util.Optional;
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
@@ -44,4 +49,15 @@ public class CategoryService {
     public Page<Category> getCategoriesPage(Pageable pageable) {
         return categoryRepository.findAll(pageable);
     }
+
+    @Transactional
+    public void deleteCategoryAndProducts(int categoryId) {
+        // Xóa tất cả sản phẩm liên quan trước
+        productRepository.deleteByCategory_CategoryId(categoryId);
+
+        // Sau đó xóa danh mục
+        categoryRepository.deleteById(categoryId);
+    }
+
+
 }

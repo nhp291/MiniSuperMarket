@@ -113,12 +113,11 @@ public class CategoryController {
         return "redirect:/Categories/CategoryList";
     }
 
-
-
-
     // Xóa danh mục
-    @PostMapping("/DeleteCategory/{id}")
+    @PostMapping("/Categories/DeleteCategory/{id}")
     public String deleteCategory(@PathVariable("id") Integer id, Model model) {
+        System.out.println("Request received to delete category with ID: " + id);
+
         Optional<Category> categoryOptional = categoryService.findById(id);
         if (categoryOptional.isPresent()) {
             categoryService.deleteCategory(id);
@@ -127,4 +126,5 @@ public class CategoryController {
         }
         return "redirect:/Categories/CategoryList";
     }
+
 }

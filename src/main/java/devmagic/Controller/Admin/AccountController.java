@@ -140,7 +140,7 @@ public class AccountController {
         return "redirect:/Accounts/AccountList";
     }
 
-    @PostMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteAccount(@PathVariable("id") Integer id) {
         accountService.deleteAccount(id);
         return "redirect:/Accounts/AccountList";

@@ -7,14 +7,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendEmail(String to, String subject, String body) throws MessagingException, jakarta.mail.MessagingException {
+    // Phương thức sendEmail nhận ba tham số: to, subject, body
+    public void sendEmail(String to, String subject, String body) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 

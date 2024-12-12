@@ -2,7 +2,9 @@ package devmagic.Controller.User;
 
 import devmagic.Model.Account;
 import devmagic.Service.AccountService;
+import devmagic.Service.TidioService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class LoginController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private TidioService tidioService;
 
     // Hiển thị trang đăng nhập
     @RequestMapping("/user/login")
@@ -41,7 +46,7 @@ public class LoginController {
     public String login(@RequestParam("username") String username,
                         @RequestParam("password") String password,
                         Model model, HttpSession session, HttpServletResponse response,
-                        RedirectAttributes redirectAttributes) {
+                        HttpServletRequest request, RedirectAttributes redirectAttributes) {
         try {
             if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
                 model.addAttribute("error", "Tên đăng nhập và mật khẩu không được để trống!");
@@ -75,6 +80,13 @@ public class LoginController {
                 accountIdCookie.setMaxAge(7 * 24 * 60 * 60);
                 accountIdCookie.setPath("/");
                 response.addCookie(accountIdCookie);
+
+                // Lấy địa chỉ IP của người dùng
+                String ipAddress = request.getRemoteAddr();
+                account.setIp(ipAddress);
+
+                // Gửi dữ liệu người dùng đến Tidio
+                tidioService.sendUserDataToTidio(account);
 
                 redirectAttributes.addAttribute("success", "Đăng nhập thành công!");
 

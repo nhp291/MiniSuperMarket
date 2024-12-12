@@ -116,10 +116,10 @@
                                 <td th:text="${product.unit}"></td>
                                 <td th:text="${product.origin}"></td>
                                 <td>
-                                    <a class="btn btn-warning" th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">
+                                    <a class="btn" th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">
                                         <img src="/admin/img/icons/edit.svg" alt="img" />
                                     </a>
-                                    <a class="btn btn-danger" th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">
+                                    <a class="btn" th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">
                                         <img src="/admin/img/icons/delete.svg" alt="img" />
                                     </a>
                                 </td>

@@ -40,11 +40,11 @@
                                     <a th:href="@{/Categories/edit/{id}(id=${category.categoryId})}" class=" btn ">
                                         <img src="/admin/img/icons/edit.svg" alt="img">
                                     </a>
-                                    <form th:action="@{/Categories/DeleteCategory/{id}(id=${category.categoryId})}" method="post" style="display:inline;">
-                                        <button class=" btn" type="submit"  onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                            <img src="/admin/img/icons/delete.svg" alt="img">
-                                        </button>
-                                    </form>
+                                        <form th:action="@{/Categories/DeleteCategory/{id}(id=${category.categoryId})}" method="post" style="display:inline;">
+                                            <button class=" btn" type="submit"  onclick="return confirm('Bạn xóa thì các sản phẩm liên quan sẽ mất?')">
+                                                <img src="/admin/img/icons/delete.svg" alt="img">
+                                            </button>
+                                        </form>
                                 </td>
                             </tr>
                             </tbody>

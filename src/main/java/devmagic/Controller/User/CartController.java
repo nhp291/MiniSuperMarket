@@ -2,10 +2,11 @@ package devmagic.Controller.User;
 
 import devmagic.Dto.CartItemDTO;
 import devmagic.Model.*;
-import devmagic.Reponsitory.AccountRepository;
 import devmagic.Reponsitory.CartRepository;
 import devmagic.Service.CartService;
+import devmagic.Service.EmailService;
 import devmagic.Service.OrderService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,15 @@ public class CartController {
     private final CartService cartService;
     private final OrderService orderService;
     private final CartRepository cartRepository;
-    private final AccountRepository accountRepository;
 
     @Autowired
-    public CartController(CartService cartService, OrderService orderService, CartRepository cartRepository, AccountRepository accountRepository) {
+    private EmailService emailService;
+
+    @Autowired
+    public CartController(CartService cartService, OrderService orderService, CartRepository cartRepository) {
         this.cartService = cartService;
         this.orderService = orderService;
         this.cartRepository = cartRepository;
-        this.accountRepository = accountRepository;
     }
 
     // Hiển thị giỏ hàng
@@ -52,7 +54,7 @@ public class CartController {
         String role = getAuthenticatedRole();
 
         // Lấy thông tin tài khoản từ database
-        Optional<Account> accountOpt = accountRepository.findById(accountId);
+        Optional<Account> accountOpt = cartService.getAccountById(accountId);
         if (accountOpt.isEmpty()) {
             return "redirect:/user/login";  // Nếu không tìm thấy tài khoản, chuyển hướng đến trang đăng nhập
         }
@@ -79,27 +81,83 @@ public class CartController {
         return "cart/shoppingcart";  // Trả về view giỏ hàng
     }
 
+    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    @PostMapping("/update-quantity")
+    public ResponseEntity<?> updateQuantity(@RequestBody Map<String, Integer> body, HttpServletRequest request) {
+        Integer productId = body.get("productId");
+        Integer quantity = body.get("quantity");
+
+        Integer accountId = getAccountIdFromSession(request);
+        if (accountId == null) {
+            return ResponseEntity.status(401).build(); // Không có quyền
+        }
+
+        Optional<Cart> cartOpt = cartRepository.findByAccount_AccountIdAndProduct_ProductId(accountId, productId);
+        if (cartOpt.isPresent()) {
+            Cart cart = cartOpt.get();
+            Product product = cart.getProduct();
+
+            // Kiểm tra số lượng tồn kho và điều kiện hợp lệ
+            if (quantity > 0 && quantity <= product.getStockQuantity()) {
+                cart.setQuantity(quantity);
+                cartRepository.save(cart);
+
+                // Tính toán giá mới và tổng tiền
+                List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
+                cartItems.forEach(this::updatePriceWithSale);
+
+                BigDecimal totalPrice = cartService.calculateTotalPrice(cartItems);
+                int totalQuantity = cartService.calculateTotalQuantity(cartItems);
+
+                BigDecimal newPrice = calculateEffectivePrice(product).multiply(BigDecimal.valueOf(quantity));
+
+                return ResponseEntity.ok(Map.of(
+                        "success", true,
+                        "newPrice", newPrice,
+                        "totalPrice", totalPrice,
+                        "totalQuantity", totalQuantity
+                ));
+            }
+        }
+        return ResponseEntity.ok(Map.of("success", false));
+    }
+
+    // Xóa sản phẩm khỏi giỏ hàng
+    @PostMapping("/remove-item")
+    public ResponseEntity<?> removeItem(@RequestBody Map<String, Integer> body, HttpServletRequest request) {
+        Integer productId = body.get("productId");
+
+        Integer accountId = getAccountIdFromSession(request);
+        if (accountId == null) {
+            return ResponseEntity.status(401).build(); // Không có quyền
+        }
+
+        Optional<Cart> cartOpt = cartRepository.findByAccount_AccountIdAndProduct_ProductId(accountId, productId);
+        if (cartOpt.isPresent()) {
+            cartRepository.delete(cartOpt.get());
+
+            // Tính toán lại tổng tiền và tổng số lượng
+            List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
+            cartItems.forEach(this::updatePriceWithSale);
+
+            BigDecimal totalPrice = cartService.calculateTotalPrice(cartItems);
+            int totalQuantity = cartService.calculateTotalQuantity(cartItems);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "totalPrice", totalPrice,
+                    "totalQuantity", totalQuantity
+            ));
+        }
+        return ResponseEntity.ok(Map.of("success", false));
+    }
+
     // Tiến hành thanh toán
     @PostMapping("/checkout")
-    public String checkout(HttpServletRequest request, Model model,
-                           @RequestParam("paymentMethod") String paymentMethod,
-                           @RequestParam(value = "email", required = false) String email,
-                           @RequestParam(value = "note", required = false) String note) {
+    public String checkout(HttpServletRequest request, Model model, @RequestParam("paymentMethod") String paymentMethod) {
         Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
             return "redirect:/user/login";
-        }
-
-        Optional<Account> accountOpt = accountRepository.findById(accountId);
-        if (accountOpt.isEmpty()) {
-            return "redirect:/user/login";
-        }
-        Account account = accountOpt.get();
-
-        // Cập nhật email nếu người dùng thay đổi
-        if (email != null && !email.equals(account.getEmail())) {
-            account.setEmail(email);
-            accountRepository.save(account);
         }
 
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
@@ -112,7 +170,7 @@ public class CartController {
 
         // Tạo đơn hàng mới
         Order order = new Order();
-        order.setAccount(account);
+        order.setAccount(new Account(accountId));
         order.setOrderDate(new Date());
         order.setPaymentStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
@@ -129,17 +187,6 @@ public class CartController {
 
         // Lưu đơn hàng
         orderService.createOrder(order);
-
-        // Lưu ghi chú nếu có
-        if (note != null && !note.isBlank()) {
-            List<Cart> carts = cartRepository.findByAccount_AccountId(accountId);
-            for (Cart cart : carts) {
-                cart.setNote(note);
-                cartRepository.save(cart);
-            }
-        }
-
-        // Xóa giỏ hàng sau khi đặt hàng thành công
         cartService.clearCart(accountId);
 
         // Tính tổng giá trị đơn hàng
@@ -149,6 +196,8 @@ public class CartController {
 
         model.addAttribute("order", order);
         model.addAttribute("totalOrderPrice", totalOrderPrice);
+
+
         return "cart/thankyou";  // Trang cảm ơn sau khi thanh toán thành công
     }
 
@@ -206,5 +255,13 @@ public class CartController {
                     .orElse(null);
         }
         return null;
+    }
+
+    @PostMapping("/save-gift")
+    public ResponseEntity<?> saveGiftToSession(@RequestBody Map<String, String> body, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String giftCode = body.get("giftCode");
+        session.setAttribute("giftCode", giftCode);
+        return ResponseEntity.ok(Map.of("success", true));
     }
 }
