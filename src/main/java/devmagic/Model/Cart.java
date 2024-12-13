@@ -31,9 +31,6 @@ public class Cart {
     @Column(name = "price", precision = 7, scale = 3, nullable = false)
     private BigDecimal price; // Giá của 1 sản phẩm
 
-    @Column(name = "note", columnDefinition = "NVARCHAR(255)")
-    private String note; // Ghi chú
-
     @Transient
     private BigDecimal totalPrice; // Tổng giá của sản phẩm trong giỏ (không lưu trong DB)
 

@@ -542,10 +542,15 @@
                         </div>
                     </div>
                     <div class="row mt-2">
-                        <form action="/cart/checkout" method="post">
+                        <form action="/cart/checkout" method="post" id="orderForm">
                             <input type="hidden" name="paymentMethod" id="paymentMethod" value="Tiền Mặt">
+
+                            <!-- Trường ẩn để chứa ghi chú -->
+                            <input type="hidden" name="note" id="hiddenNote">
+
                             <button class="btn btn-primary w-100" type="submit">Đặt hàng</button>
                         </form>
+
                         <a href="/cart/spinningwheel" class="btn btn-warning w-100 mt-2">Quay Thưởng</a>
                     </div>
                 </div>
@@ -725,7 +730,7 @@
 
                     // Kiểm tra nếu là số không hợp lệ
                     if (!/^\d+$/.test(quantity)) {
-                        showQuantityError(this, "Chúng tôi không thể cập nhật số lượng sản phẩm, vui lòng nhập số");
+                        showQuantityError(this, "Chúng tôi không thể cập nhật số lượng sản phẩm");
                         return;
                     }
 
@@ -764,6 +769,11 @@
                 checkoutButton.classList.add('btn-secondary');
                 checkoutButton.classList.remove('btn-primary');
             }
+        });
+        // Khi form được submit, sao chép giá trị ghi chú vào trường ẩn
+        document.getElementById('orderForm').addEventListener('submit', function () {
+            var note = document.getElementById('note').value; // Lấy giá trị từ textarea
+            document.getElementById('hiddenNote').value = note; // Gán giá trị vào trường ẩn trong form
         });
     </script>
 </main>
