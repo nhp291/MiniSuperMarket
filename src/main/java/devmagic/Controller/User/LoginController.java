@@ -2,7 +2,7 @@ package devmagic.Controller.User;
 
 import devmagic.Model.Account;
 import devmagic.Service.AccountService;
-import devmagic.Service.TidioService;
+//import devmagic.Service.TidioService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,9 +22,6 @@ public class LoginController {
 
     @Autowired
     private AccountService accountService;
-
-    @Autowired
-    private TidioService tidioService;
 
     // Hiển thị trang đăng nhập
     @RequestMapping("/user/login")
@@ -85,8 +82,6 @@ public class LoginController {
                 String ipAddress = request.getRemoteAddr();
                 account.setIp(ipAddress);
 
-                // Gửi dữ liệu người dùng đến Tidio
-                tidioService.sendUserDataToTidio(account);
 
                 redirectAttributes.addAttribute("success", "Đăng nhập thành công!");
 
