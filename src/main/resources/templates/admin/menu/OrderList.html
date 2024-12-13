@@ -89,7 +89,9 @@
                                 <td th:text="${order.paymentMethod}">Phương thức thanh toán</td>
                                 <td th:text="${order.account.address}">Địa chỉ</td>
                                 <td>
-                                    <a th:href="@{/Orders/OrderDetail/{id}(id=${order.orderId})}"><img src="/admin/img/icons/eye.svg" alt="img"></a>
+                                    <a th:href="@{/invoice/{orderId}(orderId=${order.orderId})}">
+                                        <img src="/admin/img/icons/eye.svg" alt="img">
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>

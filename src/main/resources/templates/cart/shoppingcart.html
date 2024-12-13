@@ -418,15 +418,16 @@
                                 <div class="input-group">
                                     <label class="labelll">Số điện thoại</label>
                                     <input autocomplete="off" name="phone" id="phone" class="inputtt" type="text"
-                                           th:value="${account.phoneNumber != null ? account.phoneNumber : ''}" readonly disabled>
+                                           th:value="${phoneNumber != null ? phoneNumber : 'Số điện thoại không có sẵn'}" readonly disabled>
+
                                 </div>
                             </div>
                             <!-- Email -->
-                            <div class="col-md-4" th:if="${account.email}">
+                            <div class="col-md-4">
                                 <div class="input-group">
                                     <label class="labelll">Email</label>
-                                    <input autocomplete="off" name="email" id="email" class="inputtt" type="email"
-                                           th:value="${account.email != null ? account.email : ''}">
+                                    <input autocomplete="off" name="email" id="email" class="inputtt" type="text"
+                                           th:value="${email != null ? email : 'Email không có sẵn'}" readonly disabled>
                                 </div>
                             </div>
                             <!-- Địa chỉ -->
@@ -434,14 +435,17 @@
                                 <div class="input-group">
                                     <label class="labelll">Địa chỉ</label>
                                     <input autocomplete="off" name="address" id="address" class="inputtt" type="text"
-                                           th:value="${account.address != null ? account.address : ''}" readonly disabled>
+                                           th:value="${address != null ? address : 'Địa chỉ không có sẵn'}" readonly disabled>
                                 </div>
                             </div>
                         </div>
                         <!-- Ghi chú -->
                         <div class="textarea-container">
                             <label class="labelll">Ghi chú</label>
-                            <textarea name="note" id="note" placeholder="Thêm ghi chú cho đơn hàng (không bắt buộc)"></textarea>
+                            <textarea name="note" id="note" placeholder="Thêm ghi chú cho đơn hàng (không bắt buộc)" maxlength="200"></textarea>
+                            <small id="note-count" style="display: block; margin-top: 5px; color: gray;">
+                                Bạn có thể nhập tối đa 200 ký tự.
+                            </small>
                         </div>
                     </div>
 
@@ -542,10 +546,15 @@
                         </div>
                     </div>
                     <div class="row mt-2">
-                        <form action="/cart/checkout" method="post">
+                        <form action="/cart/checkout" method="post" id="orderForm">
                             <input type="hidden" name="paymentMethod" id="paymentMethod" value="Tiền Mặt">
+
+                            <!-- Trường ẩn để chứa ghi chú -->
+                            <input type="hidden" name="note" id="hiddenNote">
+
                             <button class="btn btn-primary w-100" type="submit">Đặt hàng</button>
                         </form>
+
                         <a href="/cart/spinningwheel" class="btn btn-warning w-100 mt-2">Quay Thưởng</a>
                     </div>
                 </div>
@@ -725,7 +734,7 @@
 
                     // Kiểm tra nếu là số không hợp lệ
                     if (!/^\d+$/.test(quantity)) {
-                        showQuantityError(this, "Chúng tôi không thể cập nhật số lượng sản phẩm, vui lòng nhập số");
+                        showQuantityError(this, "Chúng tôi không thể cập nhật số lượng sản phẩm");
                         return;
                     }
 
@@ -764,6 +773,20 @@
                 checkoutButton.classList.add('btn-secondary');
                 checkoutButton.classList.remove('btn-primary');
             }
+        });
+        // Khi form được submit, sao chép giá trị ghi chú vào trường ẩn
+        document.getElementById('orderForm').addEventListener('submit', function () {
+            var note = document.getElementById('note').value; // Lấy giá trị từ textarea
+            document.getElementById('hiddenNote').value = note; // Gán giá trị vào trường ẩn trong form
+        });
+        const noteInput = document.getElementById('note');
+        const noteCount = document.getElementById('note-count');
+        const maxLength = 200;
+
+        noteInput.addEventListener('input', () => {
+            const remaining = maxLength - noteInput.value.length;
+            noteCount.textContent = `Còn lại ${remaining} ký tự.`;
+            noteCount.style.color = remaining < 0 ? 'red' : 'gray';
         });
     </script>
 </main>

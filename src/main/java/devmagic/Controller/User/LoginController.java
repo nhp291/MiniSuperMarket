@@ -2,7 +2,7 @@ package devmagic.Controller.User;
 
 import devmagic.Model.Account;
 import devmagic.Service.AccountService;
-import devmagic.Service.TidioService;
+//import devmagic.Service.TidioService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,9 +22,6 @@ public class LoginController {
 
     @Autowired
     private AccountService accountService;
-
-    @Autowired
-    private TidioService tidioService;
 
     // Hiển thị trang đăng nhập
     @RequestMapping("/user/login")
@@ -70,6 +67,8 @@ public class LoginController {
                 session.setAttribute("accountId", account.getAccountId());
                 session.setAttribute("username", account.getUsername());
                 session.setAttribute("role", account.getRole().getRoleName());
+                session.setAttribute("email", account.getEmail());
+                session.setAttribute("phoneNumber", account.getPhoneNumber());
 
                 Cookie usernameCookie = new Cookie("username", account.getUsername());
                 usernameCookie.setMaxAge(7 * 24 * 60 * 60);
@@ -85,8 +84,6 @@ public class LoginController {
                 String ipAddress = request.getRemoteAddr();
                 account.setIp(ipAddress);
 
-                // Gửi dữ liệu người dùng đến Tidio
-                tidioService.sendUserDataToTidio(account);
 
                 redirectAttributes.addAttribute("success", "Đăng nhập thành công!");
 

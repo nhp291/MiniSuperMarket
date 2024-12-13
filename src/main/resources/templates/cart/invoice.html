@@ -127,6 +127,14 @@
             <td></td>
             <td>Thành tiền: <span th:text="${total}"></span></td>
         </tr>
+        <!-- Kiểm tra nếu ghi chú có tồn tại, hiển thị cả tiêu đề và nội dung -->
+        <tr th:if="${order.note != null and order.note != ''}" class="heading">
+            <td>Ghi chú của bạn</td>
+            <td></td>
+        </tr>
+        <tr th:if="${order.note != null and order.note != ''}">
+            <td colspan="2" th:text="${order.note}" style="font-style: italic; text-align: left;"></td>
+        </tr>
         <tr class="heading">
             <td>Liên hệ chúng tôi</td>
             <td>QR Liên hệ</td>
