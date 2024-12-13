@@ -53,6 +53,9 @@ public class Account {
     @NotEmpty(message = "Xác nhận mật khẩu không được để trống")
     private String confirmPassword; // Không lưu vào cơ sở dữ liệu
 
+    @Transient
+    private String ip;
+
     // Constructor nhận tham số kiểu Integer
     public Account(Integer accountId) {
         this.accountId = accountId;

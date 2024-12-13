@@ -1,6 +1,7 @@
 package devmagic.Reponsitory;
 
 import devmagic.Model.Product;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,6 +37,17 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findByNameContainingAndBrand_BrandId(String name, Integer brandId, Pageable pageable);
 
     Page<Product> findByNameContainingAndCategory_CategoryIdAndBrand_BrandId(String name, Integer categoryId, Integer brandId, Pageable pageable);
+
+    // Danh sách sản phẩm sắp hết hàng (<= 5 sản phẩm nhưng > 0)
+    @Query("SELECT p FROM Product p WHERE p.stockQuantity <= 5 AND p.stockQuantity > 0 ORDER BY p.stockQuantity ASC")
+    List<Product> findNearlyOutOfStockProducts(Pageable pageable);
+
+    // Danh sách sản phẩm đã hết hàng (stock = 0)
+    @Query("SELECT p FROM Product p WHERE p.stockQuantity = 0")
+    List<Product> findOutOfStockProducts(Pageable pageable);
+
+    @Transactional
+    void deleteByCategory_CategoryId(Integer categoryId);
 
 
 }

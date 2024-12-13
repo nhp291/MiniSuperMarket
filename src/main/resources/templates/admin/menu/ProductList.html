@@ -1,111 +1,87 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
 </head>
 <body>
 <div class="main-wrapper" th:fragment="content">
     <div class="page-wrapper">
         <div class="content">
-            <div class="page-header">
+            <div class="page-header d-flex justify-content-between align-items-center">
                 <div class="page-title">
                     <h4>Product List</h4>
                 </div>
                 <div class="page-btn">
-                    <a th:href="@{/Products/AddProduct}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" alt="img" class="me-1">Add New Product
-                    </a>
+                    <a th:href="@{/Products/AddProduct}" class="btn btn-primary">Thêm sản phẩm mới</a>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-path">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <img src="/admin/img/icons/filter.svg" alt="img">
-                                    <span><img src="/admin/img/icons/closes.svg" alt="img"></span>
-                                </a>
-                            </div>
-                            <div class="search-input">
-                                <a class="btn btn-searchset"><img src="/admin/img/icons/search-white.svg" alt="img"></a>
-                            </div>
-                        </div>
-                        <div class="wordset">
-                            <ul>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                            src="/admin/img/icons/pdf.svg" alt="img"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                            src="/admin/img/icons/excel.svg" alt="img"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                            src="/admin/img/icons/printer.svg" alt="img"></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <!-- Search and filter form -->
+                    <div class="table-top mb-4">
+                        <form th:action="@{/Products/ProductList}" method="get" class="d-flex align-items-center flex-wrap w-100" id="filter_form">
+                            <input type="hidden" name="page" value="0">
 
-                    <div class="card mb-0" id="filter_inputs">
-                        <div class="card-body pb-0">
-                            <div class="row">
-                                <div class="col-lg-12 col-sm-12">
-                                    <div class="row">
-                                        <!-- Category Filter -->
-                                        <div class="col-lg col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <select class="form-select" id="categoryFilter" name="categoryId">
-                                                    <option value="">-- Chọn danh mục --</option>
-                                                    <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.categoryName}"
-                                                            th:selected="${category.categoryId == categoryId}"></option>
-                                                </select>
-                                            </div>
-                                        </div>
+                            <div class="d-flex w-100 flex-wrap justify-content-between align-items-center">
+                                <!-- Filter Buttons -->
+                                <div class="d-flex align-items-center mb-3 mb-md-0 w-25 justify-content-between">
+                                    <button type="submit" class="btn btn-danger" name="filter" value="outOfStock"
+                                            th:classappend="${filter == 'outOfStock'} ? 'active' : ''">
+                                        Hết hàng
+                                    </button>
+                                    <button type="submit" class="btn btn-warning" name="filter" value="nearlyOutOfStock"
+                                            th:classappend="${filter == 'nearlyOutOfStock'} ? 'active' : ''">
+                                        Gần hết hàng
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" name="filter" value=""
+                                            th:classappend="${filter == null or filter == ''} ? 'active' : ''">
+                                        Tất cả
+                                    </button>
+                                </div>
 
-                                        <!-- Brand Filter -->
-                                        <div class="col-lg col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <select class="form-select" id="brandFilter" name="brandId">
-                                                    <option value="">-- Chọn thương hiệu --</option>
-                                                    <option th:each="brand : ${brands}" th:value="${brand.brandId}" th:text="${brand.brandName}"
-                                                            th:selected="${brand.brandId == brandId}"></option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <!-- Search Bar -->
-                                        <div class="col-lg col-sm-6 col-12">
-                                            <div class="search-input">
-                                                <form th:action="@{/Products/ProductList}" method="get">
-                                                    <input type="text" name="searchQuery" class="form-control" placeholder="Nhập tên sản phẩm...">
-                                                    <button type="submit" class="btn btn-searchset">
-                                                        <img src="/admin/img/icons/search-white.svg" alt="Search">
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-
-                                        <!-- Search Button -->
-                                        <div class="col-lg-1 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-filters">
-                                                    <img src="/admin/img/icons/search-whites.svg" alt="img">
-                                                </button>
-                                            </div>
-                                        </div>
+                                <!-- Category and Brand Filters -->
+                                <div class="d-flex mt-4 mb-4 mb-md-0 w-50 gap-4">
+                                    <!-- Category Filter -->
+                                    <div class="form-group w-45">
+                                        <select class="form-select" id="categoryFilter" name="cat">
+                                            <option value="">-- Chọn danh mục --</option>
+                                            <option th:each="category : ${categories}"
+                                                    th:value="${category.categoryId}"
+                                                    th:text="${category.categoryName}"
+                                                    th:selected="${category.categoryId == cat}"></option>
+                                        </select>
                                     </div>
+
+                                    <!-- Brand Filter -->
+                                    <div class="form-group w-45">
+                                        <select class="form-select" id="brandFilter" name="brand">
+                                            <option value="">-- Chọn thương hiệu --</option>
+                                            <option th:each="brand : ${brands}"
+                                                    th:value="${brand.brandId}"
+                                                    th:text="${brand.brandName}"
+                                                    th:selected="${brand.brandId == brand}"></option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <!-- Submit Search -->
+                                <div class="d-flex justify-content-center align-items-center w-25">
+                                    <input type="search" name="search" class="form-control me-2" placeholder="Tìm kiếm">
+                                    <button type="submit" class="btn btn-primary d-flex align-items-center">
+                                        <img src="/admin/img/icons/search-whites.svg" alt="img" class="ms-2" style="width: 20px;">
+                                    </button>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
 
+                    <!-- Product Table -->
                     <div class="table-responsive">
-                        <table class="table datanew">
+                        <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th>Hình ảnh</th>
@@ -119,33 +95,32 @@
                                 <th>Số lượng</th>
                                 <th>Đơn vị</th>
                                 <th>Xuất xứ</th>
-                                <th></th>
+                                <th>Hành động</th>
                             </tr>
                             </thead>
-
-                            <tbody  th:each="product : ${products}">
+                            <tbody th:each="product : ${products}">
                             <tr>
                                 <td>
                                     <div th:if="${product.images != null}" th:each="image : ${product.images}">
-                                        <img th:src="@{'/Image/imageUrl/' + ${image.imageUrl}}" alt="Image" style="width: 50px; height: auto;" />
+                                        <img th:src="@{'/Image/imageUrl/' + ${image.imageUrl}}" alt="Image" class="product-image" width="50"/>
                                     </div>
                                 </td>
-                                <td th:text="${product.name}">Tên sản phẩm</td>
-                                <td th:text="${product.category.categoryName}">Danh mục</td>
-                                <td th:text="${product.brand.brandName}">Thương hiệu</td>
-                                <td th:text="${product.warehouse.warehouseName}">kho</td>
-                                <td th:text="${product.description}">Mô tả</td>
-                                <td th:text="${product.price}">Giá</td>
-                                <td th:text="${product.sale != null ? product.sale : 0}">Giảm giá</td>
-                                <td th:text="${product.stockQuantity}">Số lượng</td>
-                                <td th:text="${product.unit}">Đơn vị</td>
-                                <td th:text="${product.origin}">Xuất xứ</td>
+                                <td th:text="${product.name}"></td>
+                                <td th:text="${product.category.categoryName}"></td>
+                                <td th:text="${product.brand.brandName}"></td>
+                                <td th:text="${product.warehouse.warehouseName}"></td>
+                                <td th:text="${product.description}"></td>
+                                <td th:text="${product.price}"></td>
+                                <td th:text="${product.sale != null ? product.sale : 0}"></td>
+                                <td th:text="${product.stockQuantity}"></td>
+                                <td th:text="${product.unit}"></td>
+                                <td th:text="${product.origin}"></td>
                                 <td>
-                                    <a class="btn " th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">
-                                        <img src="/admin/img/icons/edit.svg" alt="img">
+                                    <a class="btn" th:href="@{/Products/EditProduct/{id}(id=${product.productId})}">
+                                        <img src="/admin/img/icons/edit.svg" alt="img" />
                                     </a>
-                                    <a class="btn " th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">
-                                        <img src="/admin/img/icons/delete.svg" alt="img">
+                                    <a class="btn" th:href="@{/Products/DeleteProduct/{id}(id=${product.productId})}">
+                                        <img src="/admin/img/icons/delete.svg" alt="img" />
                                     </a>
                                 </td>
                             </tr>
@@ -153,40 +128,33 @@
                         </table>
                     </div>
 
-                    <!-- Phân trang -->
-                    <div class="pagination-wrapper text-center mt-2">
-                        <!-- Nút Đầu Trang -->
-                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">
+                    <!-- Pagination -->
+                    <div class="pagination-wrapper text-center mt-4">
+                        <span th:if="${currentPage > 0}" class="pagination-button btn btn-outline-success">
                             <a th:href="@{/Products/ProductList(page=0)}"><i class="bi bi-chevron-double-left"></i></a>
                         </span>
 
-                        <!-- Nút Trước -->
-                        <span th:if="${currentPage > 0}" class="pagination-button btn border-success">
-                            <a th:href="@{/Products/ProductList(page=${currentPage - 1})}"><i class="bi bi-chevron-compact-left"></i></a>
+                        <span th:if="${currentPage > 0}" class="pagination-button btn btn-outline-success">
+                            <a th:href="@{/Products/ProductList(page=${currentPage - 1})}"><i class="bi bi-chevron-left"></i></a>
                         </span>
 
-                        <!-- Thông Tin Phân Trang -->
                         <span class="pagination-info btn btn-info text-light">
                             Trang <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span>
                         </span>
 
-                        <!-- Nút Tiếp -->
-                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">
-                            <a th:href="@{/Products/ProductList(page=${currentPage + 1})}"><i class="bi bi-chevron-compact-right"></i></a>
+                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn btn-outline-success">
+                            <a th:href="@{/Products/ProductList(page=${currentPage + 1})}"><i class="bi bi-chevron-right"></i></a>
                         </span>
 
-                        <!-- Nút Cuối Trang -->
-                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn border-success">
+                        <span th:if="${currentPage < totalPages - 1}" class="pagination-button btn btn-outline-success">
                             <a th:href="@{/Products/ProductList(page=${totalPages - 1})}"><i class="bi bi-chevron-double-right"></i></a>
                         </span>
                     </div>
-
-
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+
 </body>
 </html>

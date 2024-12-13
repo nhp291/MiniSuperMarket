@@ -37,9 +37,7 @@ public class OrderService {
 
     // Lấy danh sách đơn hàng không bị xóa
     public List<Order> getAllActiveOrders() {
-        return orderRepository.findAll().stream()
-                .filter(order -> !order.isDeleted())
-                .collect(Collectors.toList());
+        return orderRepository.findAllByIsDeleted(false);
     }
 
     // Tạo đơn hàng mới

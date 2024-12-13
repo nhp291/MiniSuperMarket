@@ -284,79 +284,149 @@ $(document).ready(function() {
     if ($('#order-stats-chart').length > 0) {
         $('#order-stats-chart').html('<p>Đang tải dữ liệu...</p>');
 
-        // Định dạng số liệu tiền tệ Việt Nam
         function formatNumberVN(value) {
             return new Intl.NumberFormat('vi-VN').format(value);
         }
 
-        // Xử lý dữ liệu từ API
-        $.get('/Orders/order-stats', function (data) {
-            if (data && data.daily && data.monthly && data.yearly) {
-                // Chuyển đổi dữ liệu
-                var dailyData = data.daily.map(stat => ({
-                    x: `Ngày ${new Date(stat[0]).toLocaleDateString('vi-VN')}`,
-                    y: stat[2] * 1000 // Nhân 1000 để chuyển đổi giá trị từ nghìn sang đơn vị chính xác
-                }));
-                var monthlyData = data.monthly.map(stat => ({
-                    x: `Tháng ${stat[1]} / ${stat[0]}`,
-                    y: stat[3] * 1000 // Nhân 1000 để đảm bảo đúng đơn vị
-                }));
-                var yearlyData = data.yearly.map(stat => ({
-                    x: `Năm ${stat[0]}`,
-                    y: stat[2] * 1000 // Nhân 1000 để chuyển đổi đúng đơn vị
-                }));
+        function fetchDataAndUpdateChart(year, type) {
+            $('#order-stats-chart').html('<p>Đang tải dữ liệu...</p>');
 
-                // Cấu hình biểu đồ
-                var options = {
-                    chart: {
-                        type: 'bar',
-                        height: 350,
-                        stacked: true,
-                        toolbar: { show: false }
-                    },
-                    series: [
-                        { name: 'Hàng ngày', data: dailyData },
-                        { name: 'Hàng tháng', data: monthlyData },
-                        { name: 'Hàng năm', data: yearlyData }
-                    ],
-                    xaxis: {
-                        categories: dailyData.map(d => d.x), // Danh sách tên cột X
-                        labels: { style: { fontSize: '12px' } }
-                    },
-                    yaxis: {
-                        title: { text: 'Doanh thu (VNĐ)' },
-                        labels: {
-                            formatter: function (value) {
-                                return formatNumberVN(value); // Định dạng trục Y
-                            }
-                        }
-                    },
-                    tooltip: {
-                        y: {
-                            formatter: function (value) {
-                                return formatNumberVN(value) + ' VNĐ'; // Định dạng tooltip
-                            }
-                        }
-                    },
-                    legend: { position: 'bottom' },
-                    colors: ['#FFC107', '#28A745', '#007BFF'],
-                    responsive: [{
-                        breakpoint: 480,
-                        options: {
+            $.get(`/Orders/order-stats?year=${year}&type=${type}`, function (data) {
+                if (data) {
+                    let transformedRevenue = [];
+                    let transformedOrders = [];
+
+                    if (type === 'daily' && data.daily) {
+                        transformedRevenue = data.daily.map(stat => ({
+                            x: `Ngày ${new Date(stat[0]).toLocaleDateString('vi-VN')}`,
+                            y: stat[2] // Doanh thu
+                        }));
+                        transformedOrders = data.daily.map(stat => ({
+                            x: `Ngày ${new Date(stat[0]).toLocaleDateString('vi-VN')}`,
+                            y: stat[1] // Mua hàng
+                        }));
+                    } else if (type === 'monthly' && data.monthly) {
+                        transformedRevenue = data.monthly.map(stat => ({
+                            x: `Tháng ${stat[1]} / ${stat[0]}`,
+                            y: stat[3]
+                        }));
+                        transformedOrders = data.monthly.map(stat => ({
+                            x: `Tháng ${stat[1]} / ${stat[0]}`,
+                            y: stat[2]
+                        }));
+                    } else if (type === 'yearly' && data.yearly) {
+                        transformedRevenue = data.yearly.map(stat => ({
+                            x: `Năm ${stat[0]}`,
+                            y: stat[2]
+                        }));
+                        transformedOrders = data.yearly.map(stat => ({
+                            x: `Năm ${stat[0]}`,
+                            y: stat[1]
+                        }));
+                    }
+
+                    if (transformedRevenue.length > 0) {
+                        var options = {
+                            chart: {
+                                type: 'bar',
+                                height: 350,
+                                stacked: true,
+                                toolbar: { show: false }
+                            },
+                            series: [
+                                { name: 'Doanh thu (VNĐ)', data: transformedRevenue },
+                                { name: 'Mua hàng', data: transformedOrders }
+                            ],
+                            xaxis: {
+                                categories: transformedRevenue.map(d => d.x),
+                                labels: { style: { fontSize: '12px' } }
+                            },
+                            yaxis: [
+                                {
+                                    title: { text: 'Doanh thu (VNĐ)' },
+                                    labels: {
+                                        formatter: function (value) {
+                                            return formatNumberVN(value);
+                                        }
+                                    }
+                                },
+                                {
+                                    opposite: true,
+                                    title: { text: 'Số lượng đơn hàng' },
+                                    labels: {
+                                        formatter: function (value) {
+                                            return value + ' đơn';
+                                        }
+                                    }
+                                }
+                            ],
+                            tooltip: {
+                                shared: true,
+                                intersect: false,
+                                y: {
+                                    formatter: function (value, { seriesIndex }) {
+                                        return seriesIndex === 0
+                                            ? formatNumberVN(value) + ' VNĐ'
+                                            : value + ' đơn hàng';
+                                    }
+                                }
+                            },
+                            plotOptions: {
+                                bar: {
+                                    dataLabels: {
+                                        position: 'top' // Hiển thị giá trị trên đầu cột
+                                    }
+                                }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function (val, opts) {
+                                    if (opts.seriesIndex === 0) {
+                                        return formatNumberVN(val) + ' VNĐ';
+                                    } else {
+                                        return val + ' đơn';
+                                    }
+                                },
+                                style: { fontSize: '10px', colors: ['#000'] }
+                            },
+                            colors: ['#FFC107', '#007BFF'],
                             legend: { position: 'bottom' }
-                        }
-                    }]
-                };
+                        };
 
-                // Render biểu đồ
-                var chart = new ApexCharts(document.querySelector("#order-stats-chart"), options);
-                chart.render();
-            } else {
-                $('#order-stats-chart').html('<p>Không có dữ liệu để hiển thị.</p>');
-            }
-        }).fail(function () {
-            $('#order-stats-chart').html('<p>Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.</p>');
-        });
+                        $("#order-stats-chart").empty();
+                        var chart = new ApexCharts(document.querySelector("#order-stats-chart"), options);
+                        chart.render();
+                    } else {
+                        $('#order-stats-chart').html('<p>Không có dữ liệu để hiển thị.</p>');
+                    }
+                } else {
+                    $('#order-stats-chart').html('<p>Không có dữ liệu để hiển thị.</p>');
+                }
+            }).fail(function () {
+                $('#order-stats-chart').html('<p>Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.</p>');
+            });
+        }
+
+        function attachEventHandlers() {
+            $('.dropdown-menu .dropdown-item').click(function () {
+                var year = $(this).data('year');
+                $('.dropdown-menu .dropdown-item').removeClass('active');
+                $(this).addClass('active');
+                var type = $('#stat-type').val();
+                fetchDataAndUpdateChart(year, type);
+            });
+
+            $('#stat-type').change(function () {
+                var year = $('.dropdown-item.active').data('year') || new Date().getFullYear();
+                var type = $(this).val();
+                fetchDataAndUpdateChart(year, type);
+            });
+        }
+
+        var currentYear = new Date().getFullYear();
+        $('.dropdown-item[data-year="' + currentYear + '"]').addClass('active');
+        fetchDataAndUpdateChart(currentYear, 'daily');
+        attachEventHandlers();
     }
 
 
