@@ -439,9 +439,15 @@
                             </div>
                         </div>
                         <!-- Ghi chú -->
+                        <!-- Ghi chú -->
                         <div class="textarea-container">
                             <label class="labelll">Ghi chú</label>
-                            <textarea name="note" id="note" placeholder="Thêm ghi chú cho đơn hàng (không bắt buộc)"></textarea>
+                            <textarea name="note" id="note"
+                                      placeholder="Thêm ghi chú cho đơn hàng (không bắt buộc)"
+                                      maxlength="200"></textarea>
+                            <small id="note-count" style="display: block; margin-top: 5px; color: gray;">
+                                Bạn có thể nhập tối đa 200 ký tự.
+                            </small>
                         </div>
                     </div>
 
@@ -774,6 +780,15 @@
         document.getElementById('orderForm').addEventListener('submit', function () {
             var note = document.getElementById('note').value; // Lấy giá trị từ textarea
             document.getElementById('hiddenNote').value = note; // Gán giá trị vào trường ẩn trong form
+        });
+        const noteInput = document.getElementById('note');
+        const noteCount = document.getElementById('note-count');
+        const maxLength = 200;
+
+        noteInput.addEventListener('input', () => {
+            const remaining = maxLength - noteInput.value.length;
+            noteCount.textContent = `Còn lại ${remaining} ký tự.`;
+            noteCount.style.color = remaining < 0 ? 'red' : 'gray';
         });
     </script>
 </main>
