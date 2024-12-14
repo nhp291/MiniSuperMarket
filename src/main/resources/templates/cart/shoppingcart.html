@@ -560,7 +560,7 @@
                 const isSelected = Array.from(paymentInputs).some(input => input.checked);
                 if (isSelected) {
                     checkoutButton.disabled = false;
-                    checkoutButton.textContent = "Thanh Toán";
+                    checkoutButton.textContent = "Đặt Hàng";
                     checkoutButton.classList.remove('btn-secondary');
                     checkoutButton.classList.add('btn-primary');
                 } else {
@@ -585,9 +585,10 @@
                 const shippingFee = 20; // Phí giao hàng cố định
                 const finalPrice = totalPrice + vat + shippingFee;
 
-                // Cập nhật hiển thị
-                finalPriceElement.textContent = `${finalPrice.toLocaleString()} VND`;
+                // Cập nhật hiển thị thành tiền với 3 chữ số thập phân
+                finalPriceElement.textContent = `${finalPrice.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND`;
             }
+
 
             // Gọi hàm để tính thành tiền khi trang được tải
             calculateFinalPrice();
@@ -712,14 +713,15 @@
 
             // Sự kiện thay đổi số lượng
             document.querySelectorAll('.quantity-input').forEach(input => {
-                input.addEventListener('change', function () {
+                input.addEventListener('input', function () {
                     const productId = this.dataset.productId;
                     const quantity = this.value.trim(); // Lấy giá trị nhập vào, loại bỏ khoảng trắng
                     const maxQuantity = parseInt(this.getAttribute('max'));
 
                     // Kiểm tra nếu là số không hợp lệ
                     if (!/^\d+$/.test(quantity)) {
-                        showQuantityError(this, "Chúng tôi không thể cập nhật số lượng sản phẩm");
+                        showQuantityError(this, "Chỉ được nhập số nguyên");
+                        this.classList.add('quantity-error');
                         return;
                     }
 
@@ -727,6 +729,7 @@
 
                     if (quantityNumber < 1) {
                         showQuantityError(this, "Số lượng sản phẩm phải lớn hơn hoặc bằng 1");
+                        this.classList.add('quantity-error');
                         return;
                     }
 
@@ -774,6 +777,7 @@
             noteCount.style.color = remaining < 0 ? 'red' : 'gray';
         });
     </script>
+
 </main>
 </body>
 

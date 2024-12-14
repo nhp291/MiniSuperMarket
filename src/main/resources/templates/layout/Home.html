@@ -509,7 +509,7 @@
                                 <span class="page-link">...</span>
                             </li>
                             <!-- Các số trang động -->
-                            <li th:each="i : ${#numbers.sequence(currenPage - 2 < 1 ? 1 : currenPage - 2, currenPage + 2 > totalPage ? totalPage : currenPage + 2)}"
+                            <li th:each="i : ${#numbers.sequence(currenPage - 2 < 1 ? 1 : currenPage - 2 , currenPage + 2 > totalPage ? totalPage : currenPage + 2)}"
                                 th:classappend="${currenPage == i ? 'active' : ''}" class="page-item">
                                 <a th:href="@{${keyword != null && keyword != '' ? '?keyword=' + keyword + '&' : '?'} + 'pageNo=' + ${i}}"
                                    class="page-link" th:text="${i}"></a>
