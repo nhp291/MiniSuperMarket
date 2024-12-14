@@ -188,7 +188,11 @@ public class HomeUserController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
+        // Lấy số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
 
+        // Truyền số lượng vào model để sử dụng trong template
+        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
@@ -219,7 +223,11 @@ public class HomeUserController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
+        // Lấy số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
 
+        // Truyền số lượng vào model để sử dụng trong template
+        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
@@ -257,7 +265,11 @@ public class HomeUserController {
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
+        // Lấy số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
 
+        // Truyền số lượng vào model để sử dụng trong template
+        model.addAttribute("totalQuantity", totalQuantity);
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
