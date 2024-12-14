@@ -57,7 +57,8 @@
                                     <a class="me-3" th:href="@{/Brand/EditBrand/{id}(id=${brand.brandId})}">
                                         <img src="/admin/img/icons/edit.svg" alt="img">
                                     </a>
-                                    <a class="me-3 confirm-text" th:href="@{/Brand/DeleteBrand/{id}(id=${brand.brandId})}">
+                                    <a class="me-3 confirm-text" th:href="@{/Brand/DeleteBrand/{id}(id=${brand.brandId})}"
+                                       onclick="return confirm('Bạn có chắc muốn xóa thương hiệu này? Các sản phẩm liên quan sẽ mất.')">
                                         <img src="/admin/img/icons/delete.svg" alt="img">
                                     </a>
                                 </td>

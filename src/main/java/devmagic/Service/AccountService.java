@@ -1,9 +1,11 @@
 package devmagic.Service;
 
 import devmagic.Model.Account;
+import devmagic.Model.ResourceNotFoundException;
 import devmagic.Model.Role;
 import devmagic.Reponsitory.AccountRepository;
 import devmagic.Reponsitory.RoleRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,14 +113,14 @@ public class AccountService {
         return accountRepository.findById(id);
     }
 
-    public void deleteAccount(Integer id) {
-        if (id == null) {
-            logger.error("ID không được để null khi xóa tài khoản!");
-            throw new IllegalArgumentException("ID không được để null");
-        }
-        accountRepository.deleteById(id);
-        logger.info("Account với ID {} đã được xóa thành công", id);
-    }
+//    public void deleteAccount(Integer id) {
+//        if (id == null) {
+//            logger.error("ID không được để null khi xóa tài khoản!");
+//            throw new IllegalArgumentException("ID không được để null");
+//        }
+//        accountRepository.deleteById(id);
+//        logger.info("Account với ID {} đã được xóa thành công", id);
+//    }
 
     public long getTotalAccounts() {
         return accountRepository.count();
@@ -192,4 +194,19 @@ public class AccountService {
     public boolean emailExists(String email) {
         return accountRepository.findByEmail(email).isPresent(); // Kiểm tra xem email đã tồn tại chưa
     }
+
+    public List<Account> getActiveAccounts() {
+        return accountRepository.findAllActiveAccounts(); // Lấy danh sách tài khoản chưa bị xóa
+    }
+
+
+    @Transactional
+    public void deleteAccount(Integer accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+        account.setIsDeleted(true); // Đánh dấu tài khoản là xóa
+        accountRepository.save(account); // Lưu lại thay đổi
+    }
+
+
 }

@@ -1,7 +1,7 @@
 package devmagic.config;
 
 import devmagic.Model.Account;
-import devmagic.Model.Role;
+import devmagic.Model   .Role;
 import devmagic.Reponsitory.AccountRepository;
 import devmagic.Reponsitory.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +89,13 @@ public class SecurityConfig {
             Account account = getAccountByUsername(username); // Lấy Account từ DB
 
             if (account != null) {
+
+                // Kiểm tra nếu tài khoản đã bị xóa
+                if (account.getIsDeleted()) {
+                    response.sendRedirect("/user/login?error=account-deleted");
+                    return;
+                }
+
                 // Lấy vai trò từ authentication
                 String roleName = authentication.getAuthorities().stream()
                         .map(grantedAuthority -> grantedAuthority.getAuthority())

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -140,11 +141,11 @@ public class AccountController {
         return "redirect:/Accounts/AccountList";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteAccount(@PathVariable("id") Integer id) {
-        accountService.deleteAccount(id);
-        return "redirect:/Accounts/AccountList";
-    }
+//    @GetMapping("/delete/{id}")
+//    public String deleteAccount(@PathVariable("id") Integer id) {
+//        accountService.deleteAccount(id);
+//        return "redirect:/Accounts/AccountList";
+//    }
 
     private boolean validateAccount(Account account, BindingResult result) {
         boolean hasErrors = false;
@@ -210,4 +211,17 @@ public class AccountController {
             account.setEmail(existingAccount.getEmail());
         }
     }
+
+    @GetMapping("/accounts/active")
+    public ResponseEntity<List<Account>> getActiveAccounts() {
+        List<Account> activeAccounts = accountService.getActiveAccounts(); // Lấy danh sách tài khoản chưa bị xóa
+        return ResponseEntity.ok(activeAccounts);
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteAccount(@PathVariable Integer id) {
+        accountService.deleteAccount(id); // Gọi phương thức từ service để đánh dấu là xóa
+        return "redirect:/Accounts/AccountList";
+    }
+
 }

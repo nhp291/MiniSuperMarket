@@ -1,7 +1,11 @@
 package devmagic.Controller.Admin;
 
 import devmagic.Model.Category;
+import devmagic.Model.Product;
+import devmagic.Reponsitory.CategoryRepository;
+import devmagic.Reponsitory.ProductRepository;
 import devmagic.Service.CategoryService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +31,10 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     // Hiển thị danh sách danh mục
     @GetMapping("/CategoryList")
@@ -113,18 +121,11 @@ public class CategoryController {
         return "redirect:/Categories/CategoryList";
     }
 
-    // Xóa danh mục
-    @PostMapping("/Categories/DeleteCategory/{id}")
-    public String deleteCategory(@PathVariable("id") Integer id, Model model) {
-        System.out.println("Request received to delete category with ID: " + id);
-
-        Optional<Category> categoryOptional = categoryService.findById(id);
-        if (categoryOptional.isPresent()) {
-            categoryService.deleteCategory(id);
-        } else {
-            model.addAttribute("error", "Không tìm thấy danh mục.");
-        }
-        return "redirect:/Categories/CategoryList";
+    // Xóa danh mục và cập nhật các sản phẩm
+    @GetMapping("/DeleteCategory/{id}")
+    public String deleteCategory(@PathVariable("id") int id) {
+        categoryService.deleteCategory(id); // Gọi service để xóa danh mục và sản phẩm
+        return "redirect:/Categories/CategoryList"; // Chuyển hướng về danh sách danh mục
     }
 
 }

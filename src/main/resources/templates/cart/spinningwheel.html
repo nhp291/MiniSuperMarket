@@ -193,7 +193,7 @@
             },
             {
                 text: 'Chúc bạn may mắn lần sau',
-                percent: 100 / 100,
+                percent: 10 / 100,
             },
             {
                 text: '100 Nghìn đồng',
@@ -201,7 +201,7 @@
             },
             {
                 text: '+ 1 lượt quay',
-                percent: 40 / 100,
+                percent: 30 / 100,
             },
             {
                 text: '200 Nghìn đồng',
@@ -209,7 +209,7 @@
             },
             {
                 text: '500 Nghìn đồng',
-                percent: 20 /100,
+                percent: 15 /100,
             },
         ];
 
@@ -225,8 +225,7 @@
         listGift.map((item, index) => {
             //=====< Tạo thẻ li >=====
             const elm = document.createElement('li');
-
-            //=====< Xoay và tạo độ nghiêng cho các thẻ li >=====
+//=====< Xoay và tạo độ nghiêng cho các thẻ li >=====
             elm.style.transform = `rotate(${
                 rotate * index
             }deg) skewY(-${skewY}deg)`;
@@ -303,7 +302,18 @@
             let timer = setTimeout(() => {
                 isRotating = false;
 
+                // Hiển thị thông báo
                 showMsg.innerHTML = `Chúc mừng bạn đã nhận được "${gift.text}"`;
+
+                // Nếu trúng "+1 lượt quay", không chuyển form, cho phép quay thêm
+                if (gift.text === "+ 1 lượt quay") {
+                    showMsg.innerHTML += "<br>Bạn được thêm 1 lượt quay!";
+                } else {
+                    // Chuyển hướng sau khi hiển thị thông báo (chờ thêm 2 giây)
+                    setTimeout(() => {
+                        window.location.href = '/cart/shoppingcart'; // Thay đổi URL theo đúng đường dẫn
+                    }, 2000); // Chờ 2 giây trước khi chuyển hướng
+                }
 
                 clearTimeout(timer);
             }, timeRotate);
@@ -311,7 +321,8 @@
 
         /********** Sự kiện click button start **********/
         btnWheel.addEventListener('click', () => {
-            !isRotating && start();
+            // Chỉ bắt đầu nếu không đang quay
+            if (!isRotating) start();
         });
     })();
 </script>

@@ -366,4 +366,9 @@ public class CartController {
         return emailContent.toString();
     }
 
+    @GetMapping("/spinningwheel")
+    public String spinningwheel(){
+        return "cart/spinningwheel";
+    }
+
 }

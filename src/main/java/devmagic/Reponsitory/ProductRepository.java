@@ -1,11 +1,15 @@
 package devmagic.Reponsitory;
 
+import devmagic.Model.Brand;
+import devmagic.Model.Category;
 import devmagic.Model.Product;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -19,6 +23,18 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     // Use Integer if your ID is Integerr
     @Query("SELECT COUNT(p) FROM Product p")
     long countProducts();
+    // Lọc theo giá, danh mục và từ khóa
+    Page<Product> findByPriceBetweenAndCategory_CategoryIdAndNameContaining(Double minPrice, Double maxPrice, Integer categoryId, String keyword, Pageable pageable);
+
+    // Lọc theo giá và từ khóa
+    Page<Product> findByPriceBetweenAndNameContaining(Double minPrice, Double maxPrice, String keyword, Pageable pageable);
+
+    // Lọc theo giá và danh mục
+    Page<Product> findByPriceBetweenAndCategory_CategoryId(Double minPrice, Double maxPrice, Integer categoryId, Pageable pageable);
+
+
+    // Lọc theo danh mục và từ khóa
+    Page<Product> findByCategory_CategoryIdAndNameContaining(Integer categoryId, String keyword, Pageable pageable);
 
     Page<Product> findByPriceBetween(Double minPrice, Double maxPrice, Pageable pageable);
 
@@ -48,6 +64,17 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Transactional
     void deleteByCategory_CategoryId(Integer categoryId);
+
+    // Tìm danh sách sản phẩm theo danh mục
+    List<Product> findByCategory(Category category);
+
+    // Tìm danh sách sản phẩm theo thương hiệu
+    List<Product> findByBrand(Brand brand);
+
+    // Xóa tất cả sản phẩm theo categoryId
+    @Modifying
+    @Query("DELETE FROM Product p WHERE p.category.categoryId = :categoryId")
+    void deleteByCategory_CategoryId(@Param("categoryId") int categoryId);
 
 
 }

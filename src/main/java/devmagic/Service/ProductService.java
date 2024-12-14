@@ -35,11 +35,29 @@ public class ProductService {
     private ProductImageRepository productImageRepository;
 
     private final String UPLOAD_DIRECTORY = "./Image/imageUrl/"; // Thư mục lưu trữ ảnh
+    public Page<Product> filterProductsByCategory(Integer categoryId, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo - 1, 8); // Phân trang với 8 sản phẩm mỗi trang
+        return productRepository.findByCategory_CategoryId(categoryId, pageable);
+    }
 
+    public Page<Product> filterProductsByPriceAndCategory(Double minPrice, Double maxPrice, Integer categoryId, Integer pageNo) {
+        Pageable pageable = PageRequest.of(pageNo - 1, 8); // Phân trang với 8 sản phẩm mỗi trang
+
+        if (minPrice == null) minPrice = 0.0;
+        if (maxPrice == null) maxPrice = Double.MAX_VALUE;
+
+
+        if (categoryId != null) {
+            // Lọc theo giá và danh mục
+            return productRepository.findByPriceBetweenAndCategory_CategoryId(minPrice, maxPrice, categoryId, pageable);
+        } else {
+            // Lọc chỉ theo giá
+            return productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+        }
+    }
     public List<Product> findAll() {
         return productRepository.findAll();
     }
-
     public Product findById(Integer id) {
         return productRepository.findById(id).get();
     }
@@ -53,12 +71,15 @@ public class ProductService {
         Pageable page = PageRequest.of(pageable-1, 8);
         return this.productRepository.findAll(page);
     }
-
+    public Page<Product> findByCategory(Integer categoryId, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo - 1, 8); // Phân trang với 8 sản phẩm mỗi trang
+        return productRepository.findByCategory_CategoryId(categoryId, pageable);
+    }
     public List<Product> searchProduct(String keyword) {
         return this.productRepository.searchProduct(keyword);
     }
 
-    public Page<Product> seachProduct(String keyword, Integer pageNo) {
+    public Page<Product> seachProductt(String keyword, Integer pageNo) {
         List<Product> list = this.searchProduct(keyword);
         Pageable pageable = PageRequest.of(pageNo - 1, 8);  // Xử lý phân trang
         Integer start = (int) pageable.getOffset();

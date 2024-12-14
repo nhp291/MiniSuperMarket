@@ -56,6 +56,9 @@ public class Account {
     @Transient
     private String ip;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false; // Giá trị mặc định là false (tài khoản chưa bị xóa)
+
     // Constructor nhận tham số kiểu Integer
     public Account(Integer accountId) {
         this.accountId = accountId;
