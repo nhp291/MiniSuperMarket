@@ -63,16 +63,17 @@ public class HomeUserController {
             @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
             @RequestParam(name = "minPrice", required = false) Double minPrice,
             @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(name = "categoryId", required = false) Integer categoryId, // Thêm tham số phân loại
             HttpServletRequest request) {
         // Lấy thông tin người dùng từ session
         String username = getAuthenticatedUsername();
         String role = getAuthenticatedRole();
         Integer accountId = getAccountIdFromSession(request);
+
         // Lấy số lượng sản phẩm trong giỏ hàng
         int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
-
-        // Truyền số lượng vào model để sử dụng trong template
         model.addAttribute("totalQuantity", totalQuantity);
+
         if (username != null) {
             model.addAttribute("username", username);
             model.addAttribute("role", role);
@@ -87,21 +88,30 @@ public class HomeUserController {
         List<Product> topProducts = productService.findTop6Product();
         Page<Product> paginatedProducts = productService.getForAll(pageNo);
 
-        // Xử lý tìm kiếm hoặc lọc giá
+        // Xử lý tìm kiếm hoặc lọc theo giá hoặc phân loại theo danh mục
         if (keyword != null) {
-            list = productService.seachProduct(keyword, pageNo);
+            list = productService.seachProductt(keyword, pageNo);
             model.addAttribute("keyword", keyword);
-
-            // Kiểm tra xem có sản phẩm nào không
             if (list.getContent().isEmpty()) {
                 model.addAttribute("noProductsMessage", "Không tìm thấy sản phẩm nào với từ khóa: " + keyword);
             }
-        } else if (minPrice != null || maxPrice != null) {
-            list = productService.filterProductsByPrice(minPrice, maxPrice, pageNo);
+        }    else if (minPrice != null || maxPrice != null) {
+            // Nếu có lọc theo giá và có categoryId thì lọc theo cả hai
+            if (categoryId != null) {
+                list = productService.filterProductsByPriceAndCategory(minPrice, maxPrice, categoryId, pageNo);
+            } else {
+                // Nếu chỉ có lọc theo giá
+                list = productService.filterProductsByPrice(minPrice, maxPrice, pageNo);
+            }
             model.addAttribute("minPrice", minPrice);
             model.addAttribute("maxPrice", maxPrice);
+        } else if (categoryId != null) {
+            // Nếu chỉ có lọc theo danh mục
+            list = productService.filterProductsByCategory(categoryId, pageNo);
+            model.addAttribute("categoryId", categoryId);
         } else {
-            list = productService.getall(pageNo); // Không có bộ lọc, lấy toàn bộ sản phẩm
+            // Nếu không có bộ lọc, lấy tất cả sản phẩm
+            list = productService.getall(pageNo);
         }
 
         model.addAttribute("totalPage", list.getTotalPages());
@@ -112,7 +122,6 @@ public class HomeUserController {
 
         return "layout/Home";
     }
-
     @GetMapping("/cart/getTotalQuantity")
     @ResponseBody
     public Map<String, Integer> getTotalQuantity(HttpServletRequest request) {
