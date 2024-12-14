@@ -1,6 +1,9 @@
 package devmagic.Controller.User;
 
 import devmagic.Model.Order;
+import devmagic.Model.OrderDetail;
+import devmagic.Model.Product;
+import devmagic.Reponsitory.ProductRepository;
 import devmagic.Service.CartService;
 import devmagic.Service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -21,11 +25,13 @@ public class PaymenthistoryController {
 
     private final OrderService orderService;
     private final CartService cartService;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public PaymenthistoryController(OrderService orderService, CartService cartService) {
+    public PaymenthistoryController(ProductRepository productRepository, OrderService orderService, CartService cartService) {
         this.orderService = orderService;
         this.cartService = cartService;
+        this.productRepository = productRepository;
     }
 
     @GetMapping("/paymenthistory")
@@ -78,5 +84,28 @@ public class PaymenthistoryController {
         }
         return null;
     }
-}
 
+    @GetMapping("/cancelOrder/{orderId}")
+    public String cancelOrder(@PathVariable Integer orderId, HttpServletRequest request) {
+        Integer accountId = getAccountIdFromSession(request);
+        if (accountId == null) {
+            return "redirect:/user/login";
+        }
+
+        Order order = orderService.findById(orderId);
+        if (order != null && "PENDING".equals(order.getPaymentStatus())) {
+            // Cập nhật trạng thái thanh toán thành CANCELLED
+            orderService.updatePaymentStatus(orderId, "CANCELLED");
+
+            // Cập nhật lại số lượng sản phẩm trong kho
+            for (OrderDetail orderDetail : order.getOrderDetails()) {
+                Product product = orderDetail.getProduct();
+                // Cập nhật số lượng sản phẩm trong kho
+                product.setStockQuantity(product.getStockQuantity() + orderDetail.getQuantity());
+                productRepository.save(product);  // Lưu lại thay đổi vào cơ sở dữ liệu
+            }
+        }
+
+        return "redirect:/cart/paymenthistory";
+    }
+}
