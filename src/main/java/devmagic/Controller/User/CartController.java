@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -50,47 +51,23 @@ public class CartController {
             return "redirect:/user/login";
         }
 
-        // Lưu thông tin người dùng vào session nếu chưa có
-        HttpSession session = request.getSession();
-        if (session.getAttribute("accountId") == null) { // Kiểm tra theo accountId để tránh trùng
-            Optional<Account> accountOpt = cartService.getAccountById(accountId);
-            if (accountOpt.isPresent()) {
-                Account account = accountOpt.get();
-                session.setAttribute("accountId", account.getAccountId());
-                session.setAttribute("username", account.getUsername());
-                session.setAttribute("role", account.getRole().getRoleName());
-                session.setAttribute("email", account.getEmail());
-                session.setAttribute("phoneNumber", account.getPhoneNumber());
-                session.setAttribute("address", account.getAddress());
-            } else {
-                model.addAttribute("errorMessage", "Tài khoản không tồn tại.");
-                return "redirect:/user/login";
-            }
+        String username = getAuthenticatedUsername();
+        String role = getAuthenticatedRole();
+
+        // Lấy thông tin tài khoản từ database
+        Optional<Account> accountOpt = cartService.getAccountById(accountId);
+        if (accountOpt.isEmpty()) {
+            return "redirect:/user/login";  // Nếu không tìm thấy tài khoản, chuyển hướng đến trang đăng nhập
         }
+        Account account = accountOpt.get();
 
-        // Lấy thông tin tài khoản từ session
-        String username = (String) session.getAttribute("username");
-        String role = (String) session.getAttribute("role");
-        String email = (String) session.getAttribute("email");
-        String phoneNumber = (String) session.getAttribute("phoneNumber");
-        String address = (String) session.getAttribute("address");
-
-        // Kiểm tra nếu phoneNumber và address là null, có thể gán giá trị mặc định
-        if (phoneNumber == null) {
-            phoneNumber = "Số điện thoại không có sẵn"; // Hoặc gán giá trị mặc định khác
-        }
-        if (address == null) {
-            address = "Địa chỉ không có sẵn"; // Hoặc gán giá trị mặc định khác
-        }
-
-        // Thêm vào model để truyền thông tin ra view
-        model.addAttribute("phoneNumber", phoneNumber);
-        model.addAttribute("address", address);
-        model.addAttribute("email", email);
-
-        System.out.println("Session phoneNumber: " + session.getAttribute("phoneNumber"));
-        System.out.println("Session address: " + session.getAttribute("address"));
-
+        // Thêm thông tin tài khoản vào model để hiển thị
+        model.addAttribute("username", account.getUsername()); // Truyền đúng thông tin username
+        model.addAttribute("phoneNumber", account.getPhoneNumber()); // Truyền thông tin phoneNumber
+        model.addAttribute("address", account.getAddress()); // Truyền thông tin address
+        model.addAttribute("role", role);
+        model.addAttribute("accountId", accountId);
+        model.addAttribute("account", account);  // Truyền đối tượng Account vào model
 
         // Lấy các sản phẩm trong giỏ hàng của người dùng
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
@@ -113,12 +90,11 @@ public class CartController {
         Integer productId = body.get("productId");
         Integer quantity = body.get("quantity");
 
-        Integer accountId = getAccountIdFromSession(request);  // Lấy accountId từ session
+        Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
             return ResponseEntity.status(401).build(); // Không có quyền
         }
 
-        // Thực hiện cập nhật giỏ hàng cho người dùng
         Optional<Cart> cartOpt = cartRepository.findByAccount_AccountIdAndProduct_ProductId(accountId, productId);
         if (cartOpt.isPresent()) {
             Cart cart = cartOpt.get();
@@ -148,7 +124,6 @@ public class CartController {
         }
         return ResponseEntity.ok(Map.of("success", false));
     }
-
 
     // Xóa sản phẩm khỏi giỏ hàng
     @PostMapping("/remove-item")
@@ -182,6 +157,7 @@ public class CartController {
 
     // Tiến hành thanh toán
 
+    // Tiến hành thanh toán
     @PostMapping("/checkout")
     public String checkout(HttpServletRequest request, Model model,
                            @RequestParam("paymentMethod") String paymentMethod,
@@ -192,6 +168,7 @@ public class CartController {
             return "redirect:/user/login";
         }
 
+        // Lấy danh sách sản phẩm trong giỏ hàng
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
         if (cartItems.isEmpty()) {
             model.addAttribute("message", "Giỏ hàng trống.");
@@ -206,9 +183,7 @@ public class CartController {
         order.setOrderDate(new Date());
         order.setPaymentStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
-
-        // Set note vào đơn hàng (null nếu không có ghi chú)
-        order.setNote(note == null || note.isEmpty() ? null : note);
+        order.setNote(note == null || note.isEmpty() ? null : note); // Thêm ghi chú nếu có
 
         // Tạo chi tiết đơn hàng
         order.setOrderDetails(cartItems.stream().map(cartItem -> {
@@ -229,24 +204,22 @@ public class CartController {
                 .map(orderDetail -> orderDetail.getPrice().multiply(BigDecimal.valueOf(orderDetail.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        HttpSession session = request.getSession();
-        String email = (String) session.getAttribute("email");
-
-        if (email == null) {
-            System.out.println("Email không tồn tại trong session.");
-            model.addAttribute("emailError", "Không tìm thấy email trong session. Vui lòng đăng nhập lại.");
-            return "redirect:/user/login";
+        // Lấy email từ tài khoản người dùng
+        Optional<Account> accountOpt = cartService.getAccountById(accountId);
+        if (accountOpt.isEmpty() || accountOpt.get().getEmail() == null || accountOpt.get().getEmail().isEmpty()) {
+            model.addAttribute("error", "Email của tài khoản không hợp lệ.");
+            return "redirect:/cart/shoppingcart";
         }
 
-        // Gửi email thông báo đơn hàng
+        String email = accountOpt.get().getEmail();
+
+        // Gửi email xác nhận đơn hàng
+        String emailContent = generateOrderEmailContent(order, totalOrderPrice, cartItems);
         try {
-            String emailContent = generateOrderEmailContent(order, totalOrderPrice, cartItems);
-            emailService.sendEmail(email, "Đặt hàng thành công DevMagic", emailContent);
-            System.out.println("Email đã được gửi thành công cho người dùng: " + email);
+            emailService.sendOrderConfirmationEmail(email, emailContent);
         } catch (MessagingException e) {
-            e.printStackTrace();
-            System.out.println("Có lỗi xảy ra khi gửi email cho người dùng: " + email);
-            model.addAttribute("emailError", "Có lỗi xảy ra khi gửi email thông báo.");
+            model.addAttribute("error", "Đã xảy ra lỗi khi gửi email xác nhận đơn hàng.");
+            return "redirect:/cart/shoppingcart";
         }
 
         model.addAttribute("order", order);
@@ -320,48 +293,58 @@ public class CartController {
     }
 
     private String generateOrderEmailContent(Order order, BigDecimal totalOrderPrice, List<CartItemDTO> cartItems) {
+        // Định dạng số tiền để hiển thị rõ ràng
+        DecimalFormat currencyFormat = new DecimalFormat("#,###");
+
         StringBuilder emailContent = new StringBuilder();
+
+        // Lấy thông tin tài khoản từ đơn hàng
+        Account account = order.getAccount();
+        String username = account != null && account.getUsername() != null ? account.getUsername() : "Khách hàng";
+        String address = account != null && account.getAddress() != null ? account.getAddress() : "[Chưa cung cấp]";
+        String phoneNumber = account != null && account.getPhoneNumber() != null ? account.getPhoneNumber() : "[Chưa cung cấp]";
 
         emailContent.append("<html><body>")
                 .append("<h1>Cảm ơn bạn đã đặt hàng tại DevMagic</h1>")
-                .append("<p>Xin chào ").append(order.getAccount().getUsername()).append(",</p>")
+                .append("<p>Xin chào ").append(username).append(",</p>")
                 .append("<p>Đơn hàng của bạn đã được xác nhận và đang trong quá trình xử lý. Dưới đây là thông tin chi tiết của đơn hàng:</p>")
                 .append("<h3>Thông tin đơn hàng:</h3>")
                 .append("<p><strong>Mã đơn hàng:</strong> ").append(order.getOrderId()).append("</p>")
                 .append("<p><strong>Ngày đặt:</strong> ").append(order.getOrderDate()).append("</p>")
                 .append("<p><strong>Phương thức thanh toán:</strong> ").append(order.getPaymentMethod()).append("</p>");
 
-        // Thêm thông tin địa chỉ vào email
-        Account account = order.getAccount();
+        // Thêm thông tin địa chỉ giao hàng
         emailContent.append("<h3>Thông tin địa chỉ giao hàng:</h3>")
-                .append("<p><strong>Địa chỉ:</strong> ").append(account.getAddress()).append("</p>")
-                .append("<p><strong>Số điện thoại:</strong> ").append(account.getPhoneNumber()).append("</p>");
+                .append("<p><strong>Họ và tên:</strong> ").append(username).append("</p>")
+                .append("<p><strong>Địa chỉ:</strong> ").append(address).append("</p>")
+                .append("<p><strong>Số điện thoại:</strong> ").append(phoneNumber).append("</p>");
 
         if (order.getNote() != null && !order.getNote().isEmpty()) {
             emailContent.append("<p><strong>Ghi chú:</strong> ").append(order.getNote()).append("</p>");
         }
 
+        // Thêm chi tiết sản phẩm
         emailContent.append("<h3>Chi tiết sản phẩm:</h3>")
                 .append("<table border=\"1\" cellpadding=\"5\"><thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Tổng giá</th></tr></thead><tbody>");
 
-        // Thêm thông tin sản phẩm vào email
         for (CartItemDTO cartItem : cartItems) {
             emailContent.append("<tr>")
                     .append("<td>").append(cartItem.getProductName()).append("</td>")
                     .append("<td>").append(cartItem.getQuantity()).append("</td>")
-                    .append("<td>").append(cartItem.getPrice()).append("</td>")
-                    .append("<td>").append(cartItem.getTotalPrice()).append("</td>")
+                    .append("<td>").append(currencyFormat.format(cartItem.getPrice())).append(" đồng</td>")
+                    .append("<td>").append(currencyFormat.format(cartItem.getTotalPrice())).append(" đồng</td>")
                     .append("</tr>");
         }
 
         emailContent.append("</tbody></table>")
                 .append("<h3>Tổng tiền:</h3>")
-                .append("<p><strong>Tổng giá trị đơn hàng:</strong> ").append(totalOrderPrice).append("</p>")
+                .append("<p><strong>Tổng giá trị đơn hàng:</strong> ").append(currencyFormat.format(totalOrderPrice)).append(" đồng</p>")
                 .append("<p>Chúng tôi sẽ thông báo cho bạn khi đơn hàng của bạn được xử lý và giao hàng. Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi.</p>")
                 .append("<p>Trân trọng,</p><p><strong>DevMagic</strong></p>")
                 .append("</body></html>");
 
         return emailContent.toString();
     }
+
 
 }

@@ -418,16 +418,15 @@
                                 <div class="input-group">
                                     <label class="labelll">Số điện thoại</label>
                                     <input autocomplete="off" name="phone" id="phone" class="inputtt" type="text"
-                                           th:value="${phoneNumber != null ? phoneNumber : 'Số điện thoại không có sẵn'}" readonly disabled>
-
+                                           th:value="${account.phoneNumber != null ? account.phoneNumber : ''}" readonly disabled>
                                 </div>
                             </div>
                             <!-- Email -->
-                            <div class="col-md-4">
+                            <div class="col-md-4" th:if="${account.email}">
                                 <div class="input-group">
                                     <label class="labelll">Email</label>
-                                    <input autocomplete="off" name="email" id="email" class="inputtt" type="text"
-                                           th:value="${email != null ? email : 'Email không có sẵn'}" readonly disabled>
+                                    <input autocomplete="off" name="email" id="email" class="inputtt" type="email"
+                                           th:value="${account.email != null ? account.email : ''}">
                                 </div>
                             </div>
                             <!-- Địa chỉ -->
@@ -435,14 +434,16 @@
                                 <div class="input-group">
                                     <label class="labelll">Địa chỉ</label>
                                     <input autocomplete="off" name="address" id="address" class="inputtt" type="text"
-                                           th:value="${address != null ? address : 'Địa chỉ không có sẵn'}" readonly disabled>
+                                           th:value="${account.address != null ? account.address : ''}" readonly disabled>
                                 </div>
                             </div>
                         </div>
                         <!-- Ghi chú -->
                         <div class="textarea-container">
                             <label class="labelll">Ghi chú</label>
-                            <textarea name="note" id="note" placeholder="Thêm ghi chú cho đơn hàng (không bắt buộc)" maxlength="200"></textarea>
+                            <textarea name="note" id="note"
+                                      placeholder="Thêm ghi chú cho đơn hàng (không bắt buộc)"
+                                      maxlength="200"></textarea>
                             <small id="note-count" style="display: block; margin-top: 5px; color: gray;">
                                 Bạn có thể nhập tối đa 200 ký tự.
                             </small>
@@ -793,4 +794,3 @@
 </body>
 
 </html>
-

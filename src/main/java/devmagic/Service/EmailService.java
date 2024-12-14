@@ -24,5 +24,11 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    // Phương thức gửi email xác nhận đơn hàng
+    public void sendOrderConfirmationEmail(String to, String body) throws MessagingException {
+        String subject = "Xác nhận đơn hàng của bạn tại DevMagic";
+        sendEmail(to, subject, body);
+    }
 }
 
