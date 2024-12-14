@@ -88,16 +88,18 @@ public class OrderService {
         return result;
     }
 
-    // Cập nhật trạng thái thanh toán
     public void updatePaymentStatus(int orderId, String paymentStatus) {
         // Kiểm tra đơn hàng có tồn tại hay không
         Order order = orderRepository.findById(orderId).orElseThrow(() ->
                 new RuntimeException("Order not found")
         );
+        System.out.println("Order found: " + order.getOrderId() + ", current status: " + order.getPaymentStatus());
 
         // Cập nhật trạng thái thanh toán
         order.setPaymentStatus(paymentStatus);
         orderRepository.save(order);
+
+        System.out.println("Order updated: " + order.getOrderId() + ", new status: " + paymentStatus);
     }
 
     // Lấy danh sách đơn hàng theo accountId

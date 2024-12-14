@@ -16,15 +16,24 @@
     box-sizing: border-box;
   }
 
+  #site-header {
+    position: fixed;
+    top: 0; /* Gắn header vào đỉnh màn hình */
+    left: 0;
+    width: 100%; /* Đảm bảo header phủ hết chiều ngang */
+    z-index: 100; /* Đặt ưu tiên hiển thị */
+    background-color: #fff; /* Màu nền để header không bị trong suốt */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tạo bóng nhẹ để header nổi bật */
+  }
   /*header styling*/
   header#site-header {
+
     width: 100%;
     background: #ffffff;
     padding: 15px 30px;
     transition: all 0.2s ease;
     height: 70px;
     box-shadow: 0 2px 10px #dddddd;
-
     top: 0;
     left: 0;
   }
@@ -138,7 +147,7 @@
     top: 0;
     right: 0;
     background: none;
-    z-index: 3;
+    z-index: 99;
     transition: width .4s cubic-bezier(0.000, 0.795, 0.000, 1.000);
     cursor: pointer;
   }
@@ -388,7 +397,7 @@
 <header id="site-header">
   <div id="site-header-container">
     <a th:href="@{/layout/Home}">
-      <img src="/Image/imageProfile/logo.jpg" alt="Logo" width="90px">
+      <img src="/Image/imageProfile/logo.jpg" alt="Logo" width="80px">
     </a>
 
     <div id="site-header-logo">
@@ -402,9 +411,9 @@
       <div class="hamburger-menu-line diagonal-2"></div>
     </label>
 
-    <div id="side-menu-container">
+    <div id="side-menu-container" style="z-index: 99">
       <div id="before-side-menu">
-        <span>Content before main menu</span>
+        <span>Menu</span>
       </div>
       <nav id="top-menu">
         <ul id="main-menu" >
@@ -413,12 +422,6 @@
           <li class="main-menu-item"><a th:href="@{/user/contact}">Liên Hệ</a></li>
         </ul>
       </nav>
-      <div id="after-side-menu">
-        <span>Content after main menu</span>
-        <div class="social-buttons">
-          <i class="icon-linkedin"><img class="icon-header" src="https://img.icons8.com/ios-glyphs/30/ffffff/linkedin.png"/></i><i class="icon-facebook-squared"><img class="icon-header" src="https://img.icons8.com/ios-glyphs/30/ffffff/facebook.png"/></i><i class="icon-vkontakte"><img class="icon-header" src="https://img.icons8.com/ios-glyphs/30/ffffff/vkontakte.png"/></i><i class="icon-twitter"><img class="icon-header" src="https://img.icons8.com/ios-glyphs/30/ffffff/twitter.png"/></i>
-        </div>
-      </div>
     </div>
 
     <div id="site-header-search">
@@ -482,16 +485,18 @@
             </a>
           </li>
         </ul>
+
+        <a th:href="@{/cart/shoppingcart}" class="text-decoration-none">
+          <button type="button" class="btn btn-light position-relative">
+            <i class="bi bi-cart"></i>
+            Giỏ Hàng
+            <span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  th:text="${totalQuantity}"></span>
+          </button>
+        </a>
       </div>
     </div>
-    <a th:href="@{/cart/shoppingcart}" class="text-decoration-none">
-      <button type="button" class="btn btn-light position-relative">
-        <i class="bi bi-cart"></i>
-        Giỏ Hàng
-        <span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-              th:text="${totalQuantity}"></span>
-      </button>
-    </a>
+
 
     <script>
       // Loại bỏ query string nếu có

@@ -19,6 +19,18 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     // Use Integer if your ID is Integerr
     @Query("SELECT COUNT(p) FROM Product p")
     long countProducts();
+    // Lọc theo giá, danh mục và từ khóa
+    Page<Product> findByPriceBetweenAndCategory_CategoryIdAndNameContaining(Double minPrice, Double maxPrice, Integer categoryId, String keyword, Pageable pageable);
+
+    // Lọc theo giá và từ khóa
+    Page<Product> findByPriceBetweenAndNameContaining(Double minPrice, Double maxPrice, String keyword, Pageable pageable);
+
+    // Lọc theo giá và danh mục
+    Page<Product> findByPriceBetweenAndCategory_CategoryId(Double minPrice, Double maxPrice, Integer categoryId, Pageable pageable);
+
+
+    // Lọc theo danh mục và từ khóa
+    Page<Product> findByCategory_CategoryIdAndNameContaining(Integer categoryId, String keyword, Pageable pageable);
 
     Page<Product> findByPriceBetween(Double minPrice, Double maxPrice, Pageable pageable);
 

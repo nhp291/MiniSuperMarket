@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch Sử Hóa Đơn</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<main>
     <style>
         body {
             background-color: #f8f9fa;
@@ -32,12 +29,15 @@
 
         .table-container {
             overflow-x: auto;
+            max-height: 400px; /* Chiều cao tối đa bảng */
         }
 
         .table {
             table-layout: auto; /* Điều chỉnh kích thước cột theo nội dung */
             width: 100%; /* Chiếm toàn bộ chiều rộng */
             border-collapse: collapse;
+            word-wrap: break-word; /* Cắt dòng nếu chữ dài */
+            overflow-wrap: break-word;
         }
 
         .table thead th {
@@ -52,22 +52,15 @@
 
         .table tbody td {
             text-align: center;
-            word-wrap: break-word; /* Cắt dòng nếu chữ dài */
+            word-break: break-word; /* Cắt dòng nếu chữ quá dài */
+            max-width: 150px; /* Đặt giới hạn chiều rộng cột */
             overflow-wrap: break-word;
         }
 
-        /* Thêm giới hạn chiều cao và thanh cuộn */
-        .table-container {
-            max-height: 400px; /* Chiều cao tối đa bảng */
-            overflow-y: auto; /* Thanh cuộn dọc */
-        }
-
-        /* Đảm bảo dòng hover dễ nhìn */
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
 
-        /* Responsive cho thiết bị nhỏ */
         @media (max-width: 768px) {
             .history-box {
                 padding: 15px;
@@ -86,6 +79,9 @@
             }
         }
     </style>
+</head>
+<body>
+<main>
     <div class="container mt-5">
         <div class="history-box">
             <h3 class="history-title">Lịch Sử Hóa Đơn</h3>
@@ -106,9 +102,15 @@
                         <td th:text="${order.orderId}"></td> <!-- Mã hóa đơn -->
                         <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}"></td> <!-- Ngày mua -->
                         <td th:text="${order.paymentMethod}"></td> <!-- Phương thức thanh toán -->
-                        <td th:text="${order.paymentStatus}"></td> <!-- Trạng thái -->
+                        <td th:text="${order.paymentStatus == 'PENDING' ? 'Chờ xử lý' :
+             (order.paymentStatus == 'CANCELLED' ? 'Hủy bỏ' :
+             (order.paymentStatus == 'COMPLETED' ? 'Hoàn thành' : ''))}"></td>
                         <td>
                             <a th:href="@{/invoice/{orderId}(orderId=${order.orderId})}" class="btn btn-primary btn-sm">Xem</a>
+                            <!-- Chỉ hiển thị nút hủy với trạng thái PENDING -->
+                            <a th:if="${order.paymentStatus == 'PENDING'}"
+                               th:href="@{/cart/cancelOrder/{orderId}(orderId=${order.orderId})}"
+                               class="btn btn-danger btn-sm">Hủy Hóa Đơn</a>
                         </td>
                     </tr>
                     </tbody>
