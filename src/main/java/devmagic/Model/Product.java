@@ -48,11 +48,11 @@
         private String unit;
 
         @ManyToOne
-        @JoinColumn(name = "category_id", nullable = false)
+        @JoinColumn(name = "category_id")
         private Category category;
 
         @ManyToOne
-        @JoinColumn(name = "brand_id", nullable = false)
+        @JoinColumn(name = "brand_id")
         private Brand brand;
 
         @ManyToOne

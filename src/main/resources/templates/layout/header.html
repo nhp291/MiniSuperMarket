@@ -443,7 +443,7 @@
         <!-- Hiển thị menu dropdown -->
         <ul class="dropdown-menu" sid="changePasswordForm" action="/Password/ChangePassword" method="POST">
           <!-- Khi đã đăng nhập -->
-          <li th:if="${username != null}">
+          <li th:if="${role == 'ROLE_User'}">
             <a th:href="@{/user/info}" class="dropdown-item">
               <i class="bi bi-person-add"></i> Thông tin khách hàng
             </a>

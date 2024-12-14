@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +28,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     @Query("SELECT a.accountId FROM Account a WHERE a.username = :username")
     Integer findAccountIdByUsername(@Param("username") String username);
+
+    @Query("SELECT a FROM Account a WHERE a.isDeleted = false")
+    List<Account> findAllActiveAccounts();
+
 }
