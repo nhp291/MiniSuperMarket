@@ -67,6 +67,8 @@ public class LoginController {
                 session.setAttribute("accountId", account.getAccountId());
                 session.setAttribute("username", account.getUsername());
                 session.setAttribute("role", account.getRole().getRoleName());
+                session.setAttribute("email", account.getEmail());
+                session.setAttribute("phoneNumber", account.getPhoneNumber());
 
                 Cookie usernameCookie = new Cookie("username", account.getUsername());
                 usernameCookie.setMaxAge(7 * 24 * 60 * 60);

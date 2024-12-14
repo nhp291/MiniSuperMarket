@@ -19,7 +19,7 @@
                     <h2><strong>Danh sách tài khoản</strong></h2>
                 </div>
                 <div class="page-btn">
-                    <a th:href="@{/Accounts/AccountForm}" class="btn btn-added">
+                    <a th:href="@{/Accounts/AddAccount}" class="btn btn-added">
                         <img src="/admin/img/icons/plus.svg" class="me-1" alt="img">Thêm tài khoản
                     </a>
                 </div>
@@ -27,35 +27,6 @@
 
             <div class="card">
                 <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-path">
-                                <a class="btn btn-filter" id="filter_search">
-                                    <img src="/admin/img/icons/filter.svg" alt="img">
-                                    <span><img src="/admin/img/icons/closes.svg" alt="img"></span>
-                                </a>
-                            </div>
-                            <div class="search-input">
-                                <a class="btn btn-searchset"><img src="/admin/img/icons/search-white.svg" alt="img"></a>
-                            </div>
-                        </div>
-                        <div class="wordset">
-                            <ul>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                            src="/admin/img/icons/pdf.svg" alt="img"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                            src="/admin/img/icons/excel.svg" alt="img"></a>
-                                </li>
-                                <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                            src="/admin/img/icons/printer.svg" alt="img"></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
 
                     <div class="card" id="filter_inputs">
                         <div class="card-body pb-0">

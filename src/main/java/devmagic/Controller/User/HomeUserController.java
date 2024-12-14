@@ -280,6 +280,16 @@ public class HomeUserController {
         }
         return "user/contact";
     }
+    @PostMapping("/user/checkEmailExists")
+    @ResponseBody
+    public ResponseEntity<?> checkEmailExists(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        if (!StringUtils.hasText(email) || !accountService.emailExists(email)) {
+            return ResponseEntity.badRequest().body(new ResponseMessage("Email không tồn tại!"));
+        }
+        return ResponseEntity.ok().build();
+    }
+
 
     @PostMapping("/user/sendVerificationCode")
     @ResponseBody

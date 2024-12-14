@@ -11,12 +11,11 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4 th:text="${account.accountId != null ? 'Edit Account' : 'Add Account'}"></h4>
-                    <h6 th:text="${account.accountId != null ? 'Update existing Account' : 'Create new Account'}"></h6>
+                    <h4 th:text="${account.accountId != null ? 'Cập nhật tài khoản' : 'Thêm tài khoản'}"></h4>
                 </div>
                 <div class="page-btn">
                     <a th:href="@{/Accounts/AccountList}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" alt="img" class="me-1">Account List
+                        <img src="/admin/img/icons/plus.svg" alt="img" class="me-1">Danh sách tài khoản
                     </a>
                 </div>
             </div>
@@ -30,7 +29,7 @@
                         <div class="row">
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Username</label>
+                                    <label>Tên người dùng</label>
                                     <input type="text" id="username" th:field="*{username}" required class="form-control">
                                     <div th:if="${#fields.hasErrors('username')}" class="text-danger">
                                         <p th:errors="*{username}">Lỗi Username</p>
@@ -50,7 +49,7 @@
 
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label for="role">Role</label>
+                                    <label for="role">Vai trò</label>
                                     <select id="role" th:field="*{role}" class="form-select selectpicker" data-live-search="true" required>
                                         <option th:each="role : ${roles}" th:value="${role.roleId}"
                                                 th:text="${role.roleName}"
@@ -61,14 +60,14 @@
 
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Address</label>
+                                    <label>Địa chỉ</label>
                                     <input type="text" id="address" th:field="*{address}" class="form-control">
                                 </div>
                             </div>
 
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Password</label>
+                                    <label>Mật khẩu</label>
                                     <input type="password" id="password" th:field="*{password}"
                                            th:attr="readonly=${account.accountId != null}" class="form-control">
                                     <div th:if="${#fields.hasErrors('password')}" class="text-danger">
@@ -79,7 +78,7 @@
 
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Phone Number</label>
+                                    <label>Số điện thoại</label>
                                     <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required class="form-control">
                                     <div th:if="${#fields.hasErrors('phoneNumber')}" class="text-danger">
                                         <p th:errors="*{phoneNumber}">Lỗi Số điện thoại</p>
@@ -90,10 +89,10 @@
                             <div class="col-lg-12">
                                 <!-- Submit button to Create or Update account -->
                                 <button type="submit" class="btn btn-submit me-2">
-                                    <span th:text="${account.accountId != null ? 'Update' : 'Create'}"></span>
+                                    <span th:text="${account.accountId != null ? 'Cập nhật' : 'Tạo'}"></span>
                                 </button>
 
-                                <a th:href="@{/Accounts/AccountForm}" class="btn btn-cancel">Reset</a>
+                                <a th:href="@{/Accounts/AccountForm}" class="btn btn-cancel">Đặt lại</a>
                             </div>
                         </div>
                     </div>
