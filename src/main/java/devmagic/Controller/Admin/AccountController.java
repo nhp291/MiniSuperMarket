@@ -67,7 +67,7 @@ public class AccountController {
         return "admin/layout";
     }
 
-    @GetMapping("/AccountForm")
+    @GetMapping("/AddAccount")
     public String addAccountForm(Model model) {
         Account account = new Account();
         account.setRole(new Role());
