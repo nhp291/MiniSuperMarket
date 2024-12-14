@@ -1,6 +1,7 @@
 package devmagic.Controller.User;
 
 import devmagic.Model.Order;
+import devmagic.Service.CartService;
 import devmagic.Service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -19,16 +20,22 @@ import java.util.List;
 public class PaymenthistoryController {
 
     private final OrderService orderService;
+    private final CartService cartService;
 
     @Autowired
-    public PaymenthistoryController(OrderService orderService) {
+    public PaymenthistoryController(OrderService orderService, CartService cartService) {
         this.orderService = orderService;
+        this.cartService = cartService;
     }
 
     @GetMapping("/paymenthistory")
     public String getPaymentHistory(HttpServletRequest request, Model model) {
         Integer accountId = getAccountIdFromSession(request);
+        // Lấy số lượng sản phẩm trong giỏ hàng
+        int totalQuantity = cartService.calculateTotalQuantity(cartService.getCartItemDTOs(accountId));
 
+        // Truyền số lượng vào model để sử dụng trong template
+        model.addAttribute("totalQuantity", totalQuantity);
         if (accountId == null) {
             return "redirect:/user/login";
         }
