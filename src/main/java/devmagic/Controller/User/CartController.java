@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,9 @@ public class CartController {
         Account account = accountOpt.get();
 
         // Thêm thông tin tài khoản vào model để hiển thị
-        model.addAttribute("username", username);
+        model.addAttribute("username", account.getUsername()); // Truyền đúng thông tin username
+        model.addAttribute("phoneNumber", account.getPhoneNumber()); // Truyền thông tin phoneNumber
+        model.addAttribute("address", account.getAddress()); // Truyền thông tin address
         model.addAttribute("role", role);
         model.addAttribute("accountId", accountId);
         model.addAttribute("account", account);  // Truyền đối tượng Account vào model
@@ -154,6 +157,7 @@ public class CartController {
 
     // Tiến hành thanh toán
 
+    // Tiến hành thanh toán
     @PostMapping("/checkout")
     public String checkout(HttpServletRequest request, Model model,
                            @RequestParam("paymentMethod") String paymentMethod,
@@ -164,6 +168,7 @@ public class CartController {
             return "redirect:/user/login";
         }
 
+        // Lấy danh sách sản phẩm trong giỏ hàng
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
         if (cartItems.isEmpty()) {
             model.addAttribute("message", "Giỏ hàng trống.");
@@ -178,9 +183,7 @@ public class CartController {
         order.setOrderDate(new Date());
         order.setPaymentStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
-
-        // Set note vào đơn hàng (null nếu không có ghi chú)
-        order.setNote(note == null || note.isEmpty() ? null : note);
+        order.setNote(note == null || note.isEmpty() ? null : note); // Thêm ghi chú nếu có
 
         // Tạo chi tiết đơn hàng
         order.setOrderDetails(cartItems.stream().map(cartItem -> {
@@ -200,6 +203,24 @@ public class CartController {
         BigDecimal totalOrderPrice = order.getOrderDetails().stream()
                 .map(orderDetail -> orderDetail.getPrice().multiply(BigDecimal.valueOf(orderDetail.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Lấy email từ tài khoản người dùng
+        Optional<Account> accountOpt = cartService.getAccountById(accountId);
+        if (accountOpt.isEmpty() || accountOpt.get().getEmail() == null || accountOpt.get().getEmail().isEmpty()) {
+            model.addAttribute("error", "Email của tài khoản không hợp lệ.");
+            return "redirect:/cart/shoppingcart";
+        }
+
+        String email = accountOpt.get().getEmail();
+
+        // Gửi email xác nhận đơn hàng
+        String emailContent = generateOrderEmailContent(order, totalOrderPrice, cartItems);
+        try {
+            emailService.sendOrderConfirmationEmail(email, emailContent);
+        } catch (MessagingException e) {
+            model.addAttribute("error", "Đã xảy ra lỗi khi gửi email xác nhận đơn hàng.");
+            return "redirect:/cart/shoppingcart";
+        }
 
         model.addAttribute("order", order);
         model.addAttribute("totalOrderPrice", totalOrderPrice);
@@ -270,4 +291,79 @@ public class CartController {
         session.setAttribute("giftCode", giftCode);
         return ResponseEntity.ok(Map.of("success", true));
     }
+
+    private String generateOrderEmailContent(Order order, BigDecimal totalOrderPrice, List<CartItemDTO> cartItems) {
+        // Định dạng số tiền kiểu Việt Nam: nhóm hàng nghìn, không có phần thập phân
+        DecimalFormat currencyFormat = new DecimalFormat("#,###");
+
+        // Sử dụng StringBuilder để xây dựng nội dung email
+        StringBuilder emailContent = new StringBuilder();
+
+        // Lấy thông tin tài khoản từ đơn hàng
+        Account account = order.getAccount();
+        String username = account != null && account.getUsername() != null ? account.getUsername() : "Khách hàng";
+        String address = account != null && account.getAddress() != null ? account.getAddress() : "[Chưa cung cấp]";
+        String phoneNumber = account != null && account.getPhoneNumber() != null ? account.getPhoneNumber() : "[Chưa cung cấp]";
+
+        // Tiêu đề và lời chào
+        emailContent.append("<html><body>")
+                .append("<h1>Cảm ơn bạn đã đặt hàng tại DevMagic</h1>")
+                .append("<p>Xin chào ").append(username).append(",</p>")
+                .append("<p>Đơn hàng của bạn đã được xác nhận và đang trong quá trình xử lý. Dưới đây là thông tin chi tiết của đơn hàng:</p>");
+
+        // Thông tin đơn hàng
+        emailContent.append("<h3>Thông tin đơn hàng:</h3>")
+                .append("<p><strong>Mã đơn hàng:</strong> ").append(order.getOrderId()).append("</p>")
+                .append("<p><strong>Ngày đặt:</strong> ").append(order.getOrderDate()).append("</p>")
+                .append("<p><strong>Phương thức thanh toán:</strong> ").append(order.getPaymentMethod()).append("</p>");
+
+        // Thông tin địa chỉ giao hàng
+        emailContent.append("<h3>Thông tin địa chỉ giao hàng:</h3>")
+                .append("<p><strong>Họ và tên:</strong> ").append(username).append("</p>")
+                .append("<p><strong>Địa chỉ:</strong> ").append(address).append("</p>")
+                .append("<p><strong>Số điện thoại:</strong> ").append(phoneNumber).append("</p>");
+
+        // Thêm ghi chú nếu có
+        if (order.getNote() != null && !order.getNote().isEmpty()) {
+            emailContent.append("<p><strong>Ghi chú:</strong> ").append(order.getNote()).append("</p>");
+        }
+
+        // Chi tiết sản phẩm
+        emailContent.append("<h3>Chi tiết sản phẩm:</h3>")
+                .append("<table border=\"1\" cellpadding=\"5\"><thead><tr>")
+                .append("<th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Tổng giá</th>")
+                .append("</tr></thead><tbody>");
+
+        // Lặp qua danh sách sản phẩm trong giỏ hàng
+        for (CartItemDTO cartItem : cartItems) {
+            BigDecimal effectivePrice = cartItem.getPrice(); // Đơn giá từ dữ liệu
+            BigDecimal scaledEffectivePrice = effectivePrice.multiply(BigDecimal.valueOf(1000)); // Chuyển thành nghìn VNĐ
+            BigDecimal totalPrice = scaledEffectivePrice.multiply(BigDecimal.valueOf(cartItem.getQuantity())); // Tổng giá
+
+            emailContent.append("<tr>")
+                    .append("<td>").append(cartItem.getProductName()).append("</td>")
+                    .append("<td>").append(cartItem.getQuantity()).append("</td>")
+                    .append("<td>").append(currencyFormat.format(scaledEffectivePrice)).append(" đồng</td>")
+                    .append("<td>").append(currencyFormat.format(totalPrice)).append(" đồng</td>")
+                    .append("</tr>");
+        }
+
+        // Kết thúc bảng chi tiết sản phẩm
+        emailContent.append("</tbody></table>");
+
+        // Tổng tiền đơn hàng
+        BigDecimal scaledTotalOrderPrice = totalOrderPrice.multiply(BigDecimal.valueOf(1000)); // Chuyển thành nghìn VNĐ
+        emailContent.append("<h3>Tổng tiền:</h3>")
+                .append("<p><strong>Tổng giá trị đơn hàng:</strong> ")
+                .append(currencyFormat.format(scaledTotalOrderPrice)).append(" đồng</p>");
+
+        // Thông báo kết thúc
+        emailContent.append("<p>Chúng tôi sẽ thông báo cho bạn khi đơn hàng của bạn được xử lý và giao hàng. Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi.</p>")
+                .append("<p>Trân trọng,</p>")
+                .append("<p><strong>DevMagic</strong></p>")
+                .append("</body></html>");
+
+        return emailContent.toString();
+    }
+
 }

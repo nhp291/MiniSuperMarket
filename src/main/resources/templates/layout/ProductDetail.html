@@ -36,7 +36,7 @@
               <h5> Giá bán lẻ</h5>
             </div>
             <div class="col-7">
-              <h5 th:text="${item.price}" class="text-danger">229.000 đ</h5>
+              <h5 th:text="${item.sale != null ? item.sale + ' VND' : item.price + ' VND'}" class="text-danger"></h5>
             </div>
           </div>
           <div class="row mt-2">
@@ -54,7 +54,7 @@
             </div>
             <div class="col-7">
               <h6>
-                Miễn phí giao hàng cho đơn từ 300.000đ.
+                Miễn phí giao hàng cho đơn từ 300.000 VND
                 Giao hàng trong 2 giờ.</h6>
             </div>
           </div>

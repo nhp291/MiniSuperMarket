@@ -216,7 +216,6 @@
             background-color: #d4edda;
             border-color: #c3e6cb;
         }
-
     </style>
 </head>
 <body>
@@ -232,7 +231,7 @@
         </div>
         <form action="/user/register" method="POST" enctype="multipart/form-data" id="register-form" th:object="${account}">
             <div class="form-group">
-                <label for="username">Tên đăng nhập *</label>
+                <label for="username">Tên đăng nhập</label>
                 <input type="text" id="username" th:field="*{username}" required>
             </div>
             <div th:if="${successMessage}" class="alert alert-success">
@@ -244,6 +243,7 @@
                     <input type="email" id="email" th:field="*{email}" required style="flex: 3;">
                     <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="sendVerificationCode()">Gửi mã</button>
                 </div>
+                <div id="email-error" class="error-message" style="display: none;">Email không tồn tại!</div>
             </div>
 
             <div class="form-group">
@@ -270,7 +270,7 @@
             </div>
 
             <div class="form-group">
-                <label for="phone">Số điện thoại *</label>
+                <label for="phone">Số điện thoại</label>
                 <input type="text" id="phone" th:field="*{phoneNumber}" required>
             </div>
 
@@ -292,12 +292,14 @@
 <script>
     function sendVerificationCode() {
         const email = document.getElementById('email').value;
+        const emailError = document.getElementById('email-error');
+
         if (!email) {
             alert('Vui lòng nhập email trước khi gửi mã.');
             return;
         }
 
-        fetch('/user/sendVerificationCode', {
+        fetch('/user/checkEmailExists', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -305,12 +307,26 @@
             body: JSON.stringify({ email: email })
         }).then(response => {
             if (response.ok) {
-                alert('Mã xác nhận đã được gửi đến email của bạn.');
+                emailError.style.display = 'none'; // Ẩn thông báo lỗi nếu email tồn tại
+                fetch('/user/sendVerificationCode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                }).then(res => {
+                    if (res.ok) {
+                        alert('Mã xác nhận đã được gửi đến email của bạn.');
+                    } else {
+                        alert('Có lỗi xảy ra khi gửi mã xác nhận. Vui lòng thử lại.');
+                    }
+                });
             } else {
-                alert('Có lỗi xảy ra khi gửi mã xác nhận. Vui lòng thử lại.');
+                emailError.style.display = 'block'; // Hiển thị thông báo lỗi nếu email không tồn tại
             }
         });
     }
+
     function togglePassword(id) {
         const passwordField = document.getElementById(id);
         passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
@@ -320,7 +336,6 @@
         const password = document.getElementById('password').value;
         const passwordError = document.getElementById('password-error');
 
-        // Ẩn tất cả thông báo lỗi nếu không có mật khẩu
         if (password.length === 0) {
             passwordError.style.display = 'none';
             document.getElementById('password').classList.remove('invalid', 'valid');
@@ -328,8 +343,10 @@
             return;
         }
 
-        if (password.length < 6) {
-            passwordError.textContent = "Mật khẩu phải có ít nhất 6 ký tự.";
+        const strongPasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+
+        if (!strongPasswordRegex.test(password)) {
+            passwordError.textContent = "Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ hoa, số và ký tự đặc biệt.";
             passwordError.style.display = 'block';
             document.getElementById('password').classList.add('invalid');
             document.getElementById('register-button-container').style.display = 'none';
@@ -338,7 +355,7 @@
             passwordError.style.display = 'none';
             document.getElementById('password').classList.remove('invalid');
             document.getElementById('password').classList.add('valid');
-            checkPasswordsMatch(); // Kiểm tra mật khẩu xác nhận
+            checkPasswordsMatch();
         }
     }
 
@@ -347,7 +364,6 @@
         const confirmPassword = document.getElementById('confirm-password').value;
         const confirmPasswordError = document.getElementById('confirm-password-error');
 
-        // Ẩn tất cả thông báo lỗi nếu không có mật khẩu xác nhận
         if (confirmPassword.length === 0) {
             confirmPasswordError.style.display = 'none';
             document.getElementById('confirm-password').classList.remove('invalid', 'valid');
@@ -365,19 +381,8 @@
             confirmPasswordError.style.display = 'none';
             document.getElementById('confirm-password').classList.remove('invalid');
             document.getElementById('confirm-password').classList.add('valid');
-            document.getElementById('register-button-container').style.display = 'block'; // Hiện nút đăng ký khi cả hai mật khẩu khớp
+            document.getElementById('register-button-container').style.display = 'block';
         }
-    }
-        // Kiểm tra URL để xác định xem có tham số "success" không
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('success')) {
-        const successMessage = document.getElementById('success-message');
-        successMessage.style.display = 'block'; // Hiển thị thông báo
-
-        // Chuyển hướng sau 3 giây
-        setTimeout(() => {
-        window.location.href = '/user/login';
-    }, 3000);
     }
 </script>
 </body>

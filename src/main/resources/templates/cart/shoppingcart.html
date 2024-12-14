@@ -296,18 +296,15 @@
         #COD:checked~.category .CODMethod,
         #VNPAY:checked~.category .VNPAYMethod,
         #visa:checked~.category .visaMethod,
-        #mastercard:checked~.category .mastercardMethod,
-        #paypal:checked~.category .paypalMethod,
-        #AMEX:checked~.category .amexMethod {
+
+        #paypal:checked~.category .paypalMethod {
             box-shadow: 0 0 0 2px #6064b6;
         }
 
         #COD:checked~.category .CODMethod .check,
         #VNPAY:checked~.category .VNPAYMethod .check,
         #visa:checked~.category .visaMethod .check,
-        #mastercard:checked~.category .mastercardMethod .check,
-        #paypal:checked~.category .paypalMethod .check,
-        #AMEX:checked~.category .amexMethod .check {
+        #paypal:checked~.category .paypalMethod .check {
             display: block;
         }
 
@@ -344,14 +341,14 @@
         .radio-input input[type="radio"]:checked~label .check {
             display: inline-block;
         }
-        #phone, #address {
+        #phone, #email {
             pointer-events: none; /* Vô hiệu hóa click chuột vào các input */
-            background-color: #f0f0f0; /* Tùy chọn, thay đổi màu nền để dễ nhận diện */
+
         }
 
     </style>
-    <div class="shopping-body">
-        <div class="card">
+    <div class="shopping-body mt-5">
+        <div class="card mt-5">
             <div class="row">
                 <!-- Giỏ hàng -->
                 <div class="col-md-8 cart">
@@ -426,7 +423,7 @@
                                 <div class="input-group">
                                     <label class="labelll">Email</label>
                                     <input autocomplete="off" name="email" id="email" class="inputtt" type="email"
-                                           th:value="${account.email != null ? account.email : ''}">
+                                           th:value="${account.email != null ? account.email : ''}"readonly disabled>
                                 </div>
                             </div>
                             <!-- Địa chỉ -->
@@ -434,11 +431,10 @@
                                 <div class="input-group">
                                     <label class="labelll">Địa chỉ</label>
                                     <input autocomplete="off" name="address" id="address" class="inputtt" type="text"
-                                           th:value="${account.address != null ? account.address : ''}" readonly disabled>
+                                           th:value="${account.address != null ? account.address : ''}" >
                                 </div>
                             </div>
                         </div>
-                        <!-- Ghi chú -->
                         <!-- Ghi chú -->
                         <div class="textarea-container">
                             <label class="labelll">Ghi chú</label>
@@ -495,9 +491,8 @@
                                 <input type="radio" name="payment" id="COD" value="COD">
                                 <input type="radio" name="payment" id="VNPAY" value="VNPAY">
                                 <input type="radio" name="payment" id="visa" value="visa">
-                                <input type="radio" name="payment" id="mastercard" value="mastercard">
                                 <input type="radio" name="payment" id="paypal" value="paypal">
-                                <input type="radio" name="payment" id="AMEX" value="AMEX">
+
                                 <div class="category">
                                     <label for="COD" class="CODMethod">
                                         <div class="imgContainer">
@@ -522,13 +517,7 @@
                                         <span class="name">VISA</span>
                                         <span class="check">✓</span>
                                     </label>
-                                    <label for="mastercard" class="mastercardMethod">
-                                        <div class="imgContainer">
-                                            <img src="https://i.ibb.co/vdbBkgT/mastercard.jpg" alt="Mastercard">
-                                        </div>
-                                        <span class="name">Mastercard</span>
-                                        <span class="check">✓</span>
-                                    </label>
+
                                     <label for="paypal" class="paypalMethod">
                                         <div class="imgContainer">
                                             <img src="https://i.ibb.co/KVF3mr1/paypal.png" alt="Paypal">
@@ -536,13 +525,7 @@
                                         <span class="name">Paypal</span>
                                         <span class="check">✓</span>
                                     </label>
-                                    <label for="AMEX" class="amexMethod">
-                                        <div class="imgContainer">
-                                            <img src="https://i.ibb.co/wQnrX86/American-Express.jpg" alt="AMEX">
-                                        </div>
-                                        <span class="name">AMEX</span>
-                                        <span class="check">✓</span>
-                                    </label>
+
                                 </div>
                             </form>
                         </div>
@@ -795,4 +778,3 @@
 </body>
 
 </html>
-

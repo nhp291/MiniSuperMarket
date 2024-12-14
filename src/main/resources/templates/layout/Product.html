@@ -19,24 +19,24 @@
     </style>
     <div class="container-fluid mt-5">
       <div class="row me-1">
-        <div class="col-4 col-sm-2 col-md-2 col-lg-2 fixed-sidebar">
+        <div class="col-4 col-sm-4 col-md-2 col-lg-2 fixed-sidebar">
           <div class="row mt-5">
-            <div class="col-3 col-sm-3 col-md-2 col-lg-3 my-2"><img src="https://kingfoodmart.com/assets/images/kfm/iconDanhMuc.svg" class="img-fluid"  alt="..."> </div>
-            <div class="col-9 col-sm-9 col-md-10 col-lg-9 my-2 "> Danh Mục Sản Phẩm</div>
+            <div class="col-3 col-sm-4 col-md-2 col-lg-3 my-2"><img src="https://kingfoodmart.com/assets/images/kfm/iconDanhMuc.svg" class="img-fluid"  alt="..."> </div>
+            <div class="col-9 col-sm-4 col-md-2 col-lg-9 my-2"> Danh Mục Sản Phẩm</div>
             <hr>
           </div>
           <div class="row">
             <a th:each="c: ${cate}" th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="d-flex align-items-center justify-content-center text-decoration-none text-dark" >
-              <div class="col-4 col-sm-4 col-md-4 col-lg-3 me-3 mt-3">
+              <div class="col-2 col-sm-4 col-md-2 col-lg-2 me-2 mt-3">
                 <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl}}" class="img-fluid mb-3"  alt="...">
               </div>
-              <div class="col-8 col-sm-8 col-md-8 col-lg-8 "> [[${c.categoryName}]]</div>
+              <div class="col-10 col-sm-4 col-md-2 col-lg-10 my-auto "> [[${c.categoryName}]]</div>
             </a>
           </div>
 
         </div>
-        <div class="col-8 col-sm-10 col-md-9 col-lg-10 mt-5">
-          <div class="container-fluid mx-5 ">
+        <div class="col-8 col-sm-8 col-md-9 col-lg-9 mt-5">
+          <div class="container-fluid mx-5">
             <h2>Tất cả sản phẩm</h2>
             <h5 class="mt-5">Có tất cả  [[${#lists.size(product)}]] sản phẩm</h5>
             <div class="container-fluid mt-3">
@@ -54,12 +54,12 @@
                         <div class="card-body">
                           <div class="d-flex justify-content-between align-items-center mb-2">
                             <div th:if="${p.sale != null}" class="d-flex align-items-baseline">
-                              <h5 class="text-danger mb-0" >[[${p.sale}]] đ</h5>
+                              <h5 class="text-danger mb-0" >[[${p.sale}]] VND</h5>
                               <h6 class="text-secondary text-decoration-line-through ms-2 mb-0">
                                 [[${p.price}]].đ</h6>
                             </div>
                             <div th:unless="${p.sale != null}">
-                              <h5 class="text-danger mb-0">[[${p.price}]] đ</h5>
+                              <h5 class="text-danger mb-0">[[${p.price}]] VND</h5>
                             </div>
                           </div>
                           <h5 th:text="${p.description}" class="card-text"></h5>
@@ -85,6 +85,7 @@
                                 Đăng nhập
                               </button>
                             </form>
+
                           </div>
                         </div>
                       </div>
@@ -94,10 +95,7 @@
                 </div>
                 </div>
               </div>
-            <div id="cartMessage"
-                 style="position: fixed; top: 70px; right: 5px; display: none; background-color: green; color: white; padding: 10px 15px; border: 2px solid white; border-radius: 5px; z-index: 9999; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-              Sản phẩm đã được thêm vào giỏ hàng!
-            </div>
+
             </div>
           </div>
         </div>
