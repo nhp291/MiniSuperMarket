@@ -122,6 +122,7 @@ public class HomeUserController {
 
         return "layout/Home";
     }
+
     @GetMapping("/cart/getTotalQuantity")
     @ResponseBody
     public Map<String, Integer> getTotalQuantity(HttpServletRequest request) {
@@ -289,6 +290,7 @@ public class HomeUserController {
         }
         return "user/contact";
     }
+
     @PostMapping("/user/checkEmailExists")
     @ResponseBody
     public ResponseEntity<?> checkEmailExists(@RequestBody Map<String, String> request) {
@@ -329,6 +331,7 @@ public class HomeUserController {
             return ResponseEntity.badRequest().body(new ResponseMessage("Mã xác nhận không hợp lệ."));
         }
     }
+
     @GetMapping("user/register")
     public String registerForm(Model model) {
         model.addAttribute("account", new Account()); // Đảm bảo tạo một đối tượng Account mới
@@ -388,7 +391,7 @@ public class HomeUserController {
         try {
             accountService.saveAccount(account);
             model.addAttribute("successMessage", "Đăng ký thành công! Bạn có thể đăng nhập ngay.");
-            return "redirect:/user/register?success=true"; // Chuyển hướng đến trang đăng nhập
+            return "redirect:/user/login"; // Chuyển hướng đến trang đăng nhập
         } catch (Exception e) {
             model.addAttribute("account", account);
             model.addAttribute("error", "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.");
