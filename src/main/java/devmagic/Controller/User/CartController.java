@@ -163,50 +163,69 @@ public class CartController {
                            @RequestParam("paymentMethod") String paymentMethod,
                            @RequestParam(value = "note", required = false) String note) {
 
+        // Lấy accountId từ session
         Integer accountId = getAccountIdFromSession(request);
         if (accountId == null) {
-            return "redirect:/user/login";
+            return "redirect:/user/login"; // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
         }
 
         // Lấy danh sách sản phẩm trong giỏ hàng
         List<CartItemDTO> cartItems = cartService.getCartItemDTOs(accountId);
         if (cartItems.isEmpty()) {
             model.addAttribute("message", "Giỏ hàng trống.");
-            return "redirect:/cart/shoppingcart";
+            return "redirect:/cart/shoppingcart"; // Nếu giỏ hàng trống, quay lại trang giỏ hàng
         }
 
+        // Cập nhật giá theo khuyến mãi cho từng sản phẩm trong giỏ hàng
         cartItems.forEach(this::updatePriceWithSale);
 
         // Tạo đơn hàng mới
         Order order = new Order();
-        order.setAccount(new Account(accountId));
-        order.setOrderDate(new Date());
-        order.setPaymentStatus("PENDING");
-        order.setPaymentMethod(paymentMethod);
-        order.setNote(note == null || note.isEmpty() ? null : note); // Thêm ghi chú nếu có
+        Optional<Account> accountOpt = cartService.getAccountById(accountId);
 
-        // Tạo chi tiết đơn hàng
-        order.setOrderDetails(cartItems.stream().map(cartItem -> {
+        if (accountOpt.isPresent()) {
+            Account account = accountOpt.get();
+            order.setAccount(account);
+        } else {
+            model.addAttribute("error", "Không tìm thấy tài khoản người dùng.");
+            return "redirect:/cart/shoppingcart";
+        }
+
+        order.setOrderDate(new Date()); // Ngày đặt hàng là ngày hiện tại
+        order.setPaymentStatus("PENDING"); // Trạng thái thanh toán mặc định
+        order.setPaymentMethod(paymentMethod); // Phương thức thanh toán
+        order.setNote(note == null || note.isEmpty() ? null : note); // Ghi chú nếu có
+
+        // Tạo chi tiết đơn hàng từ giỏ hàng
+        List<OrderDetail> orderDetails = cartItems.stream().map(cartItem -> {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrder(order);
             orderDetail.setProduct(cartItem.getProduct());
             orderDetail.setQuantity(cartItem.getQuantity());
             orderDetail.setPrice(cartItem.getPrice());
             return orderDetail;
-        }).collect(Collectors.toList()));
+        }).collect(Collectors.toList());
+
+        order.setOrderDetails(orderDetails);
 
         // Lưu đơn hàng vào cơ sở dữ liệu
-        orderService.createOrder(order);
+        try {
+            orderService.createOrder(order);
+        } catch (Exception e) {
+            model.addAttribute("error", "Đã xảy ra lỗi khi tạo đơn hàng.");
+            return "redirect:/cart/shoppingcart";
+        }
+
+        // Xóa giỏ hàng sau khi đặt hàng thành công
         cartService.clearCart(accountId);
 
         // Tính tổng giá trị đơn hàng
-        BigDecimal totalOrderPrice = order.getOrderDetails().stream()
+        BigDecimal totalOrderPrice = orderDetails.stream()
                 .map(orderDetail -> orderDetail.getPrice().multiply(BigDecimal.valueOf(orderDetail.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Lấy email từ tài khoản người dùng
-        Optional<Account> accountOpt = cartService.getAccountById(accountId);
-        if (accountOpt.isEmpty() || accountOpt.get().getEmail() == null || accountOpt.get().getEmail().isEmpty()) {
+        // Kiểm tra email người dùng để gửi xác nhận đơn hàng
+        if (accountOpt.get().getEmail() == null || accountOpt.get().getEmail().isEmpty()) {
             model.addAttribute("error", "Email của tài khoản không hợp lệ.");
             return "redirect:/cart/shoppingcart";
         }
@@ -222,10 +241,12 @@ public class CartController {
             return "redirect:/cart/shoppingcart";
         }
 
+        // Truyền thông tin đơn hàng đến view
         model.addAttribute("order", order);
         model.addAttribute("totalOrderPrice", totalOrderPrice);
 
-        return "cart/thankyou";  // Trang cảm ơn sau khi thanh toán thành công
+        // Chuyển hướng đến trang cảm ơn
+        return "cart/thankyou";
     }
 
     // Helper: Cập nhật giá sản phẩm với giá sale (nếu có)
