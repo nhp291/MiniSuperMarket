@@ -11,7 +11,10 @@
 <body class="container bg-body-secondary">
 <main>
   <div class="container ">
-
+    <div id="cartMessage"
+         style="position: fixed; top: 70px; right: 5px; display: none; background-color: green; color: white; padding: 10px 15px; border: 2px solid white; border-radius: 5px; z-index: 9999; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+      Sản phẩm đã được thêm vào giỏ hàng!
+    </div>
     <div class="container mt-5">
       <div  class="row bg-white">
         <div class="col-5 ">
@@ -30,7 +33,7 @@
           </div>
         </div>
         <div class="col-7">
-          <h4 class="mt-3">[[${item.name}]]</h4>
+          <h4 class="mt-5">[[${item.name}]]</h4>
           <div class="row mt-5">
             <div class="col-4 text-secondary">
               <h5> Giá bán lẻ</h5>
@@ -79,35 +82,35 @@
             <div class="col-4">
               <h6 class="text-secondary">Số Lượng Mua</h6>
             </div>
+            <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">
             <div class="col-7">
-              <form id="addToCartForm-[[${p.productId}]]" class="addToCartForm">
                 <input type="hidden" name="productId" th:value="${item.productId}" />
               <div class="col quantity-controls">
                 <a href="#" class="text-decoration-none" onclick="updateQuantity(this, -1)">-</a>
                 <input type="number" class="border px-2 quantity-input" name="quantity" value="1" min="1" onchange="updateQuantityInput(this)" />
                 <a href="#" class="text-decoration-none" onclick="updateQuantity(this, 1)">+</a>
               </div>
-            </div>
-          </div>
+                <!-- Giá trị quantity được truyền từ input điều chỉnh số lượng -->
 
-            <!-- Giá trị quantity được truyền từ input điều chỉnh số lượng -->
+                <button type="submit" class="btn btn-primary mt-3"
+                        th:if="${item.stockQuantity > 0 and username != null}">
+                  Thêm vào giỏ hàng
+                </button>
+                <button type="button" class="btn btn-secondary"
+                        th:if="${item.stockQuantity <= 0 and username != null}" disabled>
+                  Hết hàng
+                </button>
+                <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>
 
-            <button type="submit" class="btn btn-primary"
-                    th:if="${item.stockQuantity > 0 and username != null}">
-              Thêm vào giỏ hàng
-            </button>
-            <button type="button" class="btn btn-secondary"
-                    th:if="${item.stockQuantity <= 0 and username != null}" disabled>
-              Hết hàng
-            </button>
-            <button type="button" class="btn btn-secondary" th:if="${username == null}" disabled>Đăng nhập</button>
-          </form>
-          <div id="cartMessage"
-               style="position: fixed; top: 70px; right: 5px; display: none; background-color: green; color: white; padding: 10px 15px; border: 2px solid white; border-radius: 5px; z-index: 9999; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            Sản phẩm đã được thêm vào giỏ hàng!
+
           </div>
+            </form>
+
+
+
         </div>
       </div>
+
       <div class="row mt-5">
         <div class="col-5">
           <h3 class="mb-2">Mô Tả</h3>
