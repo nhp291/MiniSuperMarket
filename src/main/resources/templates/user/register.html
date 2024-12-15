@@ -229,6 +229,9 @@
         <div id="success-message" style="display: none; text-align: center; margin-top: 20px; color: green; font-weight: bold;">
             Đăng ký thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập trong giây lát...
         </div>
+        <div id="success-message-container" style="display: none; text-align: center; margin-top: 20px;">
+            <p style="font-size: 1.2rem; color: green; font-weight: bold;">Đăng ký thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập sau 3 giây...</p>
+        </div>
         <form action="/user/register" method="POST" enctype="multipart/form-data" id="register-form" th:object="${account}">
             <div class="form-group">
                 <label for="username">Tên đăng nhập</label>
@@ -289,6 +292,19 @@
 </div>
 
 <script>
+    // Kiểm tra nếu có thông báo thành công
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('success')) {
+        const successContainer = document.getElementById('success-message-container');
+        successContainer.style.display = 'block'; // Hiển thị thông báo
+
+        // Chuyển hướng sau 3 giây
+        setTimeout(() => {
+            window.location.href = '/user/login';
+        }, 3000);
+    }
+
+    // Hàm gửi mã xác nhận
     function sendVerificationCode() {
         const email = document.getElementById('email').value;
 
@@ -312,11 +328,13 @@
         });
     }
 
+    // Hàm bật/tắt hiển thị mật khẩu
     function togglePassword(id) {
         const passwordField = document.getElementById(id);
         passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
     }
 
+    // Hàm kiểm tra độ mạnh của mật khẩu
     function validatePassword() {
         const password = document.getElementById('password').value;
         const passwordError = document.getElementById('password-error');
@@ -344,6 +362,7 @@
         }
     }
 
+    // Hàm kiểm tra mật khẩu khớp nhau
     function checkPasswordsMatch() {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
