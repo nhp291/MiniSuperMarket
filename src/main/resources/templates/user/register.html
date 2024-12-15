@@ -243,7 +243,6 @@
                     <input type="email" id="email" th:field="*{email}" required style="flex: 3;">
                     <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="sendVerificationCode()">Gửi mã</button>
                 </div>
-                <div id="email-error" class="error-message" style="display: none;">Email không tồn tại!</div>
             </div>
 
             <div class="form-group">
@@ -292,37 +291,23 @@
 <script>
     function sendVerificationCode() {
         const email = document.getElementById('email').value;
-        const emailError = document.getElementById('email-error');
 
         if (!email) {
             alert('Vui lòng nhập email trước khi gửi mã.');
             return;
         }
 
-        fetch('/user/checkEmailExists', {
+        fetch('/user/sendVerificationCode', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email: email })
-        }).then(response => {
-            if (response.ok) {
-                emailError.style.display = 'none'; // Ẩn thông báo lỗi nếu email tồn tại
-                fetch('/user/sendVerificationCode', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email: email })
-                }).then(res => {
-                    if (res.ok) {
-                        alert('Mã xác nhận đã được gửi đến email của bạn.');
-                    } else {
-                        alert('Có lỗi xảy ra khi gửi mã xác nhận. Vui lòng thử lại.');
-                    }
-                });
+        }).then(res => {
+            if (res.ok) {
+                alert('Mã xác nhận đã được gửi đến email của bạn.');
             } else {
-                emailError.style.display = 'block'; // Hiển thị thông báo lỗi nếu email không tồn tại
+                alert('Có lỗi xảy ra khi gửi mã xác nhận. Vui lòng thử lại.');
             }
         });
     }

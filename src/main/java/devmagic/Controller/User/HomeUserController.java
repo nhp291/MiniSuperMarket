@@ -292,13 +292,8 @@ public class HomeUserController {
     @PostMapping("/user/checkEmailExists")
     @ResponseBody
     public ResponseEntity<?> checkEmailExists(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        if (!StringUtils.hasText(email) || !accountService.emailExists(email)) {
-            return ResponseEntity.badRequest().body(new ResponseMessage("Email không tồn tại!"));
-        }
         return ResponseEntity.ok().build();
     }
-
 
     @PostMapping("/user/sendVerificationCode")
     @ResponseBody
@@ -312,7 +307,7 @@ public class HomeUserController {
         String verificationCode = String.valueOf(new Random().nextInt(999999));
         verificationCodes.put(email, verificationCode);
 
-        // Gửi mã qua email (bạn cần tích hợp thư viện gửi email, ví dụ: JavaMailSender)
+        // Gửi mã qua email
         try {
             emailService.sendEmail(email, "Mã xác nhận của bạn", "Mã xác nhận: " + verificationCode);
             return ResponseEntity.ok(new ResponseMessage("Mã xác nhận đã được gửi."));

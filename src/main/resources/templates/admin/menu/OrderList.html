@@ -71,18 +71,24 @@
                                     <form th:action="@{/Orders/{orderId}/change-payment-status(orderId=${order.orderId})}" method="post">
                                         <input type="hidden" name="page" th:value="${currentPage}" />
                                         <input type="hidden" name="size" th:value="${pageSize}" />
-                                        <select name="paymentStatus" th:value="${order.paymentStatus != null ? order.paymentStatus : 'PENDING'}" onchange="this.form.submit()">
+                                        <select name="paymentStatus" onchange="this.form.submit()">
                                             <!-- Chờ xử lý (PENDING) -->
                                             <option value="PENDING" th:selected="${order.paymentStatus == 'PENDING'}"
-                                                    th:disabled="${order.paymentStatus != 'PENDING'}">Chờ xử lý</option>
+                                                    th:disabled="${order.paymentStatus != 'PENDING'}">
+                                                Chờ xử lý
+                                            </option>
 
                                             <!-- Hoàn thành (COMPLETED) -->
                                             <option value="COMPLETED" th:selected="${order.paymentStatus == 'COMPLETED'}"
-                                                    th:disabled="${order.paymentStatus != 'PENDING'}">Hoàn thành</option>
+                                                    th:disabled="${order.paymentStatus != 'PENDING'}">
+                                                Hoàn thành
+                                            </option>
 
                                             <!-- Hủy bỏ (CANCELLED) -->
                                             <option value="CANCELLED" th:selected="${order.paymentStatus == 'CANCELLED'}"
-                                                    th:disabled="${order.paymentStatus == 'CANCELLED'}">Hủy bỏ</option>
+                                                    th:disabled="${order.paymentStatus != 'PENDING'}">
+                                                Hủy bỏ
+                                            </option>
                                         </select>
                                     </form>
                                 </td>

@@ -1,6 +1,9 @@
 package devmagic.Controller.Admin;
 
 import devmagic.Model.Brand;
+import devmagic.Model.Product;
+import devmagic.Reponsitory.BrandRepository;
+import devmagic.Reponsitory.ProductRepository;
 import devmagic.Service.BrandService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -22,6 +26,10 @@ public class BrandController {
 
     @Autowired
     private BrandService brandService;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private BrandRepository brandRepository;
 
     // Hiển thị danh sách thương hiệu
     @GetMapping("/BrandList")
@@ -104,9 +112,10 @@ public class BrandController {
     }
 
     // Xóa thương hiệu
+
     @GetMapping("/DeleteBrand/{id}")
-    public String deleteBrand(@PathVariable Integer id) {
-        brandService.deleteBrand(id);
-        return "redirect:/Brand/BrandList";
+    public String deleteBrand(@PathVariable("id") int id) {
+        brandService.deleteBrand(id); // Gọi service để xóa thương hiệu
+        return "redirect:/Brand/BrandList"; // Chuyển hướng về danh sách thương hiệu
     }
 }

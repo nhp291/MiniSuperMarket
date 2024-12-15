@@ -55,14 +55,19 @@ public class LoginController {
             if (accountOpt.isPresent()) {
                 Account account = accountOpt.get();
 
+                if (account.getIsDeleted()) {
+                    model.addAttribute("error", "Tài khoản của bạn đã bị xóa.");
+                    return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
+                }
+
                 if (account.getRole() == null) {
                     model.addAttribute("error", "Tài khoản của bạn chưa được gán vai trò.");
-                    return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
+                    return "user/login";
                 }
 
                 if (!account.getPassword().equals(password)) {
                     model.addAttribute("error", "Mật khẩu không chính xác!");
-                    return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
+                    return "user/login";
                 }
                 session.setAttribute("accountId", account.getAccountId());
                 session.setAttribute("username", account.getUsername());
@@ -102,4 +107,5 @@ public class LoginController {
             return "user/login"; // Trả về trang đăng nhập với thông báo lỗi
         }
     }
+
 }

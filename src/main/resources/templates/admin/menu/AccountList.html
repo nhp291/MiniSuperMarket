@@ -5,8 +5,14 @@
     <title>Account List</title>
     <style>
         button[disabled] {
-            opacity: 1.5; /* Làm mờ nút */
+            opacity: 0.6; /* Làm mờ nút */
             cursor: not-allowed; /* Hiển thị con trỏ không được phép */
+        }
+
+        .deleted {
+            text-decoration: line-through;
+            color: gray;
+            opacity: 0.6;
         }
     </style>
 </head>
@@ -57,13 +63,14 @@
                                 <th>Số điện thoại</th>
                                 <th>Địa chỉ</th>
                                 <th>Quyền</th>
+                                <th>Trạng thái</th> <!-- Thêm cột trạng thái -->
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody th:if="${accounts != null}" th:each="account : ${accounts}">
-                            <tr>
+                            <tr th:class="${account.isDeleted ? 'deleted' : ''}">
                                 <td>
-                                    <img th:src="@{'/Image/imageProfile/' + ${account.imageUrl} }"
+                                    <img th:src="@{'/Image/imageProfile/' + ${account.imageUrl}}"
                                          style="width: 50px" alt="User Image">
                                 </td>
                                 <td th:text="${account.username != null ? account.username : 'N/A'}"></td>
@@ -72,25 +79,28 @@
                                 <td th:text="${account.phoneNumber != null ? account.phoneNumber : 'N/A'}"></td>
                                 <td th:text="${account.address != null ? account.address : 'N/A'}"></td>
                                 <td th:text="${account.role != null ? account.role.roleName : 'N/A'}"></td>
+                                <td th:text="${account.isDeleted ? 'Đã xóa' : 'Hoạt động'}"></td> <!-- Hiển thị trạng thái -->
                                 <td>
                                     <a class="btn" th:href="@{/Accounts/edit/{id}(id=${account.accountId})}">
                                         <img src="/admin/img/icons/edit.svg" alt="Edit">
                                     </a>
 
-                                    <!-- Nút xóa: Disabled nếu vai trò là Admin -->
-                                    <button class="btn btn-delete"
-                                            th:disabled="${account.role != null and account.role.roleName == 'Admin'}"
-                                            th:onclick="'confirm(\'Bạn có chắc muốn xóa tài khoản này?\') ? window.location.href=\'/Accounts/delete/' + ${account.accountId} + '\' : \'\' '">
-                                        <img src="/admin/img/icons/delete.svg" alt="Delete">
-                                    </button>
+                                    <!-- Nút xóa: Disabled nếu tài khoản là Admin hoặc đã bị xóa -->
+                                    <form th:action="@{/Accounts/delete/{id}(id=${account.accountId})}" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa tài khoản này?')">
+                                        <button type="submit" class="btn btn-delete"
+                                                th:disabled="${account.role != null and account.role.roleName == 'Admin' or account.isDeleted}">
+                                            <img src="/admin/img/icons/delete.svg" alt="Delete">
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
+
                     <div class="pagination-wrapper text-center mt-2">
                         <!-- First Page Link -->
-                        <a  class="pagination-button btn border-success" th:href="@{/Accounts/AccountList?page=1}" th:if="${currentPage > 1}"><i class="bi bi-chevron-double-left"></a>
+                        <a class="pagination-button btn border-success" th:href="@{/Accounts/AccountList?page=1}" th:if="${currentPage > 1}"><i class="bi bi-chevron-double-left"></i></a>
 
                         <!-- Previous Page Link -->
                         <a class="pagination-button btn border-success" th:href="@{/Accounts/AccountList?page=${currentPage - 1}}" th:if="${currentPage > 1}"><i class="bi bi-chevron-compact-left"></i></a>

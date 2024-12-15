@@ -1,6 +1,7 @@
 package devmagic.Service;
 
 import devmagic.Model.Category;
+import devmagic.Model.Product;
 import devmagic.Reponsitory.CategoryRepository;
 import devmagic.Reponsitory.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -37,10 +38,6 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public void deleteCategory(int id) {
-        categoryRepository.deleteById(id);
-    }
-
     public long getTotalCategories() {
         return categoryRepository.count();  // Gọi phương thức để đếm số lượng Category
     }
@@ -51,13 +48,24 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteCategoryAndProducts(int categoryId) {
-        // Xóa tất cả sản phẩm liên quan trước
-        productRepository.deleteByCategory_CategoryId(categoryId);
+    public void deleteCategory(int categoryId) {
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        if (categoryOptional.isPresent()) {
+            // Lấy danh mục cần xóa
+            Category category = categoryOptional.get();
 
-        // Sau đó xóa danh mục
-        categoryRepository.deleteById(categoryId);
+            // Loại bỏ liên kết giữa sản phẩm và danh mục
+            List<Product> products = productRepository.findByCategory(category);
+            for (Product product : products) {
+                product.setCategory(null); // Đặt category của sản phẩm thành null
+            }
+            productRepository.saveAll(products); // Lưu lại các sản phẩm đã cập nhật
+
+            // Xóa danh mục
+            categoryRepository.delete(category);
+        } else {
+            throw new IllegalArgumentException("Category với ID " + categoryId + " không tồn tại");
+        }
     }
-
 
 }
