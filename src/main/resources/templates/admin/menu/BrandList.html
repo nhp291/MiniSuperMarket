@@ -9,12 +9,11 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Brand List</h4>
-                    <h6>Manage your Brand</h6>
+                    <h4>Danh sách thương hiệu</h4>
                 </div>
                 <div class="page-btn">
                     <a th:href="@{/Brand/AddBrand}" class="btn btn-added">
-                        <img src="/admin/img/icons/plus.svg" class="me-2" alt="img">Add Brand
+                        <img src="/admin/img/icons/plus.svg" class="me-2" alt="img">Thêm thương hiệu
                     </a>
                 </div>
             </div>
@@ -25,27 +24,15 @@
                         <table class="table datanew">
                             <thead>
                             <tr>
-                                <th>
-                                    <label class="checkboxs">
-                                        <input type="checkbox" id="select-all">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </th>
-                                <th>Image</th>
-                                <th>Brand Name</th>
-                                <th>Brand Description</th>
-                                <th>Action</th>
+                                <th>Hình ảnh</th>
+                                <th>Tên thương hiệu</th>
+                                <th>Mô tả thương hiệu</th>
+                                <th>Hành động</th>
                             </tr>
                             </thead>
                             <tbody>
                             <!-- Loop through each brand and display -->
                             <tr th:each="brand : ${brands}">
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox" th:value="${brand.brandId}">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
                                 <td>
                                     <a class="product-img">
                                         <img th:src="@{'/Image/imageUrl/'+${brand.imageUrl}}" alt="product">
