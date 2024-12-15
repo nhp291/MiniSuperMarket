@@ -5,84 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch Sử Hóa Đơn</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
-        }
-
-        .history-box {
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .history-title {
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            max-height: 400px; /* Chiều cao tối đa bảng */
-        }
-
-        .table {
-            table-layout: auto; /* Điều chỉnh kích thước cột theo nội dung */
-            width: 100%; /* Chiếm toàn bộ chiều rộng */
-            border-collapse: collapse;
-            word-wrap: break-word; /* Cắt dòng nếu chữ dài */
-            overflow-wrap: break-word;
-        }
-
-        .table thead th {
-            background-color: #007bff;
-            color: white;
-            text-align: center;
-            position: sticky; /* Giữ cố định tiêu đề */
-            top: 0;
-            z-index: 1; /* Đảm bảo tiêu đề luôn ở trên */
-            white-space: nowrap; /* Không xuống dòng tiêu đề */
-        }
-
-        .table tbody td {
-            text-align: center;
-            word-break: break-word; /* Cắt dòng nếu chữ quá dài */
-            max-width: 150px; /* Đặt giới hạn chiều rộng cột */
-            overflow-wrap: break-word;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        @media (max-width: 768px) {
-            .history-box {
-                padding: 15px;
-            }
-
-            .history-title {
-                font-size: 24px;
-            }
-
-            .table {
-                font-size: 14px; /* Thu nhỏ font chữ */
-            }
-
-            .table tbody td {
-                white-space: normal; /* Cho phép xuống dòng trên thiết bị nhỏ */
-            }
-        }
-    </style>
 </head>
 <body>
 <main>
-    <div class="container mt-5">
+    <div class="container" style="margin-top: 100px">
         <div class="history-box">
             <h3 class="history-title">Lịch Sử Hóa Đơn</h3>
             <div class="table-container">
