@@ -390,8 +390,8 @@ public class HomeUserController {
         // Lưu thông tin tài khoản
         try {
             accountService.saveAccount(account);
-            model.addAttribute("successMessage", "Đăng ký thành công! Bạn có thể đăng nhập ngay.");
-            return "redirect:/user/login"; // Chuyển hướng đến trang đăng nhập
+            model.addAttribute("successMessage", "Đăng ký thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập sau 3 giây.");
+            return "redirect:/user/register?success=true"; // Trả về tham số success
         } catch (Exception e) {
             model.addAttribute("account", account);
             model.addAttribute("error", "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.");
