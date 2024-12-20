@@ -344,7 +344,7 @@
                     <div class="col-10">
                         <div class="category-carousel overflow-auto d-flex" style="scroll-snap-type: x mandatory;">
                             <!-- Hiển thị chỉ 8 mục đầu tiên -->
-                            <div th:each="c, iterStat : ${cate}" class="category-item col-4 col-sm-2 col-md-2 col-lg-1 p-2" style="scroll-snap-align: start;">
+                            <div th:each="c, iterStat : ${category}" class="category-item col-4 col-sm-2 col-md-2 col-lg-1 p-2" style="scroll-snap-align: start;">
                                 <a th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="text-decoration-none text-dark">
                                     <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl}}" class="img-fluid"  style="position: relative; z-index: -1" alt="...">
                                     <h6>[[${c.categoryName}]]</h6>
@@ -352,7 +352,7 @@
                             </div>
 
                             <!-- Các mục còn lại, ẩn cho đến khi có sự kiện -->
-                            <div th:each="c, iterStat : ${cate}" th:if="${iterStat.index} >= 8" class="category-item col-4 col-sm-2 col-md-2 col-lg-1 p-2 d-none" style="scroll-snap-align: start;">
+                            <div th:each="c, iterStat : ${category}" th:if="${iterStat.index} >= 8" class="category-item col-4 col-sm-2 col-md-2 col-lg-1 p-2 d-none" style="scroll-snap-align: start;">
                                 <a th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="text-decoration-none text-dark">
                                     <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl}}" class="img-fluid" style="position: relative; z-index: -1" alt="...">
                                     <h6>[[${c.categoryName}]]</h6>
@@ -390,7 +390,7 @@
                                 <label for="categoryId">Danh mục:</label>
                                 <select id="categoryId" name="categoryId" class="form-control" th:value="${categoryId}">
                                     <option value="">-- Chọn danh mục --</option>
-                                    <option th:each="category : ${cate}"
+                                    <option th:each="category : ${category}"
                                             th:value="${category.categoryId}"
                                             th:text="${category.categoryName}"></option>
                                 </select>

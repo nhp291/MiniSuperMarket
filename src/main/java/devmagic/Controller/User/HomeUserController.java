@@ -6,10 +6,7 @@ import devmagic.Model.Cart;
 import devmagic.Model.Product;
 import devmagic.Model.Role;
 import devmagic.Reponsitory.RoleRepository;
-import devmagic.Service.AccountService;
-import devmagic.Service.CartService;
-import devmagic.Service.EmailService;
-import devmagic.Service.ProductService;
+import devmagic.Service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -55,6 +52,8 @@ public class HomeUserController {
     private RoleRepository roleRepository;
 
     private static final Map<String, String> verificationCodes = new HashMap<>();
+    @Autowired
+    private CategoryService categoryService;
 
     @RequestMapping("/layout/Home")
     public String Home(
@@ -113,7 +112,7 @@ public class HomeUserController {
             // Nếu không có bộ lọc, lấy tất cả sản phẩm
             list = productService.getall(pageNo);
         }
-
+        model.addAttribute("category", categoryService.getAllCategories());
         model.addAttribute("totalPage", list.getTotalPages());
         model.addAttribute("currenPage", pageNo);
         model.addAttribute("product", list);
@@ -218,6 +217,7 @@ public class HomeUserController {
             List<Product> list = productService.findAll();
             model.addAttribute("product", list);
         }
+        model.addAttribute("category", categoryService.getAllCategories());
         return "layout/Product";
     }
 

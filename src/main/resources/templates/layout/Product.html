@@ -26,7 +26,7 @@
             <hr>
           </div>
           <div class="row">
-            <a th:each="c: ${cate}" th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="d-flex align-items-center justify-content-center text-decoration-none text-dark" >
+            <a th:each="c: ${category}" th:href="@{|/layout/Product?cid=${c.categoryId}|}" class="d-flex align-items-center justify-content-center text-decoration-none text-dark" >
               <div class="col-2 col-sm-4 col-md-2 col-lg-2 me-2 mt-3">
                 <img th:src="@{'/Image/imageUrl/' + ${c.imageUrl}}" class="img-fluid mb-3"  alt="...">
               </div>
